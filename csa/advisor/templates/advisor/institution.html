@@ -1,10 +1,7 @@
-<head>
-  {% load staticfiles %}
-<head>
-  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
-</head>
+{% extends "advisor/base.html" %}
 
+{% block head %}
+<br><br>
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="/institution">Institution</a></li>
@@ -14,9 +11,11 @@
 </head>
 
 <h1>{{ institution.name }}</h1>
+{% endblock %}
 
-<br>
-<br>
+{% block body %}
+<div class ="index-link">
+
 <h3>Description</h3>
 <p>{{ institution.description }}</p>
 
@@ -59,7 +58,9 @@
 <br>
 <p><a href="/institution">to institution index</a></p>
 <p><a href="/">to home page</a></p>
+    <div class ="index-link">
 
+{% endblock %}
 
 <footer>
 </footer>

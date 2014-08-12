@@ -1,9 +1,6 @@
-{% load staticfiles %}
-<head>
-  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
-  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
-</head>
+{% extends "advisor/base.html" %}
 
+{% block head %}
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="/category">Categories</a></li>
@@ -12,6 +9,18 @@
 
 <h1>{{ category|title }}</h1>
 
-{% for career in careers %}
-  <p><a href="/career/{{ career.name }}">{{ career }}</a></p>
-{% endfor %}
+{% endblock %}
+
+
+{% block body %}
+<div class ="index-link">
+    {% for letter in careers %}
+    <br>
+    <h2>{{ letter.0.name.0|upper }}</h2>
+    {% for career in letter %}
+    <p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
+    {% endfor %}
+    {% endfor %}
+</div>
+
+{% endblock %}

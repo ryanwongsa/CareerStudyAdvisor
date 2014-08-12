@@ -97,13 +97,28 @@ def category(request, category_name):
     if career.categories.filter(name__iexact=category_name).count() > 0:
       list_of_careers.append(career)
 
-  context = {"careers": list_of_careers, "category": category_name}
+  careers = []
+  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_careers)
+        if len(letter_list) > 0:
+            letter_list.sort()
+            careers.append(letter_list)
+  context = {"careers": careers, "category": category_name}
   return render (request, "advisor/category.html", context)
 
 def category_index(request):
-  categories = Category.objects.all()
-  context = {"categories": categories}
-  return render (request, "advisor/category_index.html", context)
+    list_of_categories = []
+    for category in Category.objects.all():
+        list_of_categories.append(category)
+    categories = []
+    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+        letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_categories)
+        if len(letter_list) > 0:
+            letter_list.sort()
+            categories.append(letter_list)
+    
+    context = {"categories": categories}
+    return render (request, "advisor/category_index.html", context)
 
 def institution_career(request, career_name, inst_name):
   
