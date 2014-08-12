@@ -1,0 +1,41 @@
+{% extends "advisor/base.html" %}
+
+{% block head %}
+<br><br>
+<ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li class="active">Careers</li>
+</ol>
+
+<h1>Careers</h1>
+{% endblock %}
+
+{% block mid %}
+<ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li class="active"><a href="#">Careers</a></li>
+    <li><a href="/institution">Institutions</a></li>
+    <li><a href="/category">Categories</a></li>
+    <li><a href="#">SearchNeeded</a><li>
+</ul>
+
+
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="/admin/">Login</a></li>
+    <li><a href="#">Sign Up</a></li>
+</ul>
+
+{% endblock %}
+
+
+{% block body %}
+<div class ="index-link">
+{% for letter in careers %}
+<br>
+<h2>{{ letter.0.name.0|upper }}</h2>
+{% for career in letter %}
+<p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
+{% endfor %}
+{% endfor %}
+</div>
+{% endblock %}
