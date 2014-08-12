@@ -1,0 +1,20 @@
+{% load staticfiles %}
+<head>
+    <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
+</head>
+
+<ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li class="active">Institutions</li>
+</ol>
+
+<h1>Institutions</h1>
+
+{% for letter in institution %}
+<br>
+<h2>{{ letter.0.name.0|upper }}</h2>
+{% for institution in letter %}
+<p><a href="/institution/{{ institution.name }}">{{ institution.name }}</a></p>
+{% endfor %}
+{% endfor %}

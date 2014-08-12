@@ -1,0 +1,24 @@
+{% load staticfiles %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
+</head>
+
+<ol class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li><a href="/">Search</a></li> <!--need to change this to a search page (which just has a bar) -->
+  <li class="active">{{search_term}}</li>
+</ol>
+
+<h1>Search</h1>
+<h3>Results that contain "{{ search_term }}"</h3>
+
+{% for letter in careers %}
+  <br>
+  <h2>{{ letter.0.name.0|upper }}</h2>
+  {% for career in letter %}
+    <p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
+  {% endfor %}
+{% endfor %}
+
+<!-- by putting the / first it takes it from the root -->

@@ -1,0 +1,16 @@
+{% load staticfiles %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
+</head>
+
+<ol class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li class="active">Categories</li>
+</ol>
+
+<h1>Categories</h1>
+
+{% for category in categories %}
+  <p><a href="/category/{{ category.name }}">{{ category }}</a></p>
+{% endfor %}

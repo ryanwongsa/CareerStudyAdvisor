@@ -1,0 +1,65 @@
+{% extends "advisor/base.html" %}
+
+{% block mid %}
+<ul class="nav navbar-nav">
+    <li class="active"><a href="#">Home</a></li>
+    <li><a href="/career">Careers</a></li>
+    <li><a href="/institution">Institutions</a></li>
+    <li><a href="/category">Categories</a></li>
+</ul>
+
+
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="/admin/">Login</a></li>
+    <li><a href="#">Sign Up</a></li>
+</ul>
+
+{% endblock %}
+
+{% block body %}
+<br>
+<h2><center>Search</center></h2>
+
+<div class="row">
+    <div class="col-lg-10">
+        <form action="/search" method="get">
+        <div class="input-group">
+            
+            <input type="text" class="form-control" placeholder="Search for a career (e.g. Software Developer) or *by category (e.g. science)*" name="query">
+                <span class="input-group-btn">
+                   <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search </button>
+                </span>
+        </div><!-- /input-group -->
+        </form>
+    </div><!-- /.col-lg-10 -->
+</div><!-- /.row -->
+
+<h2><center>Categories</center></h2>
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+        {% for category in categories %}
+        <a href="/category/{{ category.name }}" class="btn btn-primary" role="button">
+            <strong>{{category.name}}</strong><br>
+            
+        </a>
+        {% endfor %}
+    </div>
+</div>
+
+<br>
+
+<h2><center>Suggested Careers</center></h2>
+<div class="btn-toolbar" role="toolbar">
+    <div class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+        {% for category in categories %}
+        
+       <p><center>Need to add something here</center></p>
+        {% endfor %}
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+

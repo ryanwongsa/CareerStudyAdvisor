@@ -1,0 +1,47 @@
+{% load staticfiles %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
+</head>
+
+<ol class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li><a href="/institution">Institutions</a></li>
+  <li><a href="/institution/{{qualification.institution}}">{{qualification.institution}}</a></li>
+  <li class="active">{{qualification.name}}</li>
+</ol>
+
+
+<h1><b>{{ qualification.name }}</b></h1>
+<h2>{{ qualification.institution }}</h2>
+
+<br>
+<h3>Details</h3>
+<p>{{ qualification.long_description }}</p>
+
+<br>
+<h3>Courses</h3>
+<p>{{ qualification.courses }}</p>
+
+<br>
+<h3>Qualification Requirements</h3>
+<p>{{ qualification.requirements }}</p>
+
+<br>
+<h3>Careers that this qualification leads to</h3>
+<ul>
+  {% for career in careers %}
+    <li><a href="/career/{{ career.name }}">{{ career.name }}</a></li>
+  {% endfor %}
+</ul>
+
+<br>
+<h3>More Information</h3>
+<ul>
+  {% for website in websites %}
+  <p><a href={{website.site_url}}>{{ website.name }}</a></p>
+{% endfor %}
+</ul>
+
+<br>
+<p><a href="/">Home</a></p>

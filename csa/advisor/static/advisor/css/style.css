@@ -1,0 +1,33 @@
+p.indentt {
+  margin-left: 30px;
+}
+
+.index-link {
+    margin:0em 2em;
+    word-spacing:.25em;
+}
+
+#container {
+    width:100%;
+    height:100%;
+}
+#one {
+    border-color: #233330;
+    width:69%;
+    height:60%;
+    float:left;
+}
+#two {
+    width:30%;
+    height:100%;
+    float:right;
+}
+
+#three {
+    border-color: #445330;
+    width:69%;
+    height:100%;
+    float:bottom;
+}
+
+}

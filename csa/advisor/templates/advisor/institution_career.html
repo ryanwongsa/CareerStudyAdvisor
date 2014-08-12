@@ -1,0 +1,54 @@
+{% extends "advisor/base.html" %}
+
+{% block head %}
+<br><br>
+<ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="/career">Careers</a></li>
+    <li><a href="/{{institution.name}}">Institutions</a></li>
+    <li class="active">Careers</li>
+</ol>
+
+<h1>{{ career }}: {{ institution }}</h1>
+{% endblock %}
+
+{% block mid %}
+<ul class="nav navbar-nav">
+    <li><a href="/">Home</a></li>
+    <li class="active"><a href="#">Careers</a></li>
+    <li><a href="/institution">Institutions</a></li>
+    <li><a href="/category">Categories</a></li>
+    <li><a href="#">SearchNeeded</a><li>
+</ul>
+
+
+<ul class="nav navbar-nav navbar-right">
+    <li><a href="/admin/">Login</a></li>
+    <li><a href="#">Sign Up</a></li>
+</ul>
+
+{% endblock %}
+
+{% block body %}
+<div class ="index-link">
+<h3>Qualifications offered at {{ institution }} that lead to being a {{ career }}:</h3>
+
+{% for qualification in qualifications %}
+
+
+<br>
+<h4><a href="/institution/{{ institution }}/{{ qualification.name }}">{{ qualification.name }}</a></h4>
+<p>{{ qualification.short_description}}</p>
+{% endfor %}
+<br>
+
+<p><a href="/career/{{career}}">back to {{career}}</a></p>
+<p><a href="/institution/{{institution}}">more about {{institution}}</a></p>
+</div>
+
+{% endblock %}
+
+
+
+
+

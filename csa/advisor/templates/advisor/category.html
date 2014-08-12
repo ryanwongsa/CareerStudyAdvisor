@@ -1,0 +1,17 @@
+{% load staticfiles %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
+  <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
+</head>
+
+<ol class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li><a href="/category">Categories</a></li>
+  <li class="active">{{category}}</li>
+</ol>
+
+<h1>{{ category|title }}</h1>
+
+{% for career in careers %}
+  <p><a href="/career/{{ career.name }}">{{ career }}</a></p>
+{% endfor %}
