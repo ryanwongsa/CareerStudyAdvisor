@@ -20,6 +20,7 @@ class Career_Index(View):
     context = {"careers": careers}
     return render(request, "advisor/career_index.html", context)
 
+
 def career(request, career_name):
   list_of_qualifications = []
   list_of_categories = []
@@ -92,7 +93,6 @@ class Search(View):
         letter_list.sort(key=lambda x: x.name)
         filtered_list.append(letter_list)
     return filtered_list
-
 
 def home(request):
   categories = Category.objects.all()
