@@ -18,8 +18,10 @@ urlpatterns = patterns('',
   url(r'^institution/?$', views.institution_index, name='institution_index'),
   url(r'^category/(?P<category_name>\w+(\s+\w+)*)/?$', views.category, name='category'),
   url(r'^category/?$', views.category_index, name='category_index'),
+  url(r'^qualification/?$', views.qualification_index, name='qualification_index'),
+                       
+
   url(r'^', views.home, name='home'),
   
-
 
 )

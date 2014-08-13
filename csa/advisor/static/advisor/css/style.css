@@ -13,29 +13,25 @@ p.indentt {
 
 .tag {
     font-size: 50%;
+    
 }
 
 #container {
-    width:100%;
-    height:100%;
+	position: relative;
+    
 }
-
 #one {
-    border-color: #233330;
-    width:69%;
-    height:100%;
-    float:left;
+    
+	width: 480px;
 }
-
 #two {
-    width:30%;
-    height:100%;
-    float:right;
-}
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	bottom: 10px;
+	width: 250px;
+   /* border: 1px solid #000000;*/
 
-#three {
-    border-color: #445330;
-    width:69%;
-    height:100%;
-    float:bottom;
+    overflow: auto;
+
 }

@@ -1,0 +1,25 @@
+{% extends "advisor/base.html" %}
+
+
+{% block head %}
+<br><br>
+<ol class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li class="active">Qualifications</li>
+</ol>
+
+<h1>Qualifications</h1>
+{% endblock %}
+
+
+{% block body %}
+<div class ="index-link">
+    {% for letter in qualifications %}
+    <br>
+    <h2>{{ letter.0.name.0|upper }}</h2>
+    {% for qualification in letter %}
+    <p><a href="/institution/{{ qualification.institution }}/{{ qualification.name }}">{{ qualification.name }}</a></p>
+    {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}
