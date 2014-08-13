@@ -66,20 +66,33 @@ def career(request, career_name):
   context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers}
   return render (request, "advisor/career.html", context)
 
-def search(request):
-  # request.GET is a dictionary where the query variable is the value in a key-value pair (i.e. it is the actual search text)
-  query = request.GET["query"]
-  list_of_careers = Career.objects.filter(name__icontains=query).all()
+class Search(View):
+  def get(self, request):
+    # request.GET is a dictionary where the query variable is the value in a key-value pair (i.e. it is the actual search text)
+    query = request.GET["query"]
+    list_of_careers = Career.objects.filter(name__icontains=query).all()
+    list_of_institutions = Institution.objects.filter(name__icontains=query).all()
+    list_of_qualifications = Qualification.objects.filter(name__icontains=query).all()
+    list_of_categories = Category.objects.filter(name__icontains=query).all()
+    #return HttpResponse(list_of_careers)
+    
+    list_of_careers_filtered = self.filter_list(list_of_careers)
+    list_of_instituions_filtered = self.filter_list(list_of_institutions)
+    list_of_qualifications_filtered = self.filter_list(list_of_qualifications)
+    list_of_categories_filtered = self.filter_list(list_of_categories)
 
-  careers = []
-  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-    letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_careers)
-    if len(letter_list) > 0:
-      letter_list.sort(key=lambda x: x.name)
-      careers.append(letter_list)
+    context = {"careers": list_of_careers_filtered, "institutions": list_of_instituions_filtered, "qualifications": list_of_qualifications_filtered, "categories": list_of_categories_filtered, "search_term": query}
+    return render (request, "advisor/search.html", context)
 
-  context = {"careers": careers, "search_term": query}
-  return render (request, "advisor/search.html", context)
+  def filter_list(self, temp_list):
+    filtered_list = []
+    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+      letter_list = filter(lambda x: x.name.upper().startswith(letter), temp_list)
+      if len(letter_list) > 0:
+        letter_list.sort(key=lambda x: x.name)
+        filtered_list.append(letter_list)
+    return filtered_list
+
 
 def home(request):
   categories = Category.objects.all()

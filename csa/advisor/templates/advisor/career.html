@@ -10,9 +10,11 @@
 
 <h2>{{ career.name }}</h2>
 
+<div class="tag">
 {% for category in categories %}
 <a class="btn btn-primary btn-sm" role="button" href="/category/{{ category.name }}">{{ category }}</a>
 {% endfor %}
+</div>
 
 {% endblock %}
 
@@ -34,7 +36,7 @@
         <p><a href={{comp.site_url}}>{{ comp.name }}</a></p>
         {% endfor %}
         <br>
-        <h4>Similar Careers </h4>
+        <h3>Similar Careers </h3>
         {% for currCareer in similarCareers %}
         <p><a href="/career/{{ currCareer.name }}">{{ currCareer }}</a></p>
         {% endfor %}
@@ -79,10 +81,13 @@
         <p><a href="/career/{{ currCareer.name }}">{{ currCareer }}</a></p>
         {% endfor %}
         </div>
+
+    <!--
     <div id="three">
         <p><a href="/career">to career index</a></p>
         <p><a href="/">to home page</a></p>
     </div>
+    -->
     
 </div>
 

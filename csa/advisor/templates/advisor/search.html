@@ -17,13 +17,69 @@
 
 {% block body %}
 <div class ="index-link">
-{% for letter in careers %}
-  <br>
-  <h2>{{ letter.0.name.0|upper }}</h2>
-  {% for career in letter %}
-    <p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
+
+
+
+{% if careers|length > 0 %}
+<h3><b>Careers</b></h3>
+<div class ="indent-30px">
+  {% for letter in careers %}
+    <br>
+    <h2>{{ letter.0.name.0|upper }}</h2>
+    {% for career in letter %}
+      <p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
+    {% endfor %}
   {% endfor %}
-{% endfor %}
+</div>
+<hr>
+{% endif %}
+
+
+
+{% if institutions|length > 0 %}
+<h3><b>Institutions</b></h3>
+<div class ="indent-30px">
+  {% for letter in institutions %}
+    <br>
+    <h2>{{ letter.0.name.0|upper }}</h2>
+    {% for institution in letter %}
+      <p><a href="/institution/{{ institution.name }}">{{ institution.name }}</a></p>
+    {% endfor %}
+  {% endfor %}
+  </div>
+<hr>
+{% endif %}
+
+
+
+{% if categories|length > 0 %}
+<h3><b>Categories</b></h3>
+<div class ="indent-30px">
+  {% for letter in categories %}
+    <br>
+    <h2>{{ letter.0.name.0|upper }}</h2>
+    {% for category in letter %}
+      <p><a href="/category/{{ category.name }}">{{ category.name }}</a></p>
+    {% endfor %}
+  {% endfor %}
+  </div>
+<hr>
+{% endif %}
+
+
+
+{% if qualifications|length > 0 %}
+<h3><b>Qualifications</b></h3>
+<div class ="indent-30px">
+  {% for letter in qualifications %}
+    <br>
+    <h2>{{ letter.0.name.0|upper }}</h2>
+    {% for qualification in letter %}
+      <p><a href="/institution/{{ qualification.institution }}/{{ qualification.name }}">{{ qualification.name }}</a></p>
+    {% endfor %}
+  {% endfor %}
+  </div>
+{% endif %}
 
 <!-- by putting the / first it takes it from the root -->
 </div>

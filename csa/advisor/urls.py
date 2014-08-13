@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, url
 
 from advisor import views
-from advisor.views import Career_Index
+from advisor.views import Career_Index, Search
 
 # applies to the character immediately before (that's why you need to use brackets if more than one character)
 # + -> 1 or many
@@ -9,7 +9,7 @@ from advisor.views import Career_Index
 # ? -> 0 or 1
 
 urlpatterns = patterns('',
-  url(r'^search/?$', views.search, name='search'),
+  url(r'^search/?$', Search.as_view(), name='search'),
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/(?P<inst_name>\w+(\s+\w+)*)/?$', views.institution_career, name='institution_career'),
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/?$', views.career, name='career'),
   url(r'^career/?$', Career_Index.as_view(), name='career_index'),
