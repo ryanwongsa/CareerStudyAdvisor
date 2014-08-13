@@ -18,39 +18,40 @@
 <div class ="index-link">
 <div id="container">
     <div id="one">
-<h2>{{ qualification.institution }}</h2>
+	<h2>{{ qualification.institution }}</h2>
 
-<br>
-<h3>Details</h3>
-<p>{{ qualification.long_description }}</p>
+	<br>
+	<h3>Details</h3>
+	<p>{{ qualification.long_description }}</p>
 
-<br>
-<h3>Courses</h3>
-<p>{{ qualification.courses }}</p>
+	<br>
+	<h3>Courses</h3>
+	<p>{{ qualification.courses }}</p>
 
-<br>
-<h3>Qualification Requirements</h3>
-<p>{{ qualification.requirements }}</p>
+	<br>
+	<h3>Qualification Requirements</h3>
+	<p>{{ qualification.requirements }}</p>
 
-<br>
-<h3>Careers that this qualification leads to</h3>
-<ul>
-  {% for career in careers %}
-    <li><a href="/career/{{ career.name }}">{{ career.name }}</a></li>
-  {% endfor %}
-</ul>
-</div>
+	<br>
+	<h3>Careers that this qualification leads to</h3>
+	<ul>
+	  {% for career in careers %}
+	    <li><a href="/career/{{ career.name }}">{{ career.name }}</a></li>
+	  {% endfor %}
+	</ul>
+	<br>
+    </div>
     <div id="two">
-<h3>More Information</h3>
-<ul>
-  {% for website in websites %}
-  <p><a href={{website.site_url}}>{{ website.name }}</a></p>
-{% endfor %}
-</ul>
-</div>
+	<h3>More Information</h3>
+	<ul>
+  	{% for website in websites %}
+  	<p><a href={{website.site_url}}>{{ website.name }}</a></p>
+	{% endfor %}
+	</ul>
+    </div>
     <div id="three">
-<p><a href="/">Home</a></p>
-</div>
+	<p><a href="/">Home</a></p>
+    </div>
 </div>
 </div>
 
