@@ -94,9 +94,26 @@ class Search(View):
         filtered_list.append(letter_list)
     return filtered_list
 
+def qualification_index(request):
+  list_of_qualifications = []
+  for qualifications in Qualification.objects.all():
+    list_of_qualifications.append(qualifications)
+  qualifications = []
+  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+    letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_qualifications)
+    if len(letter_list) > 0:
+      letter_list.sort(key=lambda x: x.name)
+      qualifications.append(letter_list)
+    
+  context = {"qualifications": qualifications}
+  return render (request, "advisor/qualification_index.html", context)
+
 def home(request):
   categories = Category.objects.all()
-  context = {"categories": categories}
+  list_of_suggested_careers=[]
+  for career in Career.objects.all():
+          list_of_suggested_careers.append(career)
+  context = {"categories": categories, "list_of_suggested_careers": list_of_suggested_careers }
   return render (request, "advisor/home.html", context)
 
 def category(request, category_name):

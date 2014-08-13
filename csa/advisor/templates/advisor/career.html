@@ -31,6 +31,7 @@
         {% endfor %}
     </div>
     <div id="two">
+        
         <h3>Companies</h3>
         {% for comp in companies %}
         <p><a href={{comp.site_url}}>{{ comp.name }}</a></p>
@@ -40,11 +41,12 @@
         {% for currCareer in similarCareers %}
         <p><a href="/career/{{ currCareer.name }}">{{ currCareer }}</a></p>
         {% endfor %}
+        </ul>
     </div>
-    <div id="three">
+   <!-- <div id="three">
         <p><a href="/career">to career index</a></p>
         <p><a href="/">to home page</a></p>
-    </div>
+    </div>-->
     
 </div>
     </div>
@@ -52,46 +54,3 @@
 {% endblock %}
 
 
-
-<h2>{{ career.name }}</h2>
-{% for category in categories %}
-  <a class="btn btn-primary btn-sm" role="button" href="/category/{{ category.name }}">{{ category }}</a>
-{% endfor %}
-<br>
-<br>
-
-<div id="container">
-    <div id="one">
-        <h3>Description</h3>
-        <p>{{ career.description }}</p>
-        <br>
-        <h3>Where to study</h3>
-        {% for inst in institutions %}
-        <p><a href="/career/{{ career.name }}/{{ inst }}">{{ inst }}</a></p>
-        {% endfor %}       
-    </div>
-    <div id="two">
-        <h3>Companies</h3>
-        {% for comp in companies %}
-        <p><a href={{comp.site_url}}>{{ comp.name }}</a></p>
-        {% endfor %}
-        <br>
-        <h4>Similar Careers </h4>
-        {% for currCareer in similarCareers %}
-        <p><a href="/career/{{ currCareer.name }}">{{ currCareer }}</a></p>
-        {% endfor %}
-        </div>
-
-    <!--
-    <div id="three">
-        <p><a href="/career">to career index</a></p>
-        <p><a href="/">to home page</a></p>
-    </div>
-    -->
-    
-</div>
-
-
-
-<footer>
-</footer>
