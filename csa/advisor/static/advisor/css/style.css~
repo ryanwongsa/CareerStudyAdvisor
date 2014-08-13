@@ -14,7 +14,7 @@ p.indentt {
 #one {
     border-color: #233330;
     width:69%;
-    height:100%;
+    height:60%;
     float:left;
 }
 #two {
