@@ -18,7 +18,7 @@ urlpatterns = patterns('',
 
     # !!! csa.views.home ...how this work?
 
-    url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/?', include(admin.site.urls)),
     url(r'^', include('advisor.urls')),
     #url(r'^career/', include('advisor.urls')),
     

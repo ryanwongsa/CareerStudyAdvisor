@@ -1,35 +1,33 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.views.generic.base import View
 
 from advisor.models import Career, Qualification, Institution, Category
 
-# Create your views here.
-def career_index(request):
-  list_of_careers = []
-  for career in Career.objects.all():
-    list_of_careers.append(career)
-  
-  careers = []
-  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-    letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_careers)
-    if len(letter_list) > 0:
-      letter_list.sort()
-      careers.append(letter_list)
+class Career_Index(View):
+  def get(self, request):
+    list_of_careers = []
+    for career in Career.objects.all():
+      list_of_careers.append(career)
+    
+    careers = []
+    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+      letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_careers)
+      if len(letter_list) > 0:
+        letter_list.sort(key=lambda x: x.name)
+        careers.append(letter_list)
 
-  context = {"careers": careers}
-  return render(request, "advisor/career_index.html", context)
+    context = {"careers": careers}
+    return render(request, "advisor/career_index.html", context)
 
-#exact career
 def career(request, career_name):
-  #return HttpResponse("Hello")
   list_of_qualifications = []
   list_of_categories = []
   list_of_institutions = []
   list_of_companies = []
   
   c = Career.objects.get(name__iexact=career_name) #.get()  not  .filter()
-  #return HttpResponse(c)
-  #return HttpResponse(c.qualifications)
+
   for qualification in c.qualifications.all(): #need .all() otherwise not iterable
     list_of_qualifications.append(qualification)
   for qualification in list_of_qualifications:
@@ -71,19 +69,16 @@ def career(request, career_name):
 def search(request):
   # request.GET is a dictionary where the query variable is the value in a key-value pair (i.e. it is the actual search text)
   query = request.GET["query"]
-  #return HttpResponse(query)
   list_of_careers = Career.objects.filter(name__icontains=query).all()
-  #return HttpResponse (list_of_careers)
 
   careers = []
   for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
     letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_careers)
     if len(letter_list) > 0:
-      letter_list.sort()
+      letter_list.sort(key=lambda x: x.name)
       careers.append(letter_list)
 
   context = {"careers": careers, "search_term": query}
-  #return HttpResponse (len(careers))
   return render (request, "advisor/search.html", context)
 
 def home(request):
@@ -114,7 +109,7 @@ def category_index(request):
     for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
         letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_categories)
         if len(letter_list) > 0:
-            letter_list.sort()
+            letter_list.sort(key=lambda x: x.name)
             categories.append(letter_list)
     
     context = {"categories": categories}
@@ -174,7 +169,7 @@ def institution_index(request):
     for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
         letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_institutions)
         if len(letter_list) > 0:
-            letter_list.sort()
+            letter_list.sort(key=lambda x: x.name)
             institution.append(letter_list)
     
     context = {"institution": institution}

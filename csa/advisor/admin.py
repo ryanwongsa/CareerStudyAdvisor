@@ -24,8 +24,6 @@ class QualificationAdmin(CommonInfo):
 	list_filter = ['institution']
 	filter_horizontal = ['qualifications_websites']
 
-# Register your models here.
-
 admin.site.register(Career,CareerAdmin)
 admin.site.register(Institution,InstitutionAdmin)
 admin.site.register(Category,CatagoryAdmin)
