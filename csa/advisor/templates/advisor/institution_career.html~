@@ -14,10 +14,9 @@
 
 
 {% block body %}
-
-<div class ="index-link">
 <div id="container">
     <div id="one">
+<div class ="index-link">
 <h3>Qualifications offered at {{ institution }} that lead to being a {{ career }}:</h3>
 
 {% for qualification in qualifications %}

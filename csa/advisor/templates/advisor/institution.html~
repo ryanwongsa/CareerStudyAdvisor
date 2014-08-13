@@ -59,7 +59,7 @@
     <div id="three">
 <p><a href="/institution">to institution index</a></p>
 <p><a href="/">to home page</a></p>
-    <div class ="index-link">
+    </div>
 </div>
 </div>
 {% endblock %}
