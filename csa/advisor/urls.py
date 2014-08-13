@@ -2,6 +2,7 @@ from django.conf.urls import patterns, url
 
 from advisor import views
 from advisor.views import Career_Index, Search
+#Career, Search, Home, Category, Category_Index, Institution_Career, Qualification, Institution_Index, Institution
 
 # applies to the character immediately before (that's why you need to use brackets if more than one character)
 # + -> 1 or many

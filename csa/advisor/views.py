@@ -95,18 +95,18 @@ class Search(View):
     return filtered_list
 
 def qualification_index(request):
-    list_of_qualifications = []
-    for qualifications in Qualification.objects.all():
-        list_of_qualifications.append(qualifications)
-    qualifications = []
-    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-        letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_qualifications)
-        if len(letter_list) > 0:
-            letter_list.sort(key=lambda x: x.name)
-            qualifications.append(letter_list)
+  list_of_qualifications = []
+  for qualifications in Qualification.objects.all():
+    list_of_qualifications.append(qualifications)
+  qualifications = []
+  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+    letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_qualifications)
+    if len(letter_list) > 0:
+      letter_list.sort(key=lambda x: x.name)
+      qualifications.append(letter_list)
     
-    context = {"qualifications": qualifications}
-    return render (request, "advisor/qualification_index.html", context)
+  context = {"qualifications": qualifications}
+  return render (request, "advisor/qualification_index.html", context)
 
 def home(request):
   categories = Category.objects.all()
