@@ -80,9 +80,9 @@
                 <div class="btn-toolbar" role="toolbar">
 	 		<center>
                         <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-                            {% for category in categories %}
+                            {% for career in list_of_suggested_careers %}
                             <a href="/career/{{ career.name }}" class="btn btn-primary" role="button">
-                                <strong>{{category.name}}</strong><br>
+                                <strong>{{career.name}}</strong><br>
                                 
                             </a>
                             {% endfor %}
