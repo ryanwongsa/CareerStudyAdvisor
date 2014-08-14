@@ -45,7 +45,7 @@
             <div id="wrapper">
                 <br>
                 <h2><center>Search</center></h2>
-                
+                <center>
                 <div class="row">
                     <div class="col-lg-5">
                         <form action="/search" method="get">
@@ -59,7 +59,7 @@
                         </form>
                     </div><!-- /.col-lg-5 -->
                 </div><!-- /.row -->
-                
+                </center>
                 <h2><center>Categories</center></h2>
                 <div class="btn-toolbar" role="toolbar">
                     <center>
@@ -78,11 +78,17 @@
                 
                 <h2><center>Suggested Careers</center></h2>
                 <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-                        {% for career in list_of_suggested_careers %}
-                        <center><p><a href="/career/{{ career.name }}">{{ career.name }}</a></p></center>
-                        {% endfor %}
-                    </div>
+	 		<center>
+                        <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+                            {% for category in categories %}
+                            <a href="/career/{{ career.name }}" class="btn btn-primary" role="button">
+                                <strong>{{category.name}}</strong><br>
+                                
+                            </a>
+                            {% endfor %}
+                        </div>
+                    </center>
+         
                 </div>
 
             </div>
