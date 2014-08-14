@@ -1,7 +1,6 @@
 {% extends "advisor/base.html" %}
 
 {% block head %}
-<br><br>
 <ol class="breadcrumb">
     <li><a href="/">Home</a></li>
     <li><a href="/career">Careers</a></li>
@@ -16,8 +15,7 @@
 {% block body %}
 
 <div class ="index-link">
-<div id="container">
-    <div id="one">
+
 <h3>Qualifications offered at {{ institution }} that lead to being a {{ career }}:</h3>
 
 {% for qualification in qualifications %}

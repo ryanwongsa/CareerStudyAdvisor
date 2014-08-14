@@ -17,6 +17,7 @@ p.indentt {
 }
 
 #container {
+    height:100%;
 	position: relative;
     
 }
@@ -32,6 +33,6 @@ p.indentt {
 	width: 250px;
    /* border: 1px solid #000000;*/
 
-    overflow: auto;
+/*    overflow: auto;*/
 
 }
