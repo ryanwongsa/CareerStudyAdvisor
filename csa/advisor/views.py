@@ -113,11 +113,12 @@ def home(request):
   list_of_careers=[]
   list_of_suggested_careers=[]
   for career in Career.objects.all():
-    list_of_careers.append(Career.objects.all())
-
+    list_of_careers.append(career)
+    
   for i in range (5):
     list_of_suggested_careers.append(list_of_careers[i])
-    	
+  
+
   context = {"categories": categories, "list_of_suggested_careers": list_of_suggested_careers }
   return render (request, "advisor/home.html", context)
 
