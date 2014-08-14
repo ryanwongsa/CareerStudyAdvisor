@@ -7,14 +7,14 @@
     <li class="active">{{career.name}}</li>
 </ol>
 
-<h2>{{ career.name }}</h2>
+<h1>{{ career.name }}</h1>
 
 <div class="tag">
 {% for category in categories %}
 <a class="btn btn-primary btn-sm" role="button" href="/category/{{ category.name }}">{{ category }}</a>
 {% endfor %}
 </div>
-
+<br>
 {% endblock %}
 
 {% block body %}

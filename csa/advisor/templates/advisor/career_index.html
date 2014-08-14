@@ -12,12 +12,12 @@
 
 {% block body %}
 <div class ="index-link">
-{% for letter in careers %}
-<br>
-<h2>{{ letter.0.name.0|upper }}</h2>
-{% for career in letter %}
-<p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
-{% endfor %}
-{% endfor %}
+    {% for letter in careers %}
+        <br>
+        <h2>{{ letter.0.name.0|upper }}</h2>
+        {% for career in letter %}
+            <p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
+        {% endfor %}
+    {% endfor %}
 </div>
 {% endblock %}
