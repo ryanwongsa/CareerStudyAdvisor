@@ -16,14 +16,18 @@ p.indentt {
     
 }
 
+.search-bar {
+ border: solid 1px #000000;  
+    background-color: #e3e3e3;
+}
+
 #container {
     height:150%;
 	position: relative;
     
 }
 #one {
-    
-	width: 480px;
+	width: 800px;
 }
 #two {
 	position: absolute;
