@@ -4,8 +4,26 @@ from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from django.views.generic.base import View
 from django.contrib import auth
+from django.contrib.auth.forms import UserCreationForm
 
 from advisor.models import Career, Qualification, Institution, Category
+
+def register_user(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/accounts/register_success')
+
+    args = {}
+    args.update(csrf(request))
+
+    args['form'] = UserCreationForm()
+    print args
+    return render(request, "advisor/register.html", args)
+
+def register_success(request):
+    return render(request, "advisor/register_success.html")
 
 def login(request):
     c={}
