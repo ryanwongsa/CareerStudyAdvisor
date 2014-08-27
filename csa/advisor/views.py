@@ -1,8 +1,42 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
+from django.http import HttpResponseRedirect
+from django.core.context_processors import csrf
 from django.views.generic.base import View
+from django.contrib import auth
 
 from advisor.models import Career, Qualification, Institution, Category
+
+def login(request):
+    c={}
+    c.update(csrf(request))
+    context = {"c": c}
+    return render(request, "advisor/login.html", context)
+
+def auth_view(request):
+    username = request.POST.get('username','')
+    password = request.POST.get('password','')
+    user = auth.authenticate(username= username,password = password)
+
+    if user is not None:
+        auth.login(request, user)
+        return HttpResponseRedirect('/accounts/loggedin')
+    else:
+        return HttpResponseRedirect('/accounts/invalid')
+
+def loggedin(request):
+    context = {"full_name": request.user.username}
+    return render(request, "advisor/loggedin.html", context)
+
+def invalid_login(request):
+    return render(request, "advisor/invalid_login.html")
+
+
+def logout(request):
+    auth.logout(request)
+    return render(request, "advisor/logout.html")
+
+
 
 class Career_Index(View):
   def get(self, request):
