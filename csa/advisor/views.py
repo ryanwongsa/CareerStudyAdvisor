@@ -4,9 +4,77 @@ from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from django.views.generic.base import View
 from django.contrib import auth
+from forms import UserProfileForm
+from forms import MyRegistrationForm
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 
-from advisor.models import Career, Qualification, Institution, Category
+from advisor.models import Career, Qualification, Institution, Category, Subject, UserProfile
+
+
+def login(request):
+    c={}
+    c.update(csrf(request))
+    context = {"c": c}
+    return render(request, "login.html", context)
+
+def auth_view(request):
+    username = request.POST.get('username','')
+    password = request.POST.get('password','')
+    user = auth.authenticate(username= username,password = password)
+    
+    if user is not None:
+        auth.login(request, user)
+        return HttpResponseRedirect('/accounts/loggedin')
+    else:
+        return HttpResponseRedirect('/accounts/invalid')
+
+# still need to make an initial thing
+@login_required
+def loggedin(request):
+    user_name = UserProfile(name=request.user.username)
+    #form = UserProfileForm(initial={'interest': '', 'likes': ''})
+    if request.POST:
+        form = UserProfileForm(request.POST, instance=user_name)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+    else:
+        form = UserProfileForm(instance=user_name)
+    
+    args = {}
+    args.update(csrf(request))
+    
+    args['form'] = UserProfileForm()
+    print args
+    context = {"full_name": request.user.username, "args" :args}
+    return render(request, "loggedin.html", context)
+
+def invalid_login(request):
+    return render(request, "invalid_login.html")
+
+
+def logout(request):
+    auth.logout(request)
+    return render(request, "logout.html")
+
+def register_user(request):
+    if request.method == 'POST':
+        form = MyRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/accounts/register_success')
+    
+    args = {}
+    args.update(csrf(request))
+    
+    args['form'] = MyRegistrationForm()
+    print args
+    return render(request, "register.html", args)
+
+def register_success(request):
+    return render(request, "register_success.html")
+
 
 class Career_Index(View):
   def get(self, request):
@@ -119,8 +187,8 @@ def home(request):
   for career in Career.objects.all():
     list_of_careers.append(career)
     
-  for i in range (5):
-    list_of_suggested_careers.append(list_of_careers[i])
+  for suggested_careers in list_of_careers:
+    list_of_suggested_careers.append(suggested_careers)
   
 
   context = {"categories": categories, "list_of_suggested_careers": list_of_suggested_careers }

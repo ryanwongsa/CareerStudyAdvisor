@@ -8,7 +8,6 @@ from advisor.views import Career_Index, Search
 # + -> 1 or many
 # * -> 0 or many
 # ? -> 0 or 1
-
 urlpatterns = patterns('',
   url(r'^search/?$', Search.as_view(), name='search'),
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/(?P<inst_name>\w[\w\s\(\)]*)/?$', views.institution_career, name='institution_career'),
@@ -20,10 +19,15 @@ urlpatterns = patterns('',
   url(r'^category/(?P<category_name>\w+(\s+\w+)*)/?$', views.category, name='category'),
   url(r'^category/?$', views.category_index, name='category_index'),
   url(r'^qualification/?$', views.qualification_index, name='qualification_index'),
-
-    
                        
-  url(r'^', views.home, name='home'),
-  
+  url(r'^accounts/login/?$', views.login, name ='login'),
+  url(r'^accounts/auth/?$', views.auth_view, name ='auth_view'),
+  url(r'^accounts/logout/?$', views.logout, name ='logout'),
+  url(r'^accounts/loggedin/?$', views.loggedin, name = 'loggedin'),
+  url(r'^accounts/invalid/?$', views.invalid_login, name ='invalid_login'),
+                       
+  url(r'^accounts/register/?$', views.register_user, name = 'register_user'),
+  url(r'^accounts/register_success/?$', views.register_success, name = 'register_success'),
 
+  url(r'^', views.home, name='home'),
 )
