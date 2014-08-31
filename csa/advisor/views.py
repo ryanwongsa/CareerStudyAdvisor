@@ -52,7 +52,7 @@ def auth_view(request):
 @login_required
 def loggedin(request):
     user_name = UserProfile(name=request.user.username)
-    #form = UserProfileForm(initial={'interest': '', 'likes': ''})
+    #
     if request.POST:
         form = UserProfileForm(request.POST, instance=user_name)
         if form.is_valid():
