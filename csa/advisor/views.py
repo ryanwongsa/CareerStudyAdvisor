@@ -13,10 +13,29 @@ from advisor.models import Career, Qualification, Institution, Category, Subject
 
 
 def login(request):
-    c={}
-    c.update(csrf(request))
-    context = {"c": c}
-    return render(request, "login.html", context)
+    if request.user.is_authenticated():
+        user_name = UserProfile(name=request.user.username)
+        #form = UserProfileForm(initial={'interest': '', 'likes': ''})
+        if request.POST:
+            form = UserProfileForm(request.POST, instance=user_name)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect('/')
+        else:
+            form = UserProfileForm(instance=user_name)
+    
+        args = {}
+        args.update(csrf(request))
+    
+        args['form'] = UserProfileForm()
+        print args
+        context = {"full_name": request.user.username, "args" :args}
+        return HttpResponseRedirect("/accounts/loggedin", context)
+    else:
+        c={}
+        c.update(csrf(request))
+        context = {"c": c}
+        return render(request, "login.html", context)
 
 def auth_view(request):
     username = request.POST.get('username','')
