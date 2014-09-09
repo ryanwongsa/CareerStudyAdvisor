@@ -1,0 +1,141 @@
+{% extends "admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+
+<!---CSS Bootstrap file required for buttons -->
+<link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
+
+<!--content-related .module h2: Changes the Recent Actions top bar and heading-->
+<!--content-related: Changes the Box around Recent Actions -->
+<!-- module: changes inner the box around Auth, Advisor and Recent Actions -->
+<!-- content-main: changes border around Auth and Advisor-->
+<!-- custom: changes button-->
+<!--user-tools : Changing the text position and font size of the text in the top bar of the admin pages-->
+<style>
+#content-related .module h2 {
+    background: rgb(51,51,51) url(../img/nav-bg.gif) bottom left repeat-x;
+    font-size: 16px;
+    font-weight: normal;
+    color: #666;
+    height: 35px;
+    line-height: 25px;
+    border-bottom: 5px solid #666;
+}
+
+#content-related {
+    border: 5px solid #666;
+    float: right;
+    width: 22em;
+    position: relative;
+    margin-right: -35em;
+}
+
+.module {
+    border: 0px solid #ccc;
+    margin-bottom: 5px;
+    background: white;
+}
+
+#content-main {
+    border: 0px solid #ccc;
+    margin-left: 40px;
+}
+
+.custom {
+    width: 150px !important;
+    font-weight:bold;
+    position:absolute;
+
+}
+
+#user-tools
+{
+    line-height: 20px;
+    font-size:15px;
+}
+
+</style>
+{% endblock %}
+
+<!---Adds the section title to the top of the admin home page -->
+{% block content_title %}
+<br>
+<font color="#000000"; style="font-weight:normal; font-size:25px; margin-left: 40px;margin-bottom: 10; position:absolute; top: 100px;"> Select to Add, Edit or Remove: </font>
+<br>
+<br>
+{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+<!---Adds buttons to a container on the admin page-->
+<div id="content-main">
+
+<!---Sub-heading on admin page-->
+<font color="#000000"; style="font-weight:normal; font-size:22px; margin-left: 38px;margin-top: 0;position:absolute; top: 160px;"> Website Management: </font> 
+
+<!---Buttons under Website Management on admin page-->
+<a style = "left: 110px; top: 210px;" href="/adminadvisor/category/" class="btn btn-primary btn-lg custom active" role="button">Category</a>
+<a style = "left: 270px; top: 210px;" href="/adminadvisor/career/" class="btn btn-primary btn-lg custom active" role="button">Career</a>
+<a style = "left: 430px; top: 210px;" href="/adminadvisor/institution/" class="btn btn-primary btn-lg custom active" role="button">Institution</a>
+<a style = "left: 110px; top: 270px;" href="/adminadvisor/qualification/" class="btn btn-primary btn-lg custom active" role="button">Qualification</a>
+<a style = "left: 270px; top: 270px;" href="/adminadvisor/subject/" class="btn btn-primary btn-lg custom active" role="button">Subject</a>
+<a style = "left: 430px; top: 270px;" href="/adminadvisor/websitelink/" class="btn btn-primary btn-lg custom active" role="button">Website Link</a>
+
+<!---Second sub-heading on admin page-->
+<h1><font color="#000000"; style="font-weight:normal; font-size:22px;margin-left: 38px; position:absolute;  top: 360px;"> User Profile Management:</font></h1>
+<br>
+<br>
+
+<!---Buttons under User Profile Management on admin page-->
+<a style = "left: 110px; top: 405px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
+<a style = "left: 270px; top: 405px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
+
+</div>
+{% endblock %}
+
+<!---Recent Actions bar on admin page-->
+{% block sidebar %}
+<div id="content-related">
+    <div class="module" id="recent-actions-module">
+
+        <!---Recent actions heading-->
+        <h2 style="text-align: center;font-weight:bold; font-size:16px;"><font color = white>{% trans 'Recent Actions' %}</h2>
+        
+         <!---Modifications heading-->
+        <h3 style="text-align: center;font-weight:bold; font-size:14px;">{% trans 'My Modifications:' %}</h3>
+            
+            {% load log %}
+            {% get_admin_log 10 as admin_log for_user user %}
+            {% if not admin_log %}
+            <p>{% trans 'None available' %}</p>
+            {% else %}
+            <ul class="actionlist">
+            {% for entry in admin_log %}
+            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                {% if entry.is_deletion or not entry.get_admin_url %}
+                    {{ entry.object_repr }}
+                {% else %}
+                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                {% endif %}
+                <br/>
+                {% if entry.content_type %}
+                    <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
+                {% else %}
+                    <span class="mini quiet">{% trans 'Unknown content' %}</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+            </ul>
+            {% endif %}
+    </div>
+</div>
+
+{% endblock %}

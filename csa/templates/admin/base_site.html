@@ -1,0 +1,43 @@
+{% extends "admin/base.html" %}
+
+{% load i18n %}
+
+<!--Code to change the name of the admin tab in the admin web pages-->
+{% block title %}{{ title }} | {% trans 'CSA Site Admin' %}{% endblock %}
+
+<!--Code to change the name of the admin website in the top bar of the window for admin login and the top bar of the admin web pages-->
+{% block branding %}
+<h1 id="site-name"><font color="#66CCFF">{% trans 'CSA Administration' %}</h1>
+{% endblock %}
+
+{% block extrastyle %}
+<!--header : Changing the colour, height and text position of the top bar of the login window-->
+<!--user-tools : Changing the text position and font size of the text in the top bar of the admin pages-->
+<!--branding h1 : Changing the colour, height and text position of the top bar of the admin pages-->
+<style>
+#header 
+{
+	background-color: rgb(51,51,51);
+	height: 50px;
+	line-height: 35px;
+}
+#user-tools
+{
+	line-height: 20px;
+	font-size:14px;
+}
+
+#branding h1 {
+    font-size: 19px;
+    font-weight: normal;
+    color: rgb(244, 243, 121);
+    line-height: 35px;
+}
+
+
+
+
+</style>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
