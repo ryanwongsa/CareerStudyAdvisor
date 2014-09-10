@@ -37,9 +37,11 @@
                     <ul class="nav navbar-nav navbar-right">
                         {% if user.is_authenticated %}
                         <li><a href="/accounts/loggedin">{{user}}</a></li>
+                        <li><a href="/accounts/logout">Log Out</a></li>
                         {% else %}
                         <li><a href="/accounts/login">Login</a></li>
-                        {% endif %}                       <li><a href="/accounts/register">Sign Up</a></li>
+                        <li><a href="/accounts/register">Sign Up</a></li>
+                        {% endif %}                       
                     </ul>
                     
                 </div><!-- /.navbar-collapse -->
