@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, include, url
 
+
 from django.contrib import admin
 admin.autodiscover()
 
@@ -17,9 +18,13 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     # !!! csa.views.home ...how this work?
-
+   
+                       
     url(r'^admin/?', include(admin.site.urls)),
     url(r'^', include('advisor.urls')),
     #url(r'^career/', include('advisor.urls')),
+                       
+    
+
     
 )

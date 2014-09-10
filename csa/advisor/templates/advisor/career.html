@@ -1,4 +1,4 @@
-{% extends "advisor/base.html" %}
+{% extends "base.html" %}
 
 {% block head %}
 <ol class="breadcrumb">
@@ -7,7 +7,15 @@
     <li class="active">{{career.name}}</li>
 </ol>
 
-<h1>{{ career.name }}</h1>
+<span>
+<span style="padding-right: 2em" ><font size="7">{{ career.name }}</font></span>
+{% if career_liked %}
+<a class="btn btn-warning btn-xs" disabled="disabled" role="button">Liked</a>
+<span style="font-size: 12">You've already liked this career</span>
+{% else %}
+<a class="btn btn-warning btn-xs" role="button">Like</a>
+{% endif %}
+</span>
 
 <div class="tag">
 {% for category in categories %}

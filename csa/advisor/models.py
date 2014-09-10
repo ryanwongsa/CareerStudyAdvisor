@@ -80,10 +80,23 @@ class Qualification (models.Model):
 
 ############################################
 
+class Subject (models.Model):
+    name = models.CharField(max_length=50)
+    
+    class Meta:
+        verbose_name = "Subject"
+        verbose_name_plural = "Subjects"
+    
+    def __unicode__(self):
+        return self.name
+
+############################################
+
 class Career (models.Model):
   name = models.CharField(max_length=50)
   description = models.TextField() # [id1,id2,...]
   categories = models.ManyToManyField(Category)
+  subjects = models.ManyToManyField(Subject)
   qualifications = models.ManyToManyField(Qualification)
   companies = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Company'})
 
@@ -95,3 +108,23 @@ class Career (models.Model):
     return self.name
 
 ############################################
+
+
+
+
+class UserProfile (models.Model):
+    name = models.CharField(primary_key=True,max_length=50)  # actually is a username
+    likes = models.ManyToManyField(Career)
+    interests = models.ManyToManyField(Category)
+    subjects = models.ManyToManyField(Subject)
+    
+    class Meta:
+        verbose_name = "UserProfile"
+        verbose_name_plural = "UsersProfile"
+    
+    def __unicode__(self):
+        return self.name
+
+
+############################################
+

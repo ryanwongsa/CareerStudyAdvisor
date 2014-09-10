@@ -1,4 +1,4 @@
-{% extends "advisor/base.html" %}
+{% extends "base.html" %}
 
 {% block head %}
 <ol class="breadcrumb">
@@ -20,4 +20,39 @@
         {% endfor %}
     {% endfor %}
 </div>
+
+ <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+
+            <button type="button" id="loading-example-btn" data-loading-text="Loading..." class="btn btn-primary">
+            Loading state
+            </button>
+
+            <div class="dropdown">
+                <a data-toggle="dropdown" href="#">Dropdown trigger</a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                <li>Hello there</li>    
+                </ul>
+            </div>
+
+<button type="button" id="pop" class="btn btn-default" data-container="body" data-toggle="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+  Popover on top
+</button>
+
+        <script>alert("hello")</script>
+        <script>        $('#pop').popover(options)        </script>
+
+        <script>
+
+        $(".alert").alert()
+        $(".alert").alert('close')
+        
+          $('#loading-example-btn').click(function () {
+            var btn = $(this)
+            btn.button('loading')
+            $.ajax(...).always(function () {
+              btn.button('reset')
+            });
+          });
+        </script>
+
 {% endblock %}

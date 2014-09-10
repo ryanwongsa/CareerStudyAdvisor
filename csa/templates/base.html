@@ -4,10 +4,6 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
-    <script src="{% static 'advisor/js/jquery-2.1.1.min.js' %}"></script>
-    <script src="{% static 'advisor/js/bootstrap.min.js' %}"></script>
-
-    
     <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -41,8 +37,12 @@
                 
                 
                 <ul class="nav navbar-nav navbar-right">
+                    {% if user.is_authenticated %}
+                    <li><a href="/accounts/loggedin">{{user}}</a></li>
+                    {% else %}
                     <li><a href="/accounts/login">Login</a></li>
-                  <!--  <li><a href="#">Sign Up</a></li>-->
+                    {% endif %}
+                    <li><a href="/accounts/register">Sign Up</a></li>
                 </ul>
                 
             </div><!-- /.navbar-collapse -->
@@ -64,7 +64,8 @@
 </body>
 
 <footer>
-    
+    <script src="{% static 'advisor/js/jquery-2.1.1.min.js' %}"></script>
+    <script src="{% static 'advisor/js/bootstrap.min.js' %}"></script>
     {% block scripts %}
     {% endblock %}
 </footer>
