@@ -11,7 +11,6 @@ from django.contrib.auth.forms import UserCreationForm
 
 from advisor.models import Career, Qualification, Institution, Category, Subject, UserProfile
 
-
 def get_recommended_careers (user):
   '''
   All careers are stored in a 2D list of the form [[Career, score] ...], with score initially set to 0 for each career.
@@ -335,6 +334,9 @@ def home(request):
   list_of_suggested_careers=[]
   for career in Career.objects.all():
     list_of_careers.append(career)
+    
+  for suggested_careers in list_of_careers:
+    list_of_suggested_careers.append(suggested_careers)
   
   '''
   for suggested_careers in list_of_careers:

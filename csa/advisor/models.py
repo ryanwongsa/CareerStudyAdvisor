@@ -109,8 +109,17 @@ class Career (models.Model):
 
 ############################################
 
+class Subject (models.Model):
+    name = models.CharField(max_length=50)
+    
+    class Meta:
+        verbose_name = "Subject"
+        verbose_name_plural = "Subjects"
+    
+    def __unicode__(self):
+        return self.name
 
-
+############################################
 
 class UserProfile (models.Model):
     name = models.CharField(primary_key=True,max_length=50)  # actually is a username
