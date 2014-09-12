@@ -54,6 +54,38 @@
     <!--<div id="three">
 	<p><a href="/">Home</a></p>
     </div>-->
+   
+    <!--Compares the subjects that a user has taken to a list of subjects required to obtain the
+        qualification. The system then displays a list of subject requirments that have been met and a list of subjects that the user hasn't taken (and that are required) -->
+    {% if user.is_authenticated %}
+
+    	<h3>Subject Requirments that You Have Met</h3>
+    	{% if matched_subjects|length == 0 %}
+    		{% if extra_subjects_needed|length != 0 %}
+    			<p style="font-weight:normal;  font-size:16px;"><font color = red> You have not done any of the subjects required for this qualification</font></p>
+    		{% else %}
+    			<p style="font-weight:normal;  font-size:16px;"> There are no subject prerequisets for this qualification</p>
+    		{% endif %}
+    	{% else %}	
+    		{% for sub in matched_subjects %}
+	    		<li>{{sub}}</li>
+			{% endfor %}
+		{% endif %}
+
+		<h3>Extra subjects needed</h3>
+		{% if extra_subjects_needed|length == 0 %}
+			<p style="font-weight:normal;  font-size:16px;"><font color = green> You have met all the subject requirements for this qualification!</font></p>
+    	{% else %}
+			{% for sub in extra_subjects_needed %}
+		    	<li>{{sub}}</li>
+			{% endfor %}
+		{% endif %}
+
+	{% else %}
+        <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to see whether you meet all the subject requirments</p>
+    
+    {% endif %}
+    
 </div>
 </div>
 

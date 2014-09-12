@@ -1,6 +1,14 @@
+#################################################################################
+# Capstone Project - Career Study Advisor 
+# By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+# 21/07/2014 - 22/09/2014
+#################################################################################
+
 from django.db import models
 
-############################################
+################################################################################
+# The catagory model stores the catagories which careers are assigned to. 
+################################################################################
 
 class Category (models.Model):
   name = models.CharField(max_length=50)
@@ -12,7 +20,9 @@ class Category (models.Model):
   def __unicode__(self):
     return self.name
 
-############################################
+################################################################################
+# The WebsiteLink model is used to store all the links to external websites. 
+################################################################################
 
 class WebsiteLink (models.Model):
   name = models.CharField(max_length=150)
@@ -41,15 +51,18 @@ class WebsiteLink (models.Model):
   def __unicode__(self):
     return self.name
 
-############################################
+################################################################################
+# The Institution model is used to store information about educational 
+# institutions  
+################################################################################
 
 class Institution (models.Model):
   name = models.CharField(max_length=50)
   description = models.TextField()
-  websites = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Institution'}, related_name='institutions_website')
-  handbooks = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Handbook'},related_name='institutions_handbooks')
-  faculty_websites = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Faculty Website'},related_name='institutions_faculties')
-  contact_details_websites = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Contact'},related_name='institutions_contact_info')
+  websites = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Institution'}, related_name='institutions_website')
+  handbooks = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Handbook'},related_name='institutions_handbooks')
+  faculty_websites = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Faculty Website'},related_name='institutions_faculties')
+  contact_details_websites = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Contact'},related_name='institutions_contact_info')
   # qualifications
 
   class Meta:
@@ -59,7 +72,10 @@ class Institution (models.Model):
   def __unicode__(self):
     return self.name
     
-############################################
+################################################################################
+# The Subject model is used to store information about all subjects used within
+# the website
+################################################################################
 
 class Subject (models.Model):
     name = models.CharField(max_length=50)
@@ -72,16 +88,19 @@ class Subject (models.Model):
         return self.name
 
 
-############################################
+################################################################################
+# The Qualification model is used to store information about the qualifications 
+# used within the website
+################################################################################
 
 class Qualification (models.Model):
   institution = models.ForeignKey(Institution)
   name = models.CharField(max_length=50)
   short_description = models.TextField()
   long_description = models.TextField()
-  courses = models.TextField()
-  subjects = models.ManyToManyField(Subject)
-  qualifications_websites = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Qualification'})
+  courses = models.TextField(blank=True)
+  subjects = models.ManyToManyField(Subject,blank=True)
+  qualifications_websites = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Qualification'})
 
   class Meta:
     verbose_name = "Qualification"
@@ -91,15 +110,18 @@ class Qualification (models.Model):
     return u'{} from {}'.format(self.name,self.institution)
 
 
-############################################
+################################################################################
+# The Career model is used to store information about the careers 
+# used within the website
+################################################################################
 
 class Career (models.Model):
   name = models.CharField(max_length=50)
-  description = models.TextField() # [id1,id2,...]
+  description = models.TextField() 
   categories = models.ManyToManyField(Category)
-  subjects = models.ManyToManyField(Subject)
-  qualifications = models.ManyToManyField(Qualification)
-  companies = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Company'})
+  subjects = models.ManyToManyField(Subject,blank=True)
+  qualifications = models.ManyToManyField(Qualification,blank=True)
+  companies = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Company'})
 
   class Meta:
     verbose_name = "Career"
@@ -108,25 +130,17 @@ class Career (models.Model):
   def __unicode__(self):
     return self.name
 
-############################################
 
-class Subject (models.Model):
-    name = models.CharField(max_length=50)
-    
-    class Meta:
-        verbose_name = "Subject"
-        verbose_name_plural = "Subjects"
-    
-    def __unicode__(self):
-        return self.name
-
-############################################
+################################################################################
+# The UserProfile model is used to store user profile information used within
+# the website
+################################################################################
 
 class UserProfile (models.Model):
-    name = models.CharField(primary_key=True,max_length=50)  # actually is a username
-    likes = models.ManyToManyField(Career)
-    interests = models.ManyToManyField(Category)
-    subjects = models.ManyToManyField(Subject)
+    name = models.CharField(primary_key=True,max_length=50)  #username
+    likes = models.ManyToManyField(Career,blank=True)
+    interests = models.ManyToManyField(Category,blank=True)
+    subjects = models.ManyToManyField(Subject,blank=True)
     
     class Meta:
         verbose_name = "UserProfile"
@@ -136,5 +150,5 @@ class UserProfile (models.Model):
         return self.name
 
 
-############################################
+################################################################################
 
