@@ -58,26 +58,7 @@ class Institution (models.Model):
 
   def __unicode__(self):
     return self.name
-
-
-############################################
-
-class Qualification (models.Model):
-  institution = models.ForeignKey(Institution)
-  name = models.CharField(max_length=50)
-  short_description = models.TextField()
-  long_description = models.TextField()
-  courses = models.TextField()
-  requirements = models.TextField()
-  qualifications_websites = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Qualification'})
-
-  class Meta:
-    verbose_name = "Qualification"
-    verbose_name_plural = "Qualifications"
-
-  def __unicode__(self):
-    return u'{} from {}'.format(self.name,self.institution)
-
+    
 ############################################
 
 class Subject (models.Model):
@@ -89,6 +70,26 @@ class Subject (models.Model):
     
     def __unicode__(self):
         return self.name
+
+
+############################################
+
+class Qualification (models.Model):
+  institution = models.ForeignKey(Institution)
+  name = models.CharField(max_length=50)
+  short_description = models.TextField()
+  long_description = models.TextField()
+  courses = models.TextField()
+  subjects = models.ManyToManyField(Subject)
+  qualifications_websites = models.ManyToManyField(WebsiteLink, limit_choices_to={'link_to': 'Qualification'})
+
+  class Meta:
+    verbose_name = "Qualification"
+    verbose_name_plural = "Qualifications"
+
+  def __unicode__(self):
+    return u'{} from {}'.format(self.name,self.institution)
+
 
 ############################################
 
@@ -129,7 +130,7 @@ class UserProfile (models.Model):
     
     class Meta:
         verbose_name = "UserProfile"
-        verbose_name_plural = "UsersProfile"
+        verbose_name_plural = "UserProfiles"
     
     def __unicode__(self):
         return self.name

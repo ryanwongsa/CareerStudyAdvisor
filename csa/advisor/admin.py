@@ -12,7 +12,7 @@ class WebsiteLinkAdmin(CommonInfo):
 		
 class CareerAdmin(CommonInfo):
 	list_filter = ['categories']
-	filter_horizontal = ['categories','qualifications','companies']
+	filter_horizontal = ['categories','qualifications','companies','subjects']
 		
 class InstitutionAdmin(CommonInfo):
 	filter_horizontal = ['websites','handbooks','contact_details_websites','faculty_websites']
@@ -22,7 +22,7 @@ class CatagoryAdmin(CommonInfo):
 
 class QualificationAdmin(CommonInfo):
 	list_filter = ['institution']
-	filter_horizontal = ['qualifications_websites']
+	filter_horizontal = ['qualifications_websites','subjects']
 
 class SubjectAdmin(CommonInfo):
 	verbose_name_plural = "Subjects"
@@ -31,6 +31,7 @@ class UserProfileAdmin(CommonInfo):
     list_filter = ['likes']
     list_filter = ['interests']
     list_filter = ['subjects']
+    filter_horizontal = ['likes','interests','subjects']
 
 admin.site.register(Career,CareerAdmin)
 admin.site.register(Institution,InstitutionAdmin)

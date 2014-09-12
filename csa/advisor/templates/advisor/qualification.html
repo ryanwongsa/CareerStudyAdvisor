@@ -26,10 +26,15 @@
 	<br>
 	<h3>Courses</h3>
 	<p>{{ qualification.courses }}</p>
-
+    
+    <!-- Displays a list of subjects required for a particular qualification -->
 	<br>
 	<h3>Qualification Requirements</h3>
-	<p>{{ qualification.requirements }}</p>
+	<p>
+		{% for sub in subjects %}
+	    <li>{{sub.name}}</li>
+	    {% endfor %}
+	</p>
 
 	<br>
 	<h3>Careers that this qualification leads to</h3>
@@ -52,4 +57,4 @@
 </div>
 </div>
 
-    {% endblock %}
+{% endblock %}

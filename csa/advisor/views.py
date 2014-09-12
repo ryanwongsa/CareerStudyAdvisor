@@ -408,6 +408,7 @@ def qualification(request, qualification_name, inst_name):
   careers = Career.objects.all()
   list_of_careers_from_qualification = []
   list_of_websites = []
+  list_of_subjects = []
 
   for career in careers:
     if q in career.qualifications.all():
@@ -419,8 +420,16 @@ def qualification(request, qualification_name, inst_name):
   for web in q.qualifications_websites.all():
       list_of_websites.append(web)
 
+  '''
+  All subjects belonging to a particular qualification will be added to a list_of_subjects list.
+  This list subjects is then passed to qualification.html and used to display the subjects for a particular qualification
+  on the qualifcations page.
+  '''    
+  for sub in q.subjects.all():
+      list_of_subjects.append(sub)
 
-  context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites}
+
+  context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects}
   #return HttpResponse(len(list_of_careers_from_qualification))
   return render (request, "advisor/qualification.html", context)
 
@@ -471,5 +480,6 @@ def institution(request, institution_name):
     #these are the names of the variables in the template
     context = {"institution": i, "qualifications": list_of_qualifications,"handbooks": list_of_handbooks,"websites": list_of_websites,"contactWebsites": list_of_contacts,"facultyWebsites": list_of_faculties}
     return render (request, "advisor/institution.html", context)
+
 
 
