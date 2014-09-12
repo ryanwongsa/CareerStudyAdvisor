@@ -404,7 +404,6 @@ def qualification(request, qualification_name, inst_name):
     if qual.institution.name == inst_name:
       q = qual # should only be one qualification that meets this criteria
 
-
   careers = Career.objects.all()
   list_of_careers_from_qualification = []
   list_of_websites = []
@@ -422,14 +421,38 @@ def qualification(request, qualification_name, inst_name):
 
   '''
   All subjects belonging to a particular qualification will be added to a list_of_subjects list.
-  This list subjects is then passed to qualification.html and used to display the subjects for a particular qualification
-  on the qualifcations page.
+  This list subjects is then passed to qualification.html and used to display the subjects for 
+  a particular qualification on the qualifcations page.
   '''    
   for sub in q.subjects.all():
       list_of_subjects.append(sub)
 
+  '''
+   The code below produces two lists to compare the subjects that a user has taken to a list of
+   subjects required to obtain the qualification. The system then displays a list of subject
+   requirements that have been met and a list of subjects that the user hasn't taken
+   (and that are required).
+  '''
+  list_of_user_subjects = []
+  user = UserProfile(name=request.user.username)
 
-  context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects}
+  for sub in user.subjects.all():
+      list_of_user_subjects.append(sub.name)
+
+  matched_user_subjects = []
+  extra_subjects_needed = []
+  
+  for sub in list_of_subjects:
+    matched = False
+    for usersub in list_of_user_subjects:
+      if sub.name == usersub:
+        matched = True
+        matched_user_subjects.append(sub)
+        
+    if matched == False:
+       extra_subjects_needed.append(sub)
+
+  context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects,"matched_subjects": matched_user_subjects, "extra_subjects_needed": extra_subjects_needed}
   #return HttpResponse(len(list_of_careers_from_qualification))
   return render (request, "advisor/qualification.html", context)
 
