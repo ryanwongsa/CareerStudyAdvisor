@@ -2,16 +2,26 @@
 
 {% block head %}
 
-<h2>Register</h2>
+<h1>Register</h1>
 {% endblock %}
 
 
 {% block body %}
+<div class ="index-link">
+<h2>Register here</h2>
+    <br>
+<form  action="/accounts/register/" method="post">{% csrf_token %}
+    <div class ="index-login-link">
 
-<form action="/accounts/register/" method="post">{% csrf_token %}
-    {{form}}
-    
+    <p>{{args.form.as_p}}</p>
+ 
 <input type="submit" value = "Register"/>
+           </div>
 </form>
-    
+    {% if invalid %}
+    <p style="color:red;">* Missing fields or user already exists</p>
+    {% endif %}
+       </div>
+
+
 {% endblock %}

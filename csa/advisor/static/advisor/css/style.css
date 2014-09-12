@@ -7,6 +7,11 @@ p.indentt {
     word-spacing:.25em;
 }
 
+.index-login-link {
+    margin:0em 4em;
+    word-spacing:.25em;
+}
+
 .indent-30px {
     margin-left: 30px;
 }

@@ -8,6 +8,7 @@ from forms import UserProfileForm
 from forms import MyRegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login
 
 from advisor.models import Career, Qualification, Institution, Category, Subject, UserProfile
 
@@ -131,6 +132,7 @@ def recommend_careers (request):
   return render (request, "advisor/display_user_info.html", context)
 
 def login(request):
+  
     if request.user.is_authenticated():
         user_name = UserProfile(name=request.user.username)
         #form = UserProfileForm(initial={'interest': '', 'likes': ''})
@@ -148,12 +150,15 @@ def login(request):
         args['form'] = UserProfileForm()
         print args
         context = {"full_name": request.user.username, "args" :args}
-        return HttpResponseRedirect("/accounts/loggedin", context)
+        return HttpResponseRedirect("", context) #was /accounts/loggedin
     else:
         c={}
+        
         c.update(csrf(request))
+        
         context = {"c": c}
         return render(request, "login.html", context)
+    
 
 def auth_view(request):
     username = request.POST.get('username','')
@@ -162,9 +167,11 @@ def auth_view(request):
     
     if user is not None:
         auth.login(request, user)
-        return HttpResponseRedirect('/accounts/loggedin')
+        return HttpResponseRedirect('/')# was /accounts/loggedin
     else:
-        return HttpResponseRedirect('/accounts/invalid')
+        context = {"invalid": True}
+        return render(request, 'login.html', context)
+#return HttpResponseRedirect('/accounts/login')# was /accounts/invalid!!!!
 
 # still need to make an initial thing
 @login_required
@@ -181,11 +188,49 @@ def loggedin(request):
     
     args = {}
     args.update(csrf(request))
-    
-    args['form'] = UserProfileForm()
-    print args
-    context = {"full_name": request.user.username, "args" :args}
-    return render(request, "loggedin.html", context)
+
+    list_of_categories = []
+    list_of_subjects = []
+    list_of_likes = []
+
+    '''
+    for user in UserProfile.objects.all():
+        username = request.user.username
+        userFromP = user
+        #return HttpResponse(username == userFromP.pk);  #add pk if from models
+        if username == userFromP.pk:
+            return HttpResponse(UserProfile.objects.interests.all());
+            for interests in UserProfile.objects.interests():
+                return HttpResponse(username == userFromP.pk);
+            #for user in UserProfile.objects.all():
+        # if request.user.username == name
+        #     for interests in
+            #       list_of_categories.append(category)
+    '''
+    try: #if the user has updated their profile
+        up = UserProfile.objects.get(name__iexact=request.user.username) #.get()  not  .filter()
+    #return HttpResponse(up)
+
+        for category in up.interests.all(): #need .all() otherwise not iterable
+            list_of_categories.append(category)
+
+        for subject in up.subjects.all(): #need .all() otherwise not iterable
+            list_of_subjects.append(subject)
+
+        for like in up.likes.all(): #need .all() otherwise not iterable
+            list_of_likes.append(like)
+
+        args['form'] = UserProfileForm(initial={"name":"ac","interests": list_of_categories,"subjects": list_of_subjects,"likes": list_of_likes}) # do not need likes here
+    #Category.objects.all().values_list('id',flat=True)
+        print args
+        context = {"full_name": request.user.username, "args" :args,"likes":list_of_likes}
+        return render(request, "loggedin.html", context)
+    except:
+        args['form'] = UserProfileForm() 
+        print args
+        context = {"full_name": request.user.username, "args" :args,"likes":list_of_likes}
+        return render(request, "loggedin.html", context)
+        pass
 
 def invalid_login(request):
     return render(request, "invalid_login.html")
@@ -199,15 +244,27 @@ def register_user(request):
     if request.method == 'POST':
         form = MyRegistrationForm(request.POST)
         if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/accounts/register_success')
+            #autologin after register here
+            new_user = form.save()
+            new_user = authenticate(username=request.POST['username'],
+                                        password=request.POST['password1'])
+            auth.login(request, new_user)
+            return HttpResponseRedirect('/accounts/loggedin')
+        else:
+            args = {}
+            args.update(csrf(request))
     
+            args['form'] = MyRegistrationForm()
+            context={"invalid": True,"args":args}
+            return render(request, 'register.html', context)
+
     args = {}
     args.update(csrf(request))
     
     args['form'] = MyRegistrationForm()
-    print args
-    return render(request, "register.html", args)
+    context={"invalid": False,"args":args}
+   
+    return render(request, "register.html", context)
 
 def register_success(request):
     return render(request, "register_success.html")
