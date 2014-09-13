@@ -16,7 +16,7 @@
                 </button>
                 <a class="navbar-brand" href="#"><font color="#66CCFF">Career Study Advisor</font></a>
             </div>
-            
+        
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
@@ -38,14 +38,12 @@
                 
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
-                    <li><a href="/accounts/loggedin">{{user}}</a></li>
-                    
-                     <li><a href="/accounts/logout">Log Out</a></li>
+                        <li><a href="/accounts/loggedin">{{user}}</a></li>
+                        <li><a href="/accounts/logout">Log Out</a></li>
                     {% else %}
-                    <li><a href="/accounts/login">Login</a></li>
-                   <li><a href="/accounts/register">Sign Up</a></li>
+                        <li><a href="/accounts/login">Login</a></li>
+                        <li><a href="/accounts/register">Sign Up</a></li>
                     {% endif %}
-                    
                 </ul>
                 
             </div><!-- /.navbar-collapse -->
@@ -69,6 +67,7 @@
 <footer>
     <script src="{% static 'advisor/js/jquery-2.1.1.min.js' %}"></script>
     <script src="{% static 'advisor/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'advisor/js/jquery.cookie.js' %}"></script>
     {% block scripts %}
     {% endblock %}
 </footer>

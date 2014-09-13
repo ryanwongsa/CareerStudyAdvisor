@@ -1,5 +1,6 @@
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, Http404
 from django.http import HttpResponseRedirect
 from django.core.context_processors import csrf
 from django.views.generic.base import View
@@ -11,6 +12,25 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 
 from advisor.models import Career, Qualification, Institution, Category, Subject, UserProfile
+
+def like_career (request, career_name):
+  user = UserProfile.objects.get(name=request.user.username)
+  career = Career.objects.get(name__iexact=career_name)
+
+  if career not in user.likes.all():
+    user.likes.add(career)
+
+  return redirect ("advisor.views.career", career_name=career.name)
+
+def unlike_career (request, career_name):
+  user = UserProfile.objects.get(name=request.user.username)
+  career = Career.objects.get(name__iexact=career_name)
+
+  if career in user.likes.all():
+    user.likes.remove(career)
+
+  return redirect ("advisor.views.career", career_name=career.name)
+
 
 def get_recommended_careers (user):
   '''
@@ -286,9 +306,26 @@ class Career_Index(View):
     context = {"careers": careers}
     return render(request, "advisor/career_index.html", context)
 
-
 def career(request, career_name):
-  user = UserProfile(name=request.user.username)
+
+  user = UserProfile.objects.get(name=request.user.username)
+  c = Career.objects.get(name__iexact=career_name)
+
+  '''
+    Uses a POST request to update the database (with the user's like or unlike) without going to another URL
+  '''
+  if request.method == "POST":
+    if request.POST['action'] == "like":
+      if c not in user.likes.all():
+        user.likes.add(c)
+      return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
+    elif request.POST['action'] == "unlike":
+      if c in user.likes.all():
+        user.likes.remove(c)
+      return HttpResponse("success")
+    else:
+      raise Http404
+
   
   user_liked_careers_names = []
   for career in user.likes.all():
@@ -300,7 +337,6 @@ def career(request, career_name):
   list_of_companies = []
   
   career_liked = False
-  c = Career.objects.get(name__iexact=career_name) #.get()  not  .filter()
   if c.name in user_liked_careers_names:
     career_liked = True
 
@@ -510,7 +546,6 @@ def qualification(request, qualification_name, inst_name):
        extra_subjects_needed.append(sub)
 
   context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects,"matched_subjects": matched_user_subjects, "extra_subjects_needed": extra_subjects_needed}
-  #return HttpResponse(len(list_of_careers_from_qualification))
   return render (request, "advisor/qualification.html", context)
 
 def institution_index(request):
