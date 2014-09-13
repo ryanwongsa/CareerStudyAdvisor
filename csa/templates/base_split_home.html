@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block body_base %}
+<div class="panel banner-home">
+{% block banner %}
+
+{% endblock %}
+</div>
+
+<div class="whole-page">
+		<div class="panel body-home-categories">
+				<div class="panel-body">
+				{% block categories %}
+
+				{% endblock %}
+				</div>
+		</div>
+		<div class="panel body-home-careers">
+				<div class="panel-body">
+				{% block careers %}
+
+				{% endblock %}
+				</div>
+		</div>
+</div>
+{% endblock %}
