@@ -46,3 +46,68 @@ p.indentt {
 
 }
 
+div.panel.body-main {
+	height: auto;
+	width: 75%;
+	float: left;
+	min-height: 500px;
+	padding-bottom:20px;
+}
+
+div.panel.body-side {
+	height: auto;
+	width: 24%;
+	float: right;
+	min-height: 500px;
+	padding-bottom: 20px;
+}
+
+div.panel.body-home-categories {
+	height: auto;
+	width: 49%;
+	float: left;
+	min-height: 300px;
+	padding-bottom:20px;
+}
+
+div.panel.body-home-careers {
+	height: auto;
+	width: 49%;
+	float: right;
+	min-height: 300px;
+	padding-bottom: 20px;
+}
+
+div.csa-navbar.navbar-collapse>ul>li>a {
+	font-size: 14px;
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+a.btn-csa-like	{
+	margin-left: 10px;
+}
+
+div.panel.csa-header	{
+	padding: 15px;
+	padding-left: 30px;
+	padding-top: 0px;
+}
+
+div.whole-page.panel {
+	padding-bottom: 40px;
+}
+
+hr.csa-hr {
+	margin-top: -10px;
+}
+
+div.tag a.btn	{
+	margin: 2px;
+}
+
+div.csa-chart-legend    {
+    column-count: auto;
+    -webkit-column-count: auto;
+    -moz-column-count: auto;
+}

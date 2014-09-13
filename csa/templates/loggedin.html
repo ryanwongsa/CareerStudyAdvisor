@@ -2,32 +2,54 @@
 
 {% block head %}
 
-<h1>Update Profile</h1>
+<div class="panel csa-header">
+	<h2>Profile  <small>{{full_name}}</small></h2>
+</div>
 
 {% endblock %}
 
 
 {% block body %}
 <div class ="index-link">
+	<form action="/accounts/loggedin" method="post">{% csrf_token %}
 
-<h2>Username: {{full_name}}</h2>
+	{{ args.form.non_field_errors }}
+	<div>
+			<h3>Interests</h3>
+			<hr class="csa-hr">
+			{{ args.form.interests.errors }}
+			{{ args.form.interests }}
+	</div>
+	<br>
+	<div>
+			<h3>Subjects</h3>
+			<hr class="csa-hr">
+			{{ args.form.subjects.errors }}
+			{{ args.form.subjects }}
+	</div>
+	<br>
+	<div>
+			<h3>Liked Careers</h3>
+			<hr class="csa-hr">
 
-<form action="/accounts/loggedin" method="post">{% csrf_token %}
-<p>
-    {{args.form.as_p}}
-    
-    
-</p>
-<input type="submit" name="submit" value="Update">
+			{% for l in likes %}
+					<a href="/career/{{l}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
+			{% endfor %}
+			
+	</div>
+<br>
+<input type="submit" name="submit" class="btn btn-primary" value="Update Profile">
 </form>
-    <h4>Liked Careers:</h4>
-    <div class ="index-link">
-    
-    {% for l in likes %}
-        {{l}}
-    {% empty %}
-        No Careers liked yet.
-    {% endfor %}
-        <div>
 </div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+	$(document).ready(function()	{
+		$("select").width("95%");
+		$("span.helptext").remove();
+		$("select").chosen();
+	});
+</script>
+
 {% endblock %}

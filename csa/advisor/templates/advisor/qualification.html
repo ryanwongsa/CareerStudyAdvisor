@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_split.html" %}
 
 {% block head %}
 
@@ -10,83 +10,126 @@
 </ol>
 
 
-<h1>{{ qualification.name }}</h1>
+<h2>{{ qualification.name }}</h2>
 {% endblock %}
 
-{% block body %}
-<div class ="index-link">
-<div id="container">
-    <div id="one">
-	<h2>{{ qualification.institution }}</h2>
+{% block body_main %}
+	<h3>{{ qualification.institution }}</h3>
 
 	<br>
-	<h3>Details</h3>
+	<h4>Details</h4>
 	<p>{{ qualification.long_description }}</p>
-
-	<br>
-	<h3>Courses</h3>
-	<p>{{ qualification.courses }}</p>
     
     <!-- Displays a list of subjects required for a particular qualification -->
 	<br>
-	<h3>Qualification Requirements</h3>
-	<p>
-		{% for sub in subjects %}
-	    <li>{{sub.name}}</li>
-	    {% endfor %}
-	</p>
-
-	<br>
-	<h3>Careers that this qualification leads to</h3>
-	<ul>
-	  {% for career in careers %}
-	    <li><a href="/career/{{ career.name }}">{{ career.name }}</a></li>
-	  {% endfor %}
-	</ul>
-	<br>
-    </div>
-    <div id="two">
-	<h3>More Information</h3>
-  	{% for website in websites %}
-  	<p><a href={{website.site_url}}>{{ website.name }}</a></p>
-	{% endfor %}
-    </div>
-    <!--<div id="three">
-	<p><a href="/">Home</a></p>
-    </div>-->
+	<h4>Qualification requirements</h4>
    
+    
     <!--Compares the subjects that a user has taken to a list of subjects required to obtain the
         qualification. The system then displays a list of subject requirments that have been met and a list of subjects that the user hasn't taken (and that are required) -->
     {% if user.is_authenticated %}
 
-    	<h3>Subject Requirments that You Have Met</h3>
-    	{% if matched_subjects|length == 0 %}
-    		{% if extra_subjects_needed|length != 0 %}
-    			<p style="font-weight:normal;  font-size:16px;"><font color = red> You have not done any of the subjects required for this qualification</font></p>
-    		{% else %}
-    			<p style="font-weight:normal;  font-size:16px;"> There are no subject prerequisets for this qualification</p>
-    		{% endif %}
+    	
+    	{% if matched_subjects|length != 0 %}
+             <div>
+        The required subjects for this qualification that you <span style="color:#46BFBD">have</span> and <span style="color:#F7464A">have not</span> completed.
+    </div>
+            <table>
+                <tr>
+                    <td>
+                        <canvas id="requirementsChart" width="200" height="200"></canvas>
+                    </td>
+
+                    <!-- Subject Requirments that have been met by the user -->
+                    <td style="vertical-align: middle; padding-left: 10px;">
+                        <div class="csa-chart-legend">
+                    		{% for sub in matched_subjects %}
+                                <div><span style="background-color: #46BFBD; margin: 2px 0px; width: 100%" class="btn btn-primary btn-sm" role="button">{{sub}}</span></div>
+                            {% endfor %}
+                            <!-- Extra subjects needed by the user -->
+                    		{% for sub in extra_subjects_needed %}
+                                <div><span style="background-color: #F7464A; margin: 2px 0px; width: 100%" class="btn btn-primary btn-sm" role="button">{{sub}}</span></div>
+                            {% endfor %}
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
     	{% else %}	
-    		{% for sub in matched_subjects %}
-	    		<li>{{sub}}</li>
-			{% endfor %}
+            <ul>
+                {% for sub in subjects %}
+                    <li>{{sub}}</li>
+                {% endfor %}
+            </ul>
+            <a style="font-weight:normal;  font-size:16px; color:#F7464A">You have not completed any of the subjects required for this qualification.</a>
+            
+    		
 		{% endif %}
 
-		<h3>Extra subjects needed</h3>
-		{% if extra_subjects_needed|length == 0 %}
-			<p style="font-weight:normal;  font-size:16px;"><font color = green> You have met all the subject requirements for this qualification!</font></p>
-    	{% else %}
-			{% for sub in extra_subjects_needed %}
-		    	<li>{{sub}}</li>
-			{% endfor %}
-		{% endif %}
+        
 
 	{% else %}
-        <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to see whether you meet all the subject requirments</p>
+            <ul>
+                {% for sub in subjects %}
+                    <li>{{sub}}</li>
+                {% endfor %}
+            </ul>
+        <span><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to see whether you meet the subject requirements</span>
     
     {% endif %}
-    
-</div>
-</div>
 
+    <br><br>
+    <h4>Careers that this qualification leads to</h4>
+    <ul>
+      {% for career in careers %}
+        <li><a href="/career/{{ career.name }}">{{ career.name }}</a></li>
+      {% endfor %}
+    </ul>
+    <br>
+
+    
+    <!-- <div id="requirementsChartLegend" width="400" height="400"></div> -->
+
+
+
+{% endblock %}
+
+{% block body_side %}
+	<h4>More Information</h4>
+  	{% for website in websites %}
+        <p><a href={{website.site_url}}>{{ website.name }}</a></p>
+	{% endfor %}
+   
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function() {
+        var ctx = $("#requirementsChart")[0].getContext("2d");
+
+
+
+        var data = [
+        {% for sub in extra_subjects_needed %}
+            {
+                value: 1,
+                color:"#F7464A",
+                highlight: "#FF5A5E",
+                label: "{{ sub }}"
+            },
+        {% endfor %}
+        {% for sub in matched_subjects %}
+            {
+                value: 1,
+                color: "#46BFBD",
+                highlight: "#5AD3D1",
+                label: "{{ sub }}"
+            },
+        {% endfor %}
+        ];
+
+        var requirementsChart = new Chart(ctx).Pie(data, {tooltipTemplate: "<%if (label){% templatetag openblock %}><%=label%><{% templatetag closeblock %}%>"});
+
+    });
+</script>
 {% endblock %}

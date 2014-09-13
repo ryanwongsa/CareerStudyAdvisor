@@ -6,7 +6,7 @@
     <li class="active">Careers</li>
 </ol>
 
-<h1>Careers</h1>
+<h2>Careers</h2>
 {% endblock %}
 
 
@@ -14,7 +14,7 @@
 <div class ="index-link">
     {% for letter in careers %}
         <br>
-        <h2>{{ letter.0.name.0|upper }}</h2>
+        <h3>{{ letter.0.name.0|upper }}</h3>
         {% for career in letter %}
             <p><a href="/career/{{ career.name }}">{{ career.name }}</a></p>
         {% endfor %}

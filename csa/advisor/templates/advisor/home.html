@@ -1,129 +1,86 @@
+{% extends "base_split_home.html" %}
 
-{% load staticfiles %}
-<div id="wrapper">
-    
-    <head>
-        <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
-        <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
-        <br><br>
-    </head>
-    <!-- Add another comment -->
-    <body class="well">
-        <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
-            <div class="container-fluid">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="#"><bold><font color="#66CCFF">Career Study Advisor</font></bold></a>
-                </div>
-                
-                <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav">
-                        <li><a href="/">Home</a></li>
-                        <li><a href="/career">Careers</a></li>
-                        <li><a href="/institution">Institutions</a></li>
-                        <li><a href="/category">Categories</a></li>
-                        <li><a href="/qualification">Qualifications</a></li>
-
-                    </ul>
-                    
-                    
-                    <ul class="nav navbar-nav navbar-right">
-                        {% if user.is_authenticated %}
-                        <li><a href="/accounts/loggedin">{{user}}</a></li>
-                        <li><a href="/accounts/logout">Log Out</a></li>
-                        {% else %}
-                        <li><a href="/accounts/login">Login</a></li>
-                        <li><a href="/accounts/register">Sign Up</a></li>
-                        {% endif %}                       
-                    </ul>
-                    
-                </div><!-- /.navbar-collapse -->
-            </div><!-- /.container-fluid -->    </nav><br>
-        <div class="panel whole-page">
-            <div id="wrapper">
-                <center><h1><font color="#000000">Career Study Advisor</font></h1></center>
-                <br><br>
-                 <center>
-                <div class="input-group-lg-5">
-                        <form action="/search" method="get">
-                            
-                            <div class="input-group col-lg-8">
-                               
-                                <input type="text" class="form-control search-bar" placeholder="search by career, category, institution, or qualification" name="query">
-                                    <span class="input-group-btn">
-                                        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search </button>
-                                    </span>
-                                     
-                                    </div><!-- /input-group -->
-                          
-                        </form>
-                       
-                    </div>
-              </center>
-                 <br>
-                 <center>
-                {% if user.is_authenticated %}
-                    <a href="/recommend" class="btn btn-primary btn-lg" role="button"><strong>Recommend Careers</strong></a>
-                {% else %}
-                    <a href="/recommend" class="btn btn-default btn-lg" disabled="disabled" role="button"><strong>Recommend Careers</strong></a>
-                    <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get recommended careers</p>
-                {% endif %}
-                </center>
-                 <br><br><br>
-                <h2><center>Categories</center></h2>
-                <div class="btn-toolbar" role="toolbar">
-                    <center>
-                        <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-                            {% for category in categories %}
-                            <a href="/category/{{ category.name }}" class="btn btn-primary" role="button">
-                                <strong>{{category.name}}</strong><br>
-                                
-                            </a>
-                            {% endfor %}
-                        </div>
-                    </center>
-                </div>
-                
-                <br>
-                <h2><center>Suggested Careers</center></h2>
-                <div class="btn-toolbar" role="toolbar">
-	 		<center>
-            {% if user.is_authenticated %}
-                   <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-                            {% for pair in list_of_suggested_careers %}
-                            <a href="/career/{{ pair.0.name }}" class="btn btn-success" role="button">
-                                <strong>{{pair.0.name}}</strong><br>
-                                
-                            </a>
-                            {% endfor %}
-                        </div>
-                {% else %}
-                    <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get suggested careers</p>
-                {% endif %}
-                        
-                    </center>
-         
-                </div>
-
-            </div>
+{% block banner %}
+<center><h1><font color="#000000">Career Study Advisor</font></h1></center>
+<br><br>
+ <center>
+<div class="input-group-lg-5">
+        <form action="/search" method="get">
             
-            <br><br>
+            <div class="input-group col-lg-8">
+               
+                <input type="text" class="form-control search-bar" placeholder="search by career, category, institution, or qualification" name="query">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span> Search </button>
+                    </span>
+                     
+                    </div><!-- /input-group -->
+          
+        </form>
+       
+    </div>
+</center>
+ <br>
+ <center>
+{% if user.is_authenticated %}
+    <a href="/recommend" class="btn btn-primary btn-lg" role="button"><strong>Recommend Careers</strong></a>
+{% else %}
+    <a href="/recommend" class="btn btn-default btn-lg" disabled="disabled" role="button"><strong>Recommend Careers</strong></a>
+    <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get recommended careers</p>
+{% endif %}
+</center>
+ <br><br><br>
+{% endblock %}
 
-           </div>
+{% block categories %}
+<h3><center>Categories</center></h3>
+<hr class="csa-hr">
+<div class="btn-toolbar" role="toolbar">
+    <center>
+        <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+            {% for category in categories %}
+            <a href="/category/{{ category.name }}" class="btn btn-primary" role="button">
+                <strong>{{category.name}}</strong><br>
+                
+            </a>
+            {% endfor %}
+        </div>
+    </center>
+</div>
+{% endblock %}
 
-
-
-    </body>
-    
-    <footer>
+{% block careers %}
+<h3><center>Suggested Careers</center></h3>
+<hr class="csa-hr">
+<div class="btn-toolbar" role="toolbar">
+<center>
+{% if user.is_authenticated %}
+   <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+            {% for pair in list_of_suggested_careers %}
+            <a href="/career/{{ pair.0.name }}" class="btn btn-success career-tooltip"
+									role="button" data-toggle="tooltip" data-trigger="hover"
+									title="{{ pair.0.description }}" data-placement="top">
+                <strong>{{pair.0.name}}</strong><br>
+            </a>
+            {% endfor %}
+        </div>
+{% else %}
+    <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get suggested careers</p>
+{% endif %}
         
-    </footer>
+    </center>
+
 </div>
 
+{% endblock %}
+
+{% block search %}
+{% endblock %}
+
+{% block scripts %}
+<script>
+	$(document).ready(function()	{
+		$(".career-tooltip").tooltip();
+	});
+</script>
+{% endblock %}

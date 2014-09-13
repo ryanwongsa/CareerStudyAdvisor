@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_split.html" %}
 
 {% block head %}
 <ol class="breadcrumb">
@@ -9,61 +9,43 @@
 
 </head>
 
-<h1>{{ institution.name }}</h1>
+<h2>{{ institution.name }}</h2>
 {% endblock %}
 
-{% block body %}
-<div class ="index-link">
-<div id="container">
-    <div id="one">
 
-<br>
-<h3>Description</h3>
-<p>{{ institution.description }}</p>
+{% block body_main %}
+	<br>
+	<h3>Description</h3>
+	<p>{{ institution.description }}</p>
 
-<!-- how print on same line? -->
+	<br>
+	<h3>Qualifications Offered</h3>
+	{% for qual in qualifications %}
+		<p><a href="/institution/{{ institution.name }}/{{ qual }}">{{ qual }}</a></p>
+	{% endfor %}
 
-<!--<br>
-<h3>Categories</h3> -->
+	<br>
+	<h3>Handbooks</h3>
+	{% for handbook in handbooks %}
+		<p><a href={{handbook.site_url}}>{{ handbook.name }}</a></p>
+	{% endfor %}
 
-
-<br>
-<h3>Qualifications Offered</h3>
-{% for qual in qualifications %}
-  <p><a href="/institution/{{ institution.name }}/{{ qual }}">{{ qual }}</a></p>
-{% endfor %}
-
-<br>
-<h3>Handbooks</h3>
-{% for handbook in handbooks %}
-  <p><a href={{handbook.site_url}}>{{ handbook.name }}</a></p>
-{% endfor %}
-
-<br>
-<h3>Faculties</h3>
-{% for w in facultyWebsites %}
-  <p><a href={{w.site_url}}>{{ w.name }}</a></p>
-{% endfor %}
-    </div>
-    <div id="two">
-<h3>Contact</h3>
-{% for w in contactWebsites %}
-  <p><a href={{w.site_url}}>{{ w.name }}</a></p>
-{% endfor %}
-
-<br>
-<h3>Other Information</h3>
-{% for w in websites %}
-  <p><a href={{w.site_url}}>{{ w.name }}</a></p>
-{% endfor %}
-    </div>
-<!--    <div id="three">
-<p><a href="/institution">to institution index</a></p>
-<p><a href="/">to home page</a></p>
-    </div> -->
-</div>
-</div>
+	<br>
+	<h3>Faculties</h3>
+	{% for w in facultyWebsites %}
+		<p><a href={{w.site_url}}>{{ w.name }}</a></p>
+	{% endfor %}
 {% endblock %}
 
-<footer>
-</footer>
+{% block body_side %}
+	<h3>Contact</h3>
+	{% for w in contactWebsites %}
+		<p><a href={{w.site_url}}>{{ w.name }}</a></p>
+	{% endfor %}
+
+	<br>
+	<h3>Other Information</h3>
+	{% for w in websites %}
+		<p><a href={{w.site_url}}>{{ w.name }}</a></p>
+	{% endfor %}
+{% endblock %}

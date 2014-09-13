@@ -4,6 +4,9 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/flat-ui.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/chosen.min.css' %}" />
+
     <nav class="navbar navbar-fixed-top navbar-inverse" role="navigation">
         <div class="container-fluid">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -14,11 +17,11 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><font color="#66CCFF">Career Study Advisor</font></a>
+                <a class="navbar-brand" href="/"><font color="#66CCFF">Career Study Advisor</font></a>
             </div>
         
             <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="csa-navbar collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li><a href="/">Home</a></li>
                     <li><a href="/career">Careers</a></li>
@@ -27,13 +30,14 @@
                     <li><a href="/qualification">Qualifications</a></li>
                     
                 </ul>
+	{% block search %}
                 <form class="navbar-form navbar-left" role="search" action="/search" method="get">
                     <div class="input-group">
                         <input type="text" class="form-control" placeholder="Search" name="query">
                             </div>
                     <button type="submit" class="btn btn-default">Search</button>
                 </form>
-                
+  {% endblock %}
                 
                 
                 <ul class="nav navbar-nav navbar-right">
@@ -53,21 +57,22 @@
 </head>
 
 <body class="well">
+		{% block body_base %}
     <div class="panel whole-page">
-        <div id="wrapper">
         {% block body %}
         
         {% endblock %}
-        </div>
-
-        <br><br>
     </div>
+		{% endblock %}
 </body>
 
 <footer>
     <script src="{% static 'advisor/js/jquery-2.1.1.min.js' %}"></script>
     <script src="{% static 'advisor/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'advisor/js/flat-ui.min.js' %}"></script>
     <script src="{% static 'advisor/js/jquery.cookie.js' %}"></script>
+    <script src="{% static 'advisor/js/chosen.jquery.min.js' %}"></script>
+    <script src="{% static 'advisor/js/Chart.min.js' %}"></script>
     {% block scripts %}
     {% endblock %}
 </footer>
