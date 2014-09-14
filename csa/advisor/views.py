@@ -269,6 +269,8 @@ def register_user(request):
             new_user = authenticate(username=request.POST['username'],
                                         password=request.POST['password1'])
             auth.login(request, new_user)
+            userprofile = UserProfile(name=request.POST['username'])
+            userprofile.save()
             return HttpResponseRedirect('/accounts/loggedin')
         else:
             args = {}
