@@ -193,8 +193,8 @@ def auth_view(request):
         return render(request, 'login.html', context)
 #return HttpResponseRedirect('/accounts/login')# was /accounts/invalid!!!!
 
-# still need to make an initial thing
-@login_required
+
+@login_required     # to access this page the user needs to be loggedin
 def loggedin(request):
     user_name = UserProfile(name=request.user.username)
     #
