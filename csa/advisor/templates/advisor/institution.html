@@ -1,4 +1,5 @@
 {% extends "base_split.html" %}
+{% load static %} 
 
 {% block head %}
 <ol class="breadcrumb">
@@ -9,14 +10,14 @@
 
 </head>
 
-<h2>{{ institution.name }}</h2>
+<h2><img src={{logo}} alt="logo" width="60" height="60"/>{{ institution.name }}</h2>
 {% endblock %}
 
 
 {% block body_main %}
 	<br>
 	<h3>Description</h3>
-	<p>{{ institution.description }}</p>
+	<p>  {{ institution.description }}</p>
 
 	<br>
 	<h3>Qualifications Offered</h3>

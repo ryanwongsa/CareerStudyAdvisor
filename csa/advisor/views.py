@@ -640,9 +640,9 @@ def institution(request, institution_name):
     for web in i.websites.all():
       list_of_websites.append(web)
 
-    
+    logo= "/static/"+institution_name.replace(" ", "").lower()+".gif"
     #these are the names of the variables in the template
-    context = {"institution": i, "qualifications": list_of_qualifications,"handbooks": list_of_handbooks,"websites": list_of_websites,"contactWebsites": list_of_contacts,"facultyWebsites": list_of_faculties}
+    context = {"logo": logo,"institution": i, "qualifications": list_of_qualifications,"handbooks": list_of_handbooks,"websites": list_of_websites,"contactWebsites": list_of_contacts,"facultyWebsites": list_of_faculties}
     return render (request, "advisor/institution.html", context)
 
 
