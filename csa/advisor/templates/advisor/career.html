@@ -8,7 +8,9 @@
 </ol>
 
 <span>
+
 <h2>{{ career.name }}<small>
+    {% if user.is_authenticated %}
 	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button">
 			{% if career_liked %}
 					Unlike
@@ -16,6 +18,8 @@
 					Like
 			{% endif %}
 	</a>
+{% endif %}
+
 </small></h2>
 
 </span>
