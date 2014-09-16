@@ -252,8 +252,8 @@ def auth_view(request):
         return render(request, 'login.html', context)
 #return HttpResponseRedirect('/accounts/login')# was /accounts/invalid!!!!
 
-# still need to make an initial thing
-@login_required
+
+@login_required     # to access this page the user needs to be loggedin
 def loggedin(request):
     user_name = UserProfile(name=request.user.username)
     #
@@ -328,6 +328,8 @@ def register_user(request):
             new_user = authenticate(username=request.POST['username'],
                                         password=request.POST['password1'])
             auth.login(request, new_user)
+            userprofile = UserProfile(name=request.POST['username'])
+            userprofile.save()
             return HttpResponseRedirect('/accounts/loggedin')
         else:
             args = {}
@@ -366,76 +368,123 @@ class Career_Index(View):
     return render(request, "advisor/career_index.html", context)
 
 def career(request, career_name):
-
-  user = UserProfile.objects.get(name=request.user.username)
   c = Career.objects.get(name__iexact=career_name)
+  if request.user.is_authenticated(): #includes like feature
 
-  '''
-    Uses a POST request to update the database (with the user's like or unlike) without going to another URL
-  '''
-  if request.method == "POST":
-    if request.POST['action'] == "like":
-      if c not in user.likes.all():
-        user.likes.add(c)
-      return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
-    elif request.POST['action'] == "unlike":
-      if c in user.likes.all():
-        user.likes.remove(c)
-      return HttpResponse("success")
-    else:
-      raise Http404
+      user = UserProfile.objects.get(name=request.user.username)
 
-  
-  user_liked_careers_names = []
-  for career in user.likes.all():
-    user_liked_careers_names.append(career.name)
+      '''
+        Uses a POST request to update the database (with the user's like or unlike) without going to another URL
+      '''
+      if request.method == "POST":
+        if request.POST['action'] == "like":
+          if c not in user.likes.all():
+            user.likes.add(c)
+          return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
+        elif request.POST['action'] == "unlike":
+          if c in user.likes.all():
+            user.likes.remove(c)
+          return HttpResponse("success")
+        else:
+          raise Http404
 
-  list_of_qualifications = []
-  list_of_categories = []
-  list_of_institutions = []
-  list_of_companies = []
-  
-  career_liked = False
-  if c.name in user_liked_careers_names:
-    career_liked = True
+      
+      user_liked_careers_names = []
+      for career in user.likes.all():
+        user_liked_careers_names.append(career.name)
 
-  for qualification in c.qualifications.all(): #need .all() otherwise not iterable
-    list_of_qualifications.append(qualification)
-  for qualification in list_of_qualifications:
-    if qualification.institution.name not in list_of_institutions:
-      list_of_institutions.append(qualification.institution.name)
-  for category in c.categories.all():
-    list_of_categories.append(category)  
-  for company in c.companies.all(): #need .all() otherwise not iterable
-    list_of_companies.append(company)
+      list_of_qualifications = []
+      list_of_categories = []
+      list_of_institutions = []
+      list_of_companies = []
+      
+      career_liked = False
+      if c.name in user_liked_careers_names:
+        career_liked = True
 
-### added
-# for category in c.categories.all():
-#list_of_similar_careers.append(category)
-  list_of_similar_careers = []
-  list_of_careers = []
-  for career in Career.objects.all():
-    if career.name != c.name:
-      list_of_careers.append(career)
-# list_of_careers is all of the careers
-# list_of_categories is only for the categories for this career
-# list_of_temp_categories is the categories that the other careers have
+      for qualification in c.qualifications.all(): #need .all() otherwise not iterable
+        list_of_qualifications.append(qualification)
+      for qualification in list_of_qualifications:
+        if qualification.institution.name not in list_of_institutions:
+          list_of_institutions.append(qualification.institution.name)
+      for category in c.categories.all():
+        list_of_categories.append(category)  
+      for company in c.companies.all(): #need .all() otherwise not iterable
+        list_of_companies.append(company)
+
+    ### added
+    # for category in c.categories.all():
+    #list_of_similar_careers.append(category)
+      list_of_similar_careers = []
+      list_of_careers = []
+      for career in Career.objects.all():
+        if career.name != c.name:
+          list_of_careers.append(career)
+    # list_of_careers is all of the careers
+    # list_of_categories is only for the categories for this career
+    # list_of_temp_categories is the categories that the other careers have
 
 
-  for career in list_of_careers:
-    list_of_temp_categories=[]
-    for category in career.categories.all():
-      list_of_temp_categories.append(category)
+      for career in list_of_careers:
+        list_of_temp_categories=[]
+        for category in career.categories.all():
+          list_of_temp_categories.append(category)
+        
+        for temp_career_category in list_of_temp_categories:
+          if temp_career_category in list_of_categories:
+            if career not in list_of_similar_careers:
+              list_of_similar_careers.append(career)
+    ##
+
+      #these are the names of the variables in the template
+      context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers, "career_liked": career_liked}
+      return render (request, "advisor/career.html", context)
+  else: #Removes like feature
     
-    for temp_career_category in list_of_temp_categories:
-      if temp_career_category in list_of_categories:
-        if career not in list_of_similar_careers:
-          list_of_similar_careers.append(career)
-##
+      list_of_qualifications = []
+      list_of_categories = []
+      list_of_institutions = []
+      list_of_companies = []
+      
+      
+      for qualification in c.qualifications.all(): #need .all() otherwise not iterable
+          list_of_qualifications.append(qualification)
+      for qualification in list_of_qualifications:
+          if qualification.institution.name not in list_of_institutions:
+              list_of_institutions.append(qualification.institution.name)
+      for category in c.categories.all():
+          list_of_categories.append(category)
+      for company in c.companies.all(): #need .all() otherwise not iterable
+          list_of_companies.append(company)
+      
+      ### added
+      # for category in c.categories.all():
+      #list_of_similar_careers.append(category)
+      list_of_similar_careers = []
+      list_of_careers = []
+      for career in Career.objects.all():
+          if career.name != c.name:
+              list_of_careers.append(career)
+      # list_of_careers is all of the careers
+      # list_of_categories is only for the categories for this career
+      # list_of_temp_categories is the categories that the other careers have
+      
+      
+      for career in list_of_careers:
+          list_of_temp_categories=[]
+          for category in career.categories.all():
+              list_of_temp_categories.append(category)
+          
+          for temp_career_category in list_of_temp_categories:
+              if temp_career_category in list_of_categories:
+                  if career not in list_of_similar_careers:
+                      list_of_similar_careers.append(career)
+      ##
+      
+      #these are the names of the variables in the template
+      context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers}
+      return render (request, "advisor/career.html", context)
 
-  #these are the names of the variables in the template
-  context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers, "career_liked": career_liked}
-  return render (request, "advisor/career.html", context)
 
 class Search(View):
   def get(self, request):
@@ -652,9 +701,9 @@ def institution(request, institution_name):
     for web in i.websites.all():
       list_of_websites.append(web)
 
-    
+    logo= "/static/"+institution_name.replace(" ", "").lower()+".gif"
     #these are the names of the variables in the template
-    context = {"institution": i, "qualifications": list_of_qualifications,"handbooks": list_of_handbooks,"websites": list_of_websites,"contactWebsites": list_of_contacts,"facultyWebsites": list_of_faculties}
+    context = {"logo": logo,"institution": i, "qualifications": list_of_qualifications,"handbooks": list_of_handbooks,"websites": list_of_websites,"contactWebsites": list_of_contacts,"facultyWebsites": list_of_faculties}
     return render (request, "advisor/institution.html", context)
 
 

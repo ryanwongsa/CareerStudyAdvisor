@@ -1,39 +1,27 @@
 {% extends "base.html" %}
 
 {% block head %}
-
-<h1>Login </h1>
-
+    <h1>Login </h1>
 {% endblock %}
 
-
 {% block body %}
-
-
-
-<form class="form-signin span4" action="/accounts/auth/" method="post">{% csrf_token %}
-    <div class ="index-link">
-    <h2 class="form-signin-heading">Login Required</h2>
-        <br>
-    <div class ="index-login-link">
-        
-    <p>Username: </p><input type="text" class="input-block-level" placeholder="Username" name="username" id="username" value="" size="60" />
-    <br/>
-    <br>
-    <p>Password: </p><input type="password" class="input-block-level" placeholder="Password" name="password" id="password" value="" size="60" />
-    <br>
-    <br/>
-    <button class="btn btn-primary" value="login" type="submit">Login</button>
-    <br>
-    <br>
-    {% if invalid %}
-        <p style="color:red;">* Invalid Login</p>
-    {% endif %}
-    
-    </div>
-    <div class ="index-login-link">
-
-        
-</form>
-
+    <form class="form-signin span4" action="/accounts/auth/" method="post">{% csrf_token %}
+        <div class ="index-link">
+            <h2 class="form-signin-heading">Login Required</h2>
+            <br>
+            <div class ="index-login-link">
+                <p>Username: </p><input type="text" class="input-block-level" placeholder="Username" name="username" id="username" value="" size="60" />
+            </br>
+            <br>
+            <p>Password: </p><input type="password" class="input-block-level" placeholder="Password" name="password" id="password" value="" size="60" />
+            </br>
+            <br>
+            <button class="btn btn-primary" value="login" type="submit">Login</button>
+            </br>
+            
+            {% if invalid %}
+                <p style="color:red;">* Invalid Login</p>
+            {% endif %}
+        </div>
+    </form>
 {% endblock %}
