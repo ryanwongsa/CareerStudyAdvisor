@@ -34,16 +34,16 @@ def unlike_career (request, career_name):
 
 def get_recommended_careers (user):
   '''
-  All careers are stored in a 2D list of the form [[Career, score] ...], with score initially set to 0 for each career.
-  This list contains the final list of scores for each career which will be used to recommend careers to the user.
+    All careers are stored in a 2D list of the form [[Career, score] ...], with score initially set to 0 for each career.
+    This list contains the final list of scores for each career which will be used to recommend careers to the user.
   '''
   career_score_all = []
   for career in Career.objects.all():
-    career_score_all.append([career, 0])
+    career_score_all.append([career, ""])
 
 
   '''
-  All careers that the user has liked will have their scores increased by 4.
+    All careers that the user has liked will have their scores increased by 4.
   '''
   careers_liked = user.likes.all()
 
@@ -53,11 +53,11 @@ def get_recommended_careers (user):
 
   for pair in career_score_all:
     if pair[0].name in careers_liked_names:
-      pair[1] = pair[1] + 4
+      pair[1] = pair[1] + "4[user like]+"
 
 
   '''
-  All careers that share qualifications with the careers the user has liked will have their scores increased by 2 for each shared qualification. 
+    All careers that share qualifications with the careers the user has liked will have their scores increased by 2 for each shared qualification. 
   '''
   qualifications_for_liked_careers = [] 
   for career in careers_liked:
@@ -82,11 +82,11 @@ def get_recommended_careers (user):
     # for all qualifications for the current career, if the qualification is one that links to a career liked by the user -> add 2 to current career score
     for qualification_name in qualifications_names_no_duplicates:
       if qualification_name in qualifications_names_for_liked_careers_no_duplicates:
-        pair[1] = pair[1] + 2
+        pair[1] = pair[1] + "2[qual]+"
 
 
   '''
-  All careers that share linked subjects with the the user will have their scores increased by 2 for each shared subject.
+    All careers that share linked subjects with the the user will have their scores increased by 2 for each shared subject.
   '''
   subjects_selected = user.subjects.all()
   
@@ -97,11 +97,11 @@ def get_recommended_careers (user):
   for pair in career_score_all:
     for subject in pair[0].subjects.all():
       if subject.name in subjects_selected_names:
-        pair[1] = pair[1] + 2
+        pair[1] = pair[1] + "2[shared subject]+"
 
 
   '''
-  All careers that share categories with the user's selected interests will have their scores increased by 3 for each interest.
+    All careers that share categories with the user's selected interests will have their scores increased by 3 for each interest.
   '''
   interests_selected = user.interests.all(); #in the context of a user's profile: categories are presented to the user as interests
   
@@ -112,27 +112,86 @@ def get_recommended_careers (user):
   for pair in career_score_all:
     for category in pair[0].categories.all():
       if category.name in interests_selected_names:
-        pair[1] = pair[1] + 3
+        pair[1] = pair[1] + "3[shared category]+"
 
-
-  
 
   '''
-  #return HttpResponse (user.subjects.all())
-  careers_matching_subject_with_duplicates = []
-  for subject in user.subjects.all():
-    for career in Career.objects.all():
-      if (subject in career.subjects.all()):
-        careers_matching_subject_with_duplicates.append(career.name);
-
-  #return HttpResponse (careers_matching_subject_with_duplicates)
-
-  careers_matching_subject = list(set(careers_matching_subject_with_duplicates))
-  context = {"full_name": user.name, "career_names": careers_matching_subject}
+    All careers which are liked by users who share 4 or more interests with the current user will have their scores:
+      1. increased by 2 if the career is in any of the overlapping interests (categories)
+      2. increased by 1 (for all other careers that have been liked)
+    A career can get a maximum of 2 additional score during this process
   '''
-
-  #return render(request, "advisor/display_user_info.html", {"career_score_all": career_score_all, "user": user})
   
+  users_all = UserProfile.objects.all()
+  
+  users_interests_likes = [] # [[user1_interests, user1_likes], [user2_interests, user2_likes], ...] for all users who share 4 or more interests with current user
+  for u in users_all:
+    if u.name == user.name:
+      continue
+    users_interests_likes.append([u.interests.all(),u.likes.all()])
+
+  users_interests_likes_names = []
+  for pair in users_interests_likes:
+    interests_names = []
+    likes_names = []
+    for interest in pair[0]:
+      interests_names.append(interest.name)
+    for career in pair[1]:
+      likes_names.append(career.name)
+    users_interests_likes_names.append([interests_names, likes_names])
+
+
+  #return users_interests_likes_names
+
+  careers_other_users_score = [] # [[career1_name, score_to_be_added], [...], ...]
+  #careers_matched [] # [career1_name, ... ]
+
+  # for each interests-liked_careers pair for other users
+  for pair in users_interests_likes_names: # pair: [[interest1_name, interest2_name, ...],[career1_name, career2_name,...]]
+    interests_matched = []
+    
+    # determines all overlapping interests between the current user and another user
+    for interest in pair[0]:
+      if interest in interests_selected_names:
+        interests_matched.append(interest)
+
+    # if 4 or more interests overlap then the careers that the other user likes get either 1 or 2 score based on their categories
+    if len(interests_matched) >= 4:
+      for career_name in pair[1]:
+        career = Career.objects.get(name__iexact = career_name)
+        category_match = False
+        for category in career.categories.all():
+          if category.name in interests_matched: 
+            category_match = True
+            break
+
+        ''' 
+          a greater weighting is given to  careers which have categories from the overlapping interests but 
+          we still care about the other careers as the two users in question share interests so maybe the
+          other careers are worth looking at by the current user
+        ''' 
+        if category_match:
+          careers_other_users_score.append(career_name)
+          careers_other_users_score.append(career_name)
+        else:
+          careers_other_users_score.append(career_name)
+
+  careers_to_get_score = list(set(careers_other_users_score)) # no duplicates
+  #return careers_other_users_score
+  for career in careers_to_get_score:
+    count_amount = careers_other_users_score.count(career)
+    if count_amount >= 2:
+      for pair in career_score_all:
+        if pair[0].name == career:
+          pair[1] = pair[1] + "2[other user:"+career+"]+"
+    else:
+      for pair in career_score_all:
+        if pair[0].name == career:
+          pair[1] = pair[1] + "1[other user:"+career+"]+"
+
+
+
+
   career_score_all = sorted(career_score_all, key=lambda x:x[1], reverse=True) # sorts the 2D list on the second element of each list-element 
 
   return career_score_all
@@ -431,11 +490,13 @@ def home(request):
   for suggested_careers in list_of_careers:
     list_of_suggested_careers.append(suggested_careers)
   
-  '''
-  for suggested_careers in list_of_careers:
-    list_of_suggested_careers.append(suggested_careers)
-  '''
+  
+  #for suggested_careers in list_of_careers:
+  #  list_of_suggested_careers.append(suggested_careers)
+  
   careers_recommended_all = get_recommended_careers(user)
+
+  #return HttpResponse(careers_recommended_all)
 
   #return HttpResponse(careers_recommended_all)
 

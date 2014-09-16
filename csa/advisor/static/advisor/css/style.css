@@ -21,11 +21,6 @@ p.indentt {
     
 }
 
-.search-bar {
- border: solid 1px #000000;  
-    background-color: #e3e3e3;
-}
-
 #container {
     height:150%;
 	position: relative;
@@ -77,6 +72,7 @@ div.panel.body-home-careers {
 	min-height: 300px;
 	padding-bottom: 20px;
 }
+
 
 div.csa-navbar.navbar-collapse>ul>li>a {
 	font-size: 14px;
