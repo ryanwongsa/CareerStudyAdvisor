@@ -12,6 +12,9 @@
 <div class="panel csa-header">
 <h3>{{ qualification.name }}<small>
     {% if user.is_authenticated %}
+    {% if user.is_superuser %}
+    <!--Dont show like button-->
+    {% else %}
     <a onclick="toggleLike(this)" class="btn-csa-like btn {% if qual_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button">
             {% if qual_liked %}
                     Liked
@@ -20,6 +23,8 @@
             {% endif %}
     </a>
 {% endif %}
+    {% endif %}<!--super user-->
+
 
 </small></h3>
 </div>

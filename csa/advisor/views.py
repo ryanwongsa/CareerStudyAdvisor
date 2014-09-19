@@ -491,7 +491,52 @@ class Career_Index(View):
 
 def career(request, career_name):
   c = Career.objects.get(name__iexact=career_name)
-  if request.user.is_authenticated(): #includes like feature
+  if request.user.is_superuser:#Removes like feature
+        
+        list_of_qualifications = []
+        list_of_categories = []
+        list_of_institutions = []
+        list_of_companies = []
+        
+        
+        for qualification in c.qualifications.all(): #need .all() otherwise not iterable
+            list_of_qualifications.append(qualification)
+        for qualification in list_of_qualifications:
+            if qualification.institution.name not in list_of_institutions:
+                list_of_institutions.append(qualification.institution.name)
+        for category in c.categories.all():
+            list_of_categories.append(category)
+        for company in c.companies.all(): #need .all() otherwise not iterable
+            list_of_companies.append(company)
+        
+        ### added
+        # for category in c.categories.all():
+        #list_of_similar_careers.append(category)
+        list_of_similar_careers = []
+        list_of_careers = []
+        for career in Career.objects.all():
+            if career.name != c.name:
+                list_of_careers.append(career)
+        # list_of_careers is all of the careers
+        # list_of_categories is only for the categories for this career
+        # list_of_temp_categories is the categories that the other careers have
+        
+        
+        for career in list_of_careers:
+            list_of_temp_categories=[]
+            for category in career.categories.all():
+                list_of_temp_categories.append(category)
+            
+            for temp_career_category in list_of_temp_categories:
+                if temp_career_category in list_of_categories:
+                    if career not in list_of_similar_careers:
+                        list_of_similar_careers.append(career)
+        ##
+        
+        #these are the names of the variables in the template
+        context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers}
+        return render (request, "advisor/career.html", context)
+  elif request.user.is_authenticated(): #includes like feature
 
       user = UserProfile.objects.get(name=request.user.username)
 
@@ -561,8 +606,7 @@ def career(request, career_name):
       #these are the names of the variables in the template
       context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers, "career_liked": career_liked}
       return render (request, "advisor/career.html", context)
-  else: #Removes like feature
-    
+  else:
       list_of_qualifications = []
       list_of_categories = []
       list_of_institutions = []
@@ -606,7 +650,6 @@ def career(request, career_name):
       #these are the names of the variables in the template
       context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers}
       return render (request, "advisor/career.html", context)
-
 
 class Search(View):
   def get(self, request):
@@ -726,9 +769,43 @@ def qualification(request, qualification_name, inst_name):
   for qual in list_of_qualifications_with_name:
     if qual.institution.name == inst_name:
       q = qual # should only be one qualification that meets this criteria
-  
 
-  if request.user.is_authenticated(): #includes like feature
+  if request.user.is_superuser:
+    careers = Career.objects.all()
+    list_of_careers_from_qualification = []
+    list_of_websites = []
+    list_of_subjects = []
+    
+    for career in careers:
+        if q in career.qualifications.all():
+            list_of_careers_from_qualification.append(career)
+    #for qualification in career.qualifications.all():
+    # if qualification.name == q.name and qualification.institution == q.institution:
+    #  list_of_careers_from_qualification.append(career)
+    
+    for web in q.qualifications_websites.all():
+        list_of_websites.append(web)
+    
+    '''
+        All subjects belonging to a particular qualification will be added to a list_of_subjects list.
+        This list subjects is then passed to qualification.html and used to display the subjects for
+        a particular qualification on the qualifcations page.
+        '''
+    for sub in q.subjects.all():
+        list_of_subjects.append(sub)
+    
+    '''
+        The code below produces two lists to compare the subjects that a user has taken to a list of
+        subjects required to obtain the qualification. The system then displays a list of subject
+        requirements that have been met and a list of subjects that the user hasn't taken
+        (and that are required).
+        '''
+    
+    
+    context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects}
+    return render (request, "advisor/qualification.html", context)
+
+  elif request.user.is_authenticated(): #includes like feature
 
     user = UserProfile.objects.get(name=request.user.username)
 
