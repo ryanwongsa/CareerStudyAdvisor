@@ -11,7 +11,7 @@ from django.db import models
 ################################################################################
 
 class Category (models.Model):
-  name = models.CharField(max_length=50)
+  name = models.CharField(primary_key=True,max_length=50)
 
   class Meta:
     verbose_name = "Category"
@@ -25,7 +25,7 @@ class Category (models.Model):
 ################################################################################
 
 class WebsiteLink (models.Model):
-  name = models.CharField(max_length=150)
+  name = models.CharField(primary_key=True,max_length=150)
   site_url = models.TextField()
   COMPLINK = 'Company'
   QUALINK = 'Qualification'
@@ -57,7 +57,7 @@ class WebsiteLink (models.Model):
 ################################################################################
 
 class Institution (models.Model):
-  name = models.CharField(max_length=50)
+  name = models.CharField(primary_key=True,max_length=50)
   description = models.TextField()
   websites = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Institution'}, related_name='institutions_website')
   handbooks = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Handbook'},related_name='institutions_handbooks')
@@ -78,7 +78,7 @@ class Institution (models.Model):
 ################################################################################
 
 class Subject (models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(primary_key=True,max_length=50)
     
     class Meta:
         verbose_name = "Subject"
@@ -98,8 +98,8 @@ class Qualification (models.Model):
   name = models.CharField(max_length=50)
   short_description = models.TextField()
   long_description = models.TextField()
-  courses = models.TextField(blank=True)
-  subjects = models.ManyToManyField(Subject,blank=True)
+  #courses = models.TextField(blank=True)
+  subjects = models.ManyToManyField(Subject)
   qualifications_websites = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Qualification'})
 
   class Meta:
@@ -116,11 +116,12 @@ class Qualification (models.Model):
 ################################################################################
 
 class Career (models.Model):
-  name = models.CharField(max_length=50)
+  name = models.CharField(primary_key=True,max_length=50)
+  short_description = models.TextField()
   description = models.TextField() 
   categories = models.ManyToManyField(Category)
-  subjects = models.ManyToManyField(Subject,blank=True)
-  qualifications = models.ManyToManyField(Qualification,blank=True)
+  subjects = models.ManyToManyField(Subject)
+  qualifications = models.ManyToManyField(Qualification)
   companies = models.ManyToManyField(WebsiteLink,blank=True, limit_choices_to={'link_to': 'Company'})
 
   class Meta:
@@ -137,8 +138,9 @@ class Career (models.Model):
 ################################################################################
 
 class UserProfile (models.Model):
-    name = models.CharField(primary_key=True,max_length=50)  #username
-    likes = models.ManyToManyField(Career,blank=True)
+    name = models.CharField(primary_key=True,max_length=50)  # username
+    likes = models.ManyToManyField(Career,blank=True) # careers
+    likes_qualifications = models.ManyToManyField(Qualification,blank=True)
     interests = models.ManyToManyField(Category,blank=True)
     subjects = models.ManyToManyField(Subject,blank=True)
     

@@ -7,8 +7,9 @@
   <li class="active">{{search_term}}</li>
 </ol>
 
-<h1>Search</h1>
-
+<div class="panel csa-header">
+<h2>Search</h2>
+</div>
 {% endblock %}
 
 
@@ -16,7 +17,7 @@
 {% block body %}
 
 <div class ="index-link">
-<h2>Results that contain "{{ search_term }}"</h2>
+<h3><center>Results that contain "{{ search_term }}"</center></h3>
 
 
 {% if careers|length > 0 %}

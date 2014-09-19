@@ -31,6 +31,111 @@ def unlike_career (request, career_name):
 
   return redirect ("advisor.views.career", career_name=career.name)
 
+def like_qualification (request, qualification_name, inst_name):
+  list_of_qualifications_with_name = Qualification.objects.filter(name__iexact=qualification_name).all()
+  for qual in list_of_qualifications_with_name:
+    if qual.institution.name == inst_name:
+      q = qual # should only be one qualification that meets this criteria
+
+  user = UserProfile.objects.get(name=request.user.username)
+
+  if q not in user.likes_qualifications.all():
+    user.likes_qualifications.add(qualifcation)
+
+  return redirect ("advisor.views.qualification", qualification_name=q.name, inst_name=q.institution)
+
+def unlike_qualification (request, qualification_name, inst_name):
+  list_of_qualifications_with_name = Qualification.objects.filter(name__iexact=qualification_name).all()
+  for qual in list_of_qualifications_with_name:
+    if qual.institution.name == inst_name:
+      q = qual # should only be one qualification that meets this criteria
+
+  user = UserProfile.objects.get(name=request.user.username)
+
+  if q in user.likes_qualifications.all():
+    user.likes_qualifications.remove(qualification)
+
+  return redirect ("advisor.views.qualification", qualification_name=q.name, inst_name=q.institution)
+
+def get_recommended_qualifications (user):
+  qual_score_all = []
+  for qual in Qualification.objects.all():
+    qual_score_all.append([qual.id, ""]) # qualifications referenced by their id as neither their name or their institution are unique
+
+  ''' Qualification liked -> +2
+  '''
+  qual_liked = user.likes_qualifications.all()
+
+  qual_liked_ids = []
+  for qual in qual_liked:
+    qual_liked_ids.append(qual.id)
+
+  for pair in qual_score_all:
+    if pair[0] in qual_liked_ids:
+      pair[1] = pair[1] + "+2[liked qual]"
+
+
+  ''' for each shared subject between the qualification and the current user's profile -> +1
+  '''
+  subjects_selected = user.subjects.all() #subjects selected by user (for their profile)  
+
+  subjects_selected_names = []
+  for subject in subjects_selected:
+    subjects_selected_names.append(subject.name)
+
+  for pair in qual_score_all:
+    qual = Qualification.objects.get(id=pair[0])
+    qual_subjects = qual.subjects.all()
+    qual_subjects_names = []
+    for subject in qual_subjects:
+      qual_subjects_names.append(subject.name)
+    for subject_name in qual_subjects_names:
+      if subject_name in subjects_selected_names:
+        pair[1] = pair[1] + "+1[share subject]"
+
+
+  ''' if another user shares 5 subjects with the current user, then each qualification that the other user likes will get +1
+  '''
+  users_all = UserProfile.objects.all()
+  
+  users_subjects_qual_likes = [] # [[user1_subjects, user1_qual_likes], [user2_subjects, user2_qual_likes], ...] for all users who share 5 or more subjects with current user
+  for u in users_all:
+    if u.name == user.name:
+      continue
+    users_subjects_qual_likes.append([u.subjects.all(),u.likes_qualifications.all()])
+
+  users_subjects_qual_likes_names_ids = []
+  for pair in users_subjects_qual_likes:
+    subject_names = []
+    qual_liked_ids = []
+    for subject in pair[0]:
+      subject_names.append(subject.name)
+    for qual in pair[1]:
+      qual_liked_ids.append(qual.id)
+    users_subjects_qual_likes_names_ids.append([subject_names, qual_liked_ids])
+
+  qual_id_score = {}
+  for pair in users_subjects_qual_likes_names_ids:
+    subjects_matched = filter (lambda subject_name: subject_name in subjects_selected_names, pair[0])
+    if len(subjects_matched) >= 5:   # only care about liked qualifications if the other user shares >=5 subjects with current user
+      for qual_id in pair[1]:
+        if (qual_id_score.has_key(qual_id)):
+          qual_id_score[qual_id] = qual_id_score[qual_id] + 1 # add one score if qual already in dictionary
+        else:
+          qual_id_score[qual_id] = 1 # create entry in dictionary for qualification if doesn't already exist
+
+  for pair in qual_score_all:
+    if qual_id_score.has_key(pair[0]):
+      if qual_id_score[pair[0]] > 4:
+        pair[1] = pair[1] + "+4[other users]"
+      else:
+        pair[1] = pair[1] + "+" + str(qual_id_score[pair[0]]) + "[other users:"+ Qualification.objects.get(id=pair[0]).name+"]"
+
+
+  qual_score_all = sorted(qual_score_all, key=lambda x:x[1], reverse=True) # sorts the 2D list on the second element of each list-element 
+
+  return qual_score_all
+
 
 def get_recommended_careers (user):
   '''
@@ -202,11 +307,22 @@ def recommend_careers (request):
 
   careers_recommended_all = get_recommended_careers(user)
 
-  #return HttpResponse(careers_recommended_all)
+  qual_recommended_all = get_recommended_qualifications(user)
+
+  #return HttpResponse (qual_recommended_all)
+
+  #qual_score_all_objects = []
+  for pair in qual_recommended_all:
+    pair[0]=Qualification.objects.get(id=pair[0])
+
+  #return HttpResponse(qual_score_all_objects)
 
   careers_recommended_top = careers_recommended_all[0:min(5,len(careers_recommended_all))]
+  qual_recommended_top = qual_recommended_all[0:min(5,len(qual_recommended_all))]
 
-  context = {"career_score_all": careers_recommended_all, "career_score_top": careers_recommended_top, "user":user}
+  #return HttpResponse(qual_recommended_top)
+
+  context = {"career_score_all": careers_recommended_all, "career_score_top": careers_recommended_top, "qual_score_all": qual_recommended_all, "qual_score_top": qual_recommended_top, "user":user}
   #return HttpResponse(careers_recommended_all)
   return render (request, "advisor/display_user_info.html", context)
 
@@ -271,6 +387,8 @@ def loggedin(request):
     list_of_categories = []
     list_of_subjects = []
     list_of_likes = []
+    list_of_likes_qualifications = []
+    
 
     '''
     for user in UserProfile.objects.all():
@@ -288,26 +406,30 @@ def loggedin(request):
     '''
     try: #if the user has updated their profile
         up = UserProfile.objects.get(name__iexact=request.user.username) #.get()  not  .filter()
-    #return HttpResponse(up)
+    
 
-        for category in up.interests.all(): #need .all() otherwise not iterable
+        for category in up.interests.all():
             list_of_categories.append(category)
 
-        for subject in up.subjects.all(): #need .all() otherwise not iterable
+        for subject in up.subjects.all(): 
             list_of_subjects.append(subject)
 
-        for like in up.likes.all(): #need .all() otherwise not iterable
+        for like in up.likes.all(): 
             list_of_likes.append(like)
 
-        args['form'] = UserProfileForm(initial={"name":"ac","interests": list_of_categories,"subjects": list_of_subjects,"likes": list_of_likes}) # do not need likes here
+        #return HttpResponse(len(up.likes_qualifications.all()))
+        for qlike in up.likes_qualifications.all():
+          list_of_likes_qualifications.append(qlike)
+
+        args['form'] = UserProfileForm(initial={"name":"ac","interests": list_of_categories,"subjects": list_of_subjects,"likes": list_of_likes,"likes_qual": list_of_likes_qualifications}) 
     #Category.objects.all().values_list('id',flat=True)
         print args
-        context = {"full_name": request.user.username, "args" :args,"likes":list_of_likes}
+        context = {"full_name": request.user.username, "args" :args,"likes":list_of_likes,"likes_qual": list_of_likes_qualifications}
         return render(request, "loggedin.html", context)
     except:
         args['form'] = UserProfileForm() 
         print args
-        context = {"full_name": request.user.username, "args" :args,"likes":list_of_likes}
+        context = {"full_name": request.user.username, "args" :args,"likes":list_of_likes,"likes_qual": list_of_likes_qualifications}
         return render(request, "loggedin.html", context)
         pass
 
@@ -381,7 +503,7 @@ def career(request, career_name):
           if c not in user.likes.all():
             user.likes.add(c)
           return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
-        elif request.POST['action'] == "unlike":
+        elif request.POST['action'] == "liked":
           if c in user.likes.all():
             user.likes.remove(c)
           return HttpResponse("success")
@@ -600,63 +722,128 @@ def institution_career(request, career_name, inst_name):
   return render (request, "advisor/institution_career.html", context)
 
 def qualification(request, qualification_name, inst_name):
-  #return HttpResponse(inst_name + " " + qualification_name)
   list_of_qualifications_with_name = Qualification.objects.filter(name__iexact=qualification_name).all()
-  #return HttpResponse(list_of_qualification_with_name)
   for qual in list_of_qualifications_with_name:
     if qual.institution.name == inst_name:
       q = qual # should only be one qualification that meets this criteria
-
-  careers = Career.objects.all()
-  list_of_careers_from_qualification = []
-  list_of_websites = []
-  list_of_subjects = []
-
-  for career in careers:
-    if q in career.qualifications.all():
-      list_of_careers_from_qualification.append(career)
-    #for qualification in career.qualifications.all():
-     # if qualification.name == q.name and qualification.institution == q.institution:
-      #  list_of_careers_from_qualification.append(career)
-
-  for web in q.qualifications_websites.all():
-      list_of_websites.append(web)
-
-  '''
-  All subjects belonging to a particular qualification will be added to a list_of_subjects list.
-  This list subjects is then passed to qualification.html and used to display the subjects for 
-  a particular qualification on the qualifcations page.
-  '''    
-  for sub in q.subjects.all():
-      list_of_subjects.append(sub)
-
-  '''
-   The code below produces two lists to compare the subjects that a user has taken to a list of
-   subjects required to obtain the qualification. The system then displays a list of subject
-   requirements that have been met and a list of subjects that the user hasn't taken
-   (and that are required).
-  '''
-  list_of_user_subjects = []
-  user = UserProfile(name=request.user.username)
-
-  for sub in user.subjects.all():
-      list_of_user_subjects.append(sub.name)
-
-  matched_user_subjects = []
-  extra_subjects_needed = []
   
-  for sub in list_of_subjects:
-    matched = False
-    for usersub in list_of_user_subjects:
-      if sub.name == usersub:
-        matched = True
-        matched_user_subjects.append(sub)
-        
-    if matched == False:
-       extra_subjects_needed.append(sub)
 
-  context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects,"matched_subjects": matched_user_subjects, "extra_subjects_needed": extra_subjects_needed}
-  return render (request, "advisor/qualification.html", context)
+  if request.user.is_authenticated(): #includes like feature
+
+    user = UserProfile.objects.get(name=request.user.username)
+
+    '''
+      Uses a POST request to update the database (with the user's like or unlike) without going to another URL
+    '''
+    if request.method == "POST":
+      if request.POST['action'] == "like":
+        if q not in user.likes_qualifications.all():
+          user.likes_qualifications.add(q)
+        return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
+      elif request.POST['action'] == "liked":
+        if q in user.likes_qualifications.all():
+          user.likes_qualifications.remove(q)
+        return HttpResponse("success")
+      else:
+        raise Http404
+
+
+
+
+    user_liked_qual_names = []
+    for qual in user.likes_qualifications.all():
+      user_liked_qual_names.append(qual.name)
+
+    qual_liked = False
+    if q.name in user_liked_qual_names:
+      qual_liked = True
+
+
+    careers = Career.objects.all()
+    list_of_careers_from_qualification = []
+    list_of_websites = []
+    list_of_subjects = []
+
+    for career in careers:
+      if q in career.qualifications.all():
+        list_of_careers_from_qualification.append(career)
+      #for qualification in career.qualifications.all():
+       # if qualification.name == q.name and qualification.institution == q.institution:
+        #  list_of_careers_from_qualification.append(career)
+
+    for web in q.qualifications_websites.all():
+        list_of_websites.append(web)
+
+    '''
+    All subjects belonging to a particular qualification will be added to a list_of_subjects list.
+    This list subjects is then passed to qualification.html and used to display the subjects for 
+    a particular qualification on the qualifcations page.
+    '''    
+    for sub in q.subjects.all():
+        list_of_subjects.append(sub)
+
+    '''
+     The code below produces two lists to compare the subjects that a user has taken to a list of
+     subjects required to obtain the qualification. The system then displays a list of subject
+     requirements that have been met and a list of subjects that the user hasn't taken
+     (and that are required).
+    '''
+    list_of_user_subjects = []
+
+    for sub in user.subjects.all():
+        list_of_user_subjects.append(sub.name)
+
+    matched_user_subjects = []
+    extra_subjects_needed = []
+    
+    for sub in list_of_subjects:
+      matched = False
+      for usersub in list_of_user_subjects:
+        if sub.name == usersub:
+          matched = True
+          matched_user_subjects.append(sub)
+          
+      if matched == False:
+         extra_subjects_needed.append(sub)
+
+    context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects,"matched_subjects": matched_user_subjects, "extra_subjects_needed": extra_subjects_needed, "qual_liked": qual_liked}
+    return render (request, "advisor/qualification.html", context)
+
+  else:
+    careers = Career.objects.all()
+    list_of_careers_from_qualification = []
+    list_of_websites = []
+    list_of_subjects = []
+
+    for career in careers:
+      if q in career.qualifications.all():
+        list_of_careers_from_qualification.append(career)
+      #for qualification in career.qualifications.all():
+       # if qualification.name == q.name and qualification.institution == q.institution:
+        #  list_of_careers_from_qualification.append(career)
+
+    for web in q.qualifications_websites.all():
+        list_of_websites.append(web)
+
+    '''
+    All subjects belonging to a particular qualification will be added to a list_of_subjects list.
+    This list subjects is then passed to qualification.html and used to display the subjects for 
+    a particular qualification on the qualifcations page.
+    '''    
+    for sub in q.subjects.all():
+        list_of_subjects.append(sub)
+
+    '''
+     The code below produces two lists to compare the subjects that a user has taken to a list of
+     subjects required to obtain the qualification. The system then displays a list of subject
+     requirements that have been met and a list of subjects that the user hasn't taken
+     (and that are required).
+    '''
+   
+
+    context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects}
+    return render (request, "advisor/qualification.html", context)
+
 
 def institution_index(request):
     list_of_institutions = []

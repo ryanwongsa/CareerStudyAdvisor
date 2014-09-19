@@ -8,12 +8,13 @@
 </ol>
 
 <span>
-
+    <div class="panel csa-header">
+        
 <h2>{{ career.name }}<small>
     {% if user.is_authenticated %}
-	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button">
+	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="Click like to help us know which careers to recommend to you" data-placement="right">
 			{% if career_liked %}
-					Unlike
+					Liked
 			{% else %}
 					Like
 			{% endif %}
@@ -29,7 +30,7 @@
 <a class="btn btn-primary btn-sm" role="button" href="/category/{{ category.name }}">{{ category }}</a>
 {% endfor %}
 </div>
-<br>
+</div>
 {% endblock %}
 
 {% block body_main %}
@@ -70,7 +71,7 @@
         data:    {action: action},
         success: function(data, textStatus, jqXHR)  {
             if(action == "like")    {
-                button.text("Unlike");
+                button.text("Liked");
                 button.removeClass("btn-warning")
                 button.addClass("btn-danger")
             }
@@ -84,5 +85,10 @@
     });
 }
 
+</script>
+<script>
+    $(document).ready(function()    {
+        $(".career-tooltip").tooltip();
+    });
 </script>
 {% endblock %}

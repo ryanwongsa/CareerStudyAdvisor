@@ -11,12 +11,16 @@ from advisor.views import Career_Index, Search #, Recommend_Careers
 urlpatterns = patterns('',
   url(r'^search/?$', Search.as_view(), name='search'),
 
-  url(r'^career/(?P<career_name>\w+(\s+\w+)*)/unlike/?$', views.unlike_career, name='unlike_career'),
+  url(r'^career/(?P<career_name>\w+(\s+\w+)*)/liked/?$', views.unlike_career, name='unlike_career'),
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/like/?$', views.like_career, name='like_career'),
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/(?P<inst_name>\w[\w\s\(\)]*)/?$', views.institution_career, name='institution_career'),
   
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/?$', views.career, name='career'),
   url(r'^career/?$', Career_Index.as_view(), name='career_index'),
+
+  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/liked/?$', views.unlike_qualification, name='unlike_qualification'),
+  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/like/?$', views.like_qualification, name='like_qualification'),
+
   url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/?$', views.qualification, name='qualification'),
   url(r'^institution/(?P<institution_name>\w[\w\s\(\)]*)/?$', views.institution, name='institution'),
   url(r'^institution/?$', views.institution_index, name='institution_index'),

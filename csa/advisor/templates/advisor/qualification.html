@@ -9,8 +9,20 @@
   <li class="active">{{qualification.name}}</li>
 </ol>
 
+<div class="panel csa-header">
+<h3>{{ qualification.name }}<small>
+    {% if user.is_authenticated %}
+    <a onclick="toggleLike(this)" class="btn-csa-like btn {% if qual_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button">
+            {% if qual_liked %}
+                    Liked
+            {% else %}
+                    <!--<span class="glyphicon glyphicon-thumbs-up"></span> -->Like
+            {% endif %}
+    </a>
+{% endif %}
 
-<h2>{{ qualification.name }}</h2>
+</small></h3>
+</div>
 {% endblock %}
 
 {% block body_main %}
@@ -74,7 +86,7 @@
                     <li>{{sub}}</li>
                 {% endfor %}
             </ul>
-        <span><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to see whether you meet the subject requirements</span>
+        <span><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to see whether you meet the subject requirements.</span>
     
     {% endif %}
 
@@ -131,5 +143,34 @@
         var requirementsChart = new Chart(ctx).Pie(data, {tooltipTemplate: "<%if (label){% templatetag openblock %}><%=label%><{% templatetag closeblock %}%>"});
 
     });
+</script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".chosen-select").chosen();
+    });
+
+    function toggleLike(button) {
+    button = $(button);
+    action = button.text().toLowerCase().trim();
+    $.ajax(window.location.pathname, {
+        type: "POST",
+        headers: {"X-CSRFToken": $.cookie('csrftoken')},
+        data:    {action: action},
+        success: function(data, textStatus, jqXHR)  {
+            if(action == "like")    {
+                button.text("Liked");
+                button.removeClass("btn-warning")
+                button.addClass("btn-danger")
+            }
+            else    {
+                button.text("Like");
+                button.removeClass("btn-danger")
+                button.addClass("btn-warning")
+
+            }
+        }
+    });
+}
+
 </script>
 {% endblock %}

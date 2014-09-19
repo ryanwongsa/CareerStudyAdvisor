@@ -3,6 +3,23 @@
 {{user.subjects.all}}<br>
 {{user.likes.all}}<br>
 <br>
+
+<h5>Qualification</h5>
+{% for pair in qual_score_all%}
+<b>{{pair.0.name}} {{pair.1}}</b>  <br>
+{{pair.0.subjects.all}}  <br>
+{% endfor %}
+<br>
+<h5>Recomendations</h5>
+{% for pair in qual_score_top %}
+<b>{{pair.0.name}} {{pair.1}}</b>  <br>
+{{pair.0.subjects.all}}  <br> 
+{% endfor %}
+
+<br>
+<hr>
+<br>
+
 <h5>Careers</h5>
 {% for pair in career_score_all %}
 <b>{{pair.0.name}} {{pair.1}}</b>  <br>

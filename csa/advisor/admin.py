@@ -6,6 +6,10 @@ from django.db import models
 class CommonInfo(admin.ModelAdmin):
 	search_fields=['name']
 	ordering=['name']
+'''
+  class Media:
+    from django.conf import settings
+''' 
 
 class WebsiteLinkAdmin(CommonInfo):
 	list_filter = ['link_to']

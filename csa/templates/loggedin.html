@@ -28,9 +28,26 @@
         <div>
 			<h3>Liked Careers</h3>
 			<hr class="csa-hr">
-			{% for l in likes %}
-                <a href="/career/{{l}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
-			{% endfor %}
+            {% if likes|length > 0 %}
+    			{% for l in likes %}
+                    <a href="/career/{{l}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
+    			{% endfor %}
+            {% else %}
+                No <a href="/career/">careers</a> have been liked.
+            {% endif %}
+        </div>
+        <br>
+        <div>
+            <h3>Liked Qualifications</h3>
+            <hr class="csa-hr">
+            {% if likes_qual|length > 0 %}
+                {% for l in likes_qual %}
+                    <a href="/institution/{{l.institution}}/{{l.name}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
+                {% endfor %}
+            {% else %}
+                No <a href="/qualification/">qualifications</a> have been liked.
+            {% endif %}
+
         </div>
         <br>
         <input type="submit" name="submit" class="btn btn-primary" value="Update Profile">
