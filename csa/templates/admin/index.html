@@ -1,84 +1,99 @@
+<!--
+    #################################################################################
+    # Capstone Project - Career Study Advisor 
+    # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+    # 21/07/2014 - 22/09/2014
+    #################################################################################
+-->
 {% extends "admin/base_site.html" %}
 {% load i18n admin_static %}
 
-{% block extrastyle %}{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
+{% block extrastyle %}
+    {{ block.super }}
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />
 
-<!---CSS Bootstrap file required for buttons -->
-<link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
+    <!---CSS Bootstrap file required for buttons -->
+    <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
 
-<!-- content-related .module h2: Changes the Recent Actions top bar and heading-->
-<!-- content-related: Changes the Box around Recent Actions -->
-<!-- module: changes inner the box around Auth, Advisor and Recent Actions -->
-<!-- content-main: changes border around Auth and Advisor-->
-<!-- custom: changes button-->
-<!-- user-tools : Changing the text position and font size of the text in the top bar of the admin pages-->
-<!--btn-primary.active: Changes the colour of the buttons on the index page-->
-<style>
-#content-related .module h2 {
-    background: #2f4154 url(../img/nav-bg.gif) bottom left repeat-x;
-    font-size: 16px;
-    font-weight: normal;
-    color: #666;
-    height: 35px;
-    line-height: 25px;
-    border-bottom: 5px solid #666;
+    <style>
 
-}
+        /*Changes the Recent Actions top bar and heading*/
+        #content-related .module h2 
+        {
+            background: #2f4154 url(../img/nav-bg.gif) bottom left repeat-x;
+            font-size: 16px;
+            font-weight: normal;
+            color: #666;
+            height: 35px;
+            line-height: 25px;
+            border-bottom: 5px solid #666;
+        }
 
-#content-related {
-    border: 5px solid #666;
-    float: right;
-    width: 22em;
-    position: relative;
-    margin-right: -35em;
-    font-family: Lato,Helvetica,Arial,sans-serif;
-}
+        /*Changes the Box around Recent Actions*/
+        #content-related 
+        {
+            border: 5px solid #666;
+            float: right;
+            width: 22em;
+            position: relative;
+            margin-right: -35em;
+            font-family: Lato,Helvetica,Arial,sans-serif;
+        }
 
-.module {
-    border: 0px solid #ccc;
-    margin-bottom: 5px;
-    background: white;
-    min-height: 400px;
-}
+        /*Changes inner the box around Auth, Advisor and Recent Actions */
+        .module 
+        {
+            border: 0px solid #ccc;
+            margin-bottom: 5px;
+            background: white;
+            min-height: 400px;
+        }
 
-#content-main {
-    border: 0px solid #ccc;
-    margin-left: 40px;
-}
+        /* Changes border around Auth and Advisor*/
+        #content-main
+        {
+            border: 0px solid #ccc;
+            margin-left: 40px;
+        }
 
-.custom {
-    width: 150px !important;
-    font-weight:bold;
-    position:absolute;
+        /* Changes buttons on index page*/
+        .custom
+        {
+            width: 150px !important;
+            font-weight:bold;
+            position:absolute;
+        }
 
-}
+        /* Changing the text position and font size of the text in the top bar of the admin pages*/
+        #user-tools
+        {
+            line-height: 14px;
+            font-size:16px;
+            font-family: Lato,Helvetica,Arial,sans-serif;
+            font-weight: bold;
+        }
 
-#user-tools
-{
-    line-height: 14px;
-    font-size:16px;
-    font-family: Lato,Helvetica,Arial,sans-serif;
-    font-weight: bold;
-}
+        /*Changes the colour of the buttons on the index page*/
+        .btn-primary.active
+        {
+            background-color: #1abc9c;
+        }
 
-.btn-primary.active{
-    background-color: #1abc9c;
-}
-
-</style>
+    </style>
 {% endblock %}
 
 <!---Adds the section title to the top of the admin home page -->
 {% block content_title %}
-
-<font color="#000000" family="Lato,Helvetica,Arial,sans-serif" size="6px" ; style="text-align: right"; position = "30px"> Select to Add, Edit or Remove: </font>
-
+    <font color="#000000" family="Lato,Helvetica,Arial,sans-serif" size="6px" ; style="text-align: right"; position = "30px"> Select to Add, Edit or Remove: </font>
 {% endblock %}
 
-{% block coltype %}colMS{% endblock %}
+{% block coltype %}
+    colMS
+{% endblock %}
 
-{% block bodyclass %}dashboard{% endblock %}
+{% block bodyclass %}
+    dashboard
+{% endblock %}
 
 {% block breadcrumbs %}{% endblock %}
 
@@ -87,28 +102,25 @@
 <!---Adds buttons to a container on the admin page-->
 <div id="content-main">
 
-<!---Sub-heading on admin page-->
-<font color="#000000"; style="font-weight:normal; font-size:22px; margin-left: 38px;margin-top: 0;position:absolute; top: 160px;"> Website Management: </font> 
+    <!---Sub-heading on admin page-->
+        <font color="#000000"; style="font-weight:normal; font-size:22px; margin-left: 38px;margin-top: 0;position:absolute; top: 160px;"> Website Management: </font> 
 
-<!---Buttons under Website Management on admin page-->
-<a style = "left: 110px; top: 210px;" href="/adminadvisor/category/" class="btn btn-primary btn-lg custom active" role="button">Category</a>
-<a style = "left: 270px; top: 210px;" href="/adminadvisor/career/" class="btn btn-primary btn-lg custom active" role="button">Career</a>
-<a style = "left: 430px; top: 210px;" href="/adminadvisor/institution/" class="btn btn-primary btn-lg custom active" role="button">Institution</a>
-<a style = "left: 110px; top: 270px;" href="/adminadvisor/qualification/" class="btn btn-primary btn-lg custom active" role="button">Qualification</a>
-<a style = "left: 270px; top: 270px;" href="/adminadvisor/subject/" class="btn btn-primary btn-lg custom active" role="button">Subject</a>
-<a style = "left: 430px; top: 270px;" href="/adminadvisor/websitelink/" class="btn btn-primary btn-lg custom active" role="button">Website Link</a>
+    <!---Buttons under Website Management on admin page-->
+        <a style = "left: 110px; top: 210px;" href="/adminadvisor/category/" class="btn btn-primary btn-lg custom active" role="button">Category</a>
+        <a style = "left: 270px; top: 210px;" href="/adminadvisor/career/" class="btn btn-primary btn-lg custom active" role="button">Career</a>
+        <a style = "left: 430px; top: 210px;" href="/adminadvisor/institution/" class="btn btn-primary btn-lg custom active" role="button">Institution</a>
+        <a style = "left: 110px; top: 270px;" href="/adminadvisor/qualification/" class="btn btn-primary btn-lg custom active" role="button">Qualification</a>
+        <a style = "left: 270px; top: 270px;" href="/adminadvisor/subject/" class="btn btn-primary btn-lg custom active" role="button">Subject</a>
+        <a style = "left: 430px; top: 270px;" href="/adminadvisor/websitelink/" class="btn btn-primary btn-lg custom active" role="button">Website Link</a>
 
-<!---Second sub-heading on admin page-->
-<h1><font color="#000000"; style="font-weight:normal; font-size:22px;margin-left: 38px; position:absolute;  top: 360px;"> User Profile Management:</font></h1>
-<br>
-<br>
+    <!---Second sub-heading on admin page-->
+        <h1><font color="#000000"; style="font-weight:normal; font-size:22px;margin-left: 38px; position:absolute;  top: 360px;"> User Profile Management:</font></h1>
+        <br>
+        <br>
 
-<!---Buttons under User Profile Management on admin page-->
-<a style = "left: 110px; top: 405px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
-<a style = "left: 270px; top: 405px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
-
-
-
+    <!---Buttons under User Profile Management on admin page-->
+        <a style = "left: 110px; top: 405px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
+        <a style = "left: 270px; top: 405px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
 </div>
 {% endblock %}
 
@@ -126,25 +138,25 @@
             {% load log %}
             {% get_admin_log 10 as admin_log for_user user %}
             {% if not admin_log %}
-            <p>{% trans 'None available' %}</p>
+                <p>{% trans 'None available' %}</p>
             {% else %}
-            <ul class="actionlist">
-            {% for entry in admin_log %}
-            <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
-                {% if entry.is_deletion or not entry.get_admin_url %}
-                    {{ entry.object_repr }}
-                {% else %}
-                    <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
-                {% endif %}
-                <br/>
-                {% if entry.content_type %}
-                    <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
-                {% else %}
-                    <span class="mini quiet">{% trans 'Unknown content' %}</span>
-                {% endif %}
-            </li>
-            {% endfor %}
-            </ul>
+                <ul class="actionlist">
+                {% for entry in admin_log %}
+                    <li class="{% if entry.is_addition %}addlink{% endif %}{% if entry.is_change %}changelink{% endif %}{% if entry.is_deletion %}deletelink{% endif %}">
+                    {% if entry.is_deletion or not entry.get_admin_url %}
+                        {{ entry.object_repr }}
+                    {% else %}
+                        <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                    {% endif %}
+                    <br/>
+                    {% if entry.content_type %}
+                        <span class="mini quiet">{% filter capfirst %}{% trans entry.content_type.name %}{% endfilter %}</span>
+                    {% else %}
+                        <span class="mini quiet">{% trans 'Unknown content' %}</span>
+                    {% endif %}
+                </li>
+                {% endfor %}
+                </ul>
             {% endif %}
     </div>
 </div>
@@ -152,7 +164,7 @@
 {% endblock %}
 
 {% block footer %}
-<div id="footer">
-    <a style = "top:605px; position:absolute;" href="/">Back to Home Page</a>
-</div>
+    <div id="footer">
+        <a style = "top:605px; position:absolute;" href="/">Back to Home Page</a>
+    </div>
 {% endblock %}

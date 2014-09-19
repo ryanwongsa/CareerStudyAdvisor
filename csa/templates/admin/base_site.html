@@ -1,68 +1,78 @@
+<!--
+	#################################################################################
+	# Capstone Project - Career Study Advisor 
+	# By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+	# 21/07/2014 - 22/09/2014
+	#################################################################################
+-->
 {% extends "admin/base.html" %}
 
 {% load i18n %}
 
 <!--Code to change the name of the admin tab in the admin web pages-->
-{% block title %}{{ title }} | {% trans 'CSA Site Admin' %}{% endblock %}
+{% block title %}
+	{{ title }} | {% trans 'CSA Site Admin' %}
+{% endblock %}
 
 <!--Code to change the name of the admin website in the top bar of the window for admin login and the top bar of the admin web pages-->
 {% block branding %}
-<h1 id="site-name"><font color="#66CCFF">{% trans 'CSA Administration' %}</h1>
+	<h1 id="site-name"><font color="#66CCFF">{% trans 'CSA Administration' %}</h1>
 {% endblock %}
 
 {% block extrastyle %}
-<!--header : Changing the colour, height and text position of the top bar of the login window-->
-<!--user-tools : Changing the text position and font size of the text in the top bar of the admin pages-->
-<!--branding h1 : Changing the colour, height and text position of the top bar of the admin pages-->
-<style>
-#header 
-{
-	background-color: #2f4154;
-	height: 50px;
-	line-height: 35px;
+	<style>
 
-}
-#user-tools
-{
-	line-height: 20px;
-	font-size:14px;
+		/*Changing the colour, height and text position of the top bar of the login window*/
+		#header 
+		{
+			background-color: #2f4154;
+			height: 50px;
+			line-height: 35px;
+		}
 
+		/*Changing the text position and font size of the text in the top bar of the admin pages*/
+		#user-tools
+		{
+			line-height: 20px;
+			font-size:14px;
+		}
 
-}
-
-#branding h1 
-{
+		/*Changing the colour, height and text position of the top bar of the admin pages*/
+		#branding h1 
+		{
     
-    line-height: 35px;
-    font-size: 24px;
-	font-weight: 700;
-	color: rgb(102, 204, 255);
-	font-family: Lato,Helvetica,Arial,sans-serif;
-	padding-left: 30px;
+   			line-height: 35px;
+    		font-size: 24px;
+			font-weight: 700;
+			color: rgb(102, 204, 255);
+			font-family: Lato,Helvetica,Arial,sans-serif;
+			padding-left: 30px;
+		}
 
-}
+		/*Changing colour, postion and font size of the heading in admin forms*/
+		h1, .h1 
+		{
+			font-size: 30px;
+			padding-left: 18px;
+			color: #1abc9c
+		}
 
-h1, .h1 
-{
-	font-size: 30px;
-	padding-left: 18px;
-	color: #1abc9c
-}
+		/*Changing text colour of description messages in admin*/
+		p
+		{
+			font-size: 18px;
+			padding-left: 18px;
+			color: black;
+			font-family: Lato,Helvetica,Arial,sans-serif;
+		}
 
-p
-{
-	font-size: 18px;
-	padding-left: 18px;
-	color: black;
-	font-family: Lato,Helvetica,Arial,sans-serif;
-}
+		/*Changing the font size of description fields*/
+		textarea
+		{
+			font-size: 11px;
+		}
 
-
-
-
-
-
-</style>
+	</style>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}
