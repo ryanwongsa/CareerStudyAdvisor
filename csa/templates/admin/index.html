@@ -7,21 +7,23 @@
 <!---CSS Bootstrap file required for buttons -->
 <link rel="stylesheet" type="text/css" href="{% static 'advisor/css/bootstrap.min.css' %}" />
 
-<!--content-related .module h2: Changes the Recent Actions top bar and heading-->
-<!--content-related: Changes the Box around Recent Actions -->
+<!-- content-related .module h2: Changes the Recent Actions top bar and heading-->
+<!-- content-related: Changes the Box around Recent Actions -->
 <!-- module: changes inner the box around Auth, Advisor and Recent Actions -->
 <!-- content-main: changes border around Auth and Advisor-->
 <!-- custom: changes button-->
-<!--user-tools : Changing the text position and font size of the text in the top bar of the admin pages-->
+<!-- user-tools : Changing the text position and font size of the text in the top bar of the admin pages-->
+<!--btn-primary.active: Changes the colour of the buttons on the index page-->
 <style>
 #content-related .module h2 {
-    background: rgb(51,51,51) url(../img/nav-bg.gif) bottom left repeat-x;
+    background: #2f4154 url(../img/nav-bg.gif) bottom left repeat-x;
     font-size: 16px;
     font-weight: normal;
     color: #666;
     height: 35px;
     line-height: 25px;
     border-bottom: 5px solid #666;
+
 }
 
 #content-related {
@@ -30,6 +32,7 @@
     width: 22em;
     position: relative;
     margin-right: -35em;
+    font-family: Lato,Helvetica,Arial,sans-serif;
 }
 
 .module {
@@ -53,8 +56,14 @@
 
 #user-tools
 {
-    line-height: 20px;
-    font-size:15px;
+    line-height: 14px;
+    font-size:16px;
+    font-family: Lato,Helvetica,Arial,sans-serif;
+    font-weight: bold;
+}
+
+.btn-primary.active{
+    background-color: #1abc9c;
 }
 
 </style>
@@ -62,10 +71,9 @@
 
 <!---Adds the section title to the top of the admin home page -->
 {% block content_title %}
-<br>
-<font color="#000000"; style="font-weight:normal; font-size:25px; margin-left: 40px;margin-bottom: 10; position:absolute; top: 100px;"> Select to Add, Edit or Remove: </font>
-<br>
-<br>
+
+<font color="#000000" family="Lato,Helvetica,Arial,sans-serif" size="6px" ; style="text-align: right"; position = "30px"> Select to Add, Edit or Remove: </font>
+
 {% endblock %}
 
 {% block coltype %}colMS{% endblock %}
@@ -98,6 +106,8 @@
 <!---Buttons under User Profile Management on admin page-->
 <a style = "left: 110px; top: 405px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
 <a style = "left: 270px; top: 405px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
+
+
 
 </div>
 {% endblock %}
@@ -139,4 +149,10 @@
     </div>
 </div>
 
+{% endblock %}
+
+{% block footer %}
+<div id="footer">
+    <a style = "top:605px; position:absolute;" href="/">Back to Home Page</a>
+</div>
 {% endblock %}

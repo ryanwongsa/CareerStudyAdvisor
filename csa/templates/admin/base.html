@@ -1,9 +1,16 @@
 {% load admin_static %}{% load firstof from future %}<!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
 <head>
+
 <title>{% block title %}{% endblock %}</title>
 <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{% static "admin/css/base.css" %}{% endblock %}" />
+<<<<<<< HEAD
 
+=======
+<link rel="stylesheet" type="text/css" href="{% static 'advisor/css/flat-ui.min.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'advisor/css/style.css' %}" />
+<link rel="stylesheet" type="text/css" href="{% static 'advisor/css/chosen.min.css' %}" />
+>>>>>>> f33ead5246f1a1c63208372f02add425e1ab049e
 {% block extrastyle %}
 <style>
 .menu .btn {
@@ -87,6 +94,16 @@
 <!-- END Container -->
 
 </body>
+<footer>
+    <script src="{% static 'advisor/js/jquery-2.1.1.min.js' %}"></script>
+    <script src="{% static 'advisor/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'advisor/js/flat-ui.min.js' %}"></script>
+    <script src="{% static 'advisor/js/jquery.cookie.js' %}"></script>
+    <script src="{% static 'advisor/js/chosen.jquery.min.js' %}"></script>
+    <script src="{% static 'advisor/js/Chart.min.js' %}"></script>
+    {% block scripts %}
+    {% endblock %}
+</footer>
 
 </html>
 

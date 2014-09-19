@@ -40,8 +40,15 @@
     <!--Compares the subjects that a user has taken to a list of subjects required to obtain the
         qualification. The system then displays a list of subject requirments that have been met and a list of subjects that the user hasn't taken (and that are required) -->
     {% if user.is_authenticated %}
+        {% if user.is_superuser %}
+            {% for sub in subjects %}
+<ul>
+<li>{{sub}}</li>
+</ul>
 
-    	
+            {% endfor %}
+        {% else %}<!--superuser else-->
+
     	{% if matched_subjects|length != 0 %}
              <div>
         The required subjects for this qualification that you <span style="color:#46BFBD">have</span> and <span style="color:#F7464A">have not</span> completed.
@@ -70,7 +77,9 @@
     	{% else %}	
             <ul>
                 {% for sub in subjects %}
+                <ul>
                     <li>{{sub}}</li>
+                </ul>
                 {% endfor %}
             </ul>
             <a style="font-weight:normal;  font-size:16px; color:#F7464A">You have not completed any of the subjects required for this qualification.</a>
@@ -78,7 +87,8 @@
     		
 		{% endif %}
 
-        
+        {% endif %} <!--superuser end-->
+
 
 	{% else %}
             <ul>
