@@ -8,7 +8,9 @@
     <li class="active">Qualifications</li>
 </ol>
 
-<h2>{{ career }}: {{ institution }}</h2>
+<div class="panel csa-header">
+<h3>{{ career }}: {{ institution }}</h3>
+</div>
 {% endblock %}
 
 
@@ -16,13 +18,13 @@
 
 <div class ="index-link">
 
-<h3>Qualifications offered at {{ institution }} that lead to being a {{ career }}:</h3>
+<h4>Qualifications offered that lead to becoming a {{ career }}</h4>
 
 {% for qualification in qualifications %}
 
 
 <br>
-<h4><a href="/institution/{{ institution }}/{{ qualification.name }}">{{ qualification.name }}</a></h4>
+<h5><a href="/institution/{{ institution }}/{{ qualification.name }}">{{ qualification.name }}</a></h5>
 <p>{{ qualification.short_description}}</p>
 {% endfor %}
 <br>

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block head %}
+<ol class="breadcrumb">
+  <li><a href="/">Home</a></li>
+  <li><a href="/recommend">Recommendations</a></li> 
+</ol>
+
+<div class="panel csa-header">
+<h2>Recommendations<small>    Careers and Qualifications</small></h2>
+<p>This is a brief explanation of how we calculate what to recommend.</p>
+</div>
+{% endblock %}
+
+
+
+{% block body %}
+
+<div class ="index-link">
+
+
+<h3><b>Careers</b></h3><br>
+<div class ="indent-30px">
+  {% for pair in career_score_top %}
+      <h5><a href="/career/{{ pair.0.name }}">{{ pair.0.name }}</a></h5>
+      <p>{{pair.0.short_description}}</p>
+      <br>
+  {% endfor %}
+</div>
+<hr>
+
+<h3><b>Qualifications</b></h3><br>
+<div class ="indent-30px">
+  {% for pair in qual_score_top %}
+      <h5><a href="/institution/{{pair.0.institution}}/{{ pair.0.name }}">{{ pair.0 }}</a></h5>
+      <p>{{pair.0.short_description}}</p>
+      <br>
+  {% endfor %}
+</div>
+
+</div>
+{% endblock %}

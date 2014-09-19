@@ -56,7 +56,7 @@
 
     	{% if matched_subjects|length != 0 %}
              <div>
-        The required subjects for this qualification that you <span style="color:#46BFBD">have</span> and <span style="color:#F7464A">have not</span> completed.
+        The required subjects for this qualification that your subjects <span style="color:#46BFBD">match</span> or <span style="color:#F7464A">do not</span> match.
     </div>
             <table>
                 <tr>
@@ -80,14 +80,12 @@
             </table>
 
     	{% else %}	
-            <ul>
                 {% for sub in subjects %}
                 <ul>
                     <li>{{sub}}</li>
                 </ul>
                 {% endfor %}
-            </ul>
-            <a style="font-weight:normal;  font-size:16px; color:#F7464A">You have not completed any of the subjects required for this qualification.</a>
+            <a style="font-weight:normal;  font-size:16px; color:#F7464A">None of your subjects match the subjects needed for this qualification.</a>
             
     		
 		{% endif %}

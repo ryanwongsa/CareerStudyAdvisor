@@ -29,7 +29,7 @@ urlpatterns = patterns('',
   url(r'^qualification/?$', views.qualification_index, name='qualification_index'),
   
 
-  url(r'^recommend/?$', views.recommend_careers, name ='recommend_careers'),
+  url(r'^recommend/?$', views.recommend_careers_and_qualifications, name ='recommend_careers_and_qualifications'),
 
 
   url(r'^accounts/login/?$', views.login, name ='login'),

@@ -12,40 +12,40 @@
         <form action="/accounts/loggedin" method="post">{% csrf_token %}
             {{ args.form.non_field_errors }}
         <div>
-            <h3>Interests</h3>
+            <h4>Interests<small>  What interests you?</small></h4>
 			<hr class="csa-hr">
 			{{ args.form.interests.errors }}
 			{{ args.form.interests }}
         </div>
         <br>
         <div>
-			<h3>Subjects</h3>
+			<h4>Subjects<small>  Which subjects do you do at school?</small></h4>
 			<hr class="csa-hr">
 			{{ args.form.subjects.errors }}
 			{{ args.form.subjects }}
         </div>
         <br>
         <div>
-			<h3>Liked Careers</h3>
+			<h4>Liked Careers<small>   By liking careers you help us know which careers to recommend to you</small></h4>
 			<hr class="csa-hr">
             {% if likes|length > 0 %}
     			{% for l in likes %}
                     <a href="/career/{{l}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
     			{% endfor %}
             {% else %}
-                No <a href="/career/">careers</a> have been liked.
+                You have not liked any <a href="/career/">careers</a> yet.
             {% endif %}
         </div>
         <br>
         <div>
-            <h3>Liked Qualifications</h3>
+            <h4>Liked Qualifications<small>   By liking careers you help us know which qualifications to recommend to you</small></h4>
             <hr class="csa-hr">
             {% if likes_qual|length > 0 %}
                 {% for l in likes_qual %}
                     <a href="/institution/{{l.institution}}/{{l.name}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
                 {% endfor %}
             {% else %}
-                No <a href="/qualification/">qualifications</a> have been liked.
+                You have not liked any <a href="/qualification/">qualifications</a> yet.
             {% endif %}
 
         </div>

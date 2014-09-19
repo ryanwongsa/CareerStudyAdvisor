@@ -1,13 +1,18 @@
 {% extends "base_split_home.html" %}
 
 {% block banner %}
+<div>
 <center><h1><font color="#000000">Career Study Advisor</font></h1></center>
 <hr class="csa-hr">
 <br>
  <center>
  <h5>Career Study Advisor provides students with in-depth information<br>on careers and study options for tertiary education.</h5><br>
- 
+ </center>
+ </div>
+
+
  <br>
+ <center>
 <div class="input-group-lg-5">
         <form action="/search" method="get">
             
@@ -54,22 +59,50 @@
 {% endblock %}
 
 {% block careers %}
-<h3><center>Suggested Careers</center></h3>
+{% if user.is_authenticated %}
+    {% if user.is_superuser %}
+        <h3><center>Careers</center></h3>
+    {% else %}
+        <h3><center>Suggested Careers</center></h3>
+    {% endif %}
+{% else %}
+    <h3><center>Careers</center></h3>
+{% endif %}
+
 <hr class="csa-hr">
 <div class="btn-toolbar" role="toolbar">
 <center>
 {% if user.is_authenticated %}
-   <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-            {% for pair in list_of_suggested_careers %}
-            <a href="/career/{{ pair.0.name }}" class="btn btn-success career-tooltip"
-									role="button" data-toggle="tooltip" data-trigger="hover"
-									title="{{ pair.0.short_description }}" data-placement="top">
-                <strong>{{pair.0.name}}</strong><br>
+    {% if user.is_superuser %}
+         <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+        {% for career in careers %}
+            <a href="/career/{{ career.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ career.short_description }}" data-placement="top">
+                    <strong>{{career.name}}</strong>
+                    <br>
             </a>
+        {% endfor %}
+    </div>
+    {% else %}
+        <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+            {% for pair in list_of_suggested_careers %}
+                <a href="/career/{{ pair.0.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ pair.0.short_description }}" data-placement="top">
+                    <strong>{{pair.0.name}}</strong>
+                    <br>
+                </a>
             {% endfor %}
         </div>
+    {% endif %}
 {% else %}
-    <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get suggested careers</p>
+    <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+        {% for career in careers %}
+            <a href="/career/{{ career.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ career.short_description }}" data-placement="top">
+                    <strong>{{career.name}}</strong>
+                    <br>
+            </a>
+        {% endfor %}
+    </div>
+    <br>
+    <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get suggested careers.</p>
 {% endif %}
         
     </center>

@@ -15,8 +15,7 @@
     {% if user.is_superuser %}
     <!--Dont show like button-->
     {% else %}
-	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="Click like to help us know which careers to recommend to you" data-placement="right">
-        
+	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button" >        
 			{% if career_liked %}
 					Liked
 			{% else %}

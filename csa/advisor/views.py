@@ -10,6 +10,7 @@ from forms import MyRegistrationForm
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+import random
 
 from advisor.models import Career, Qualification, Institution, Category, Subject, UserProfile
 
@@ -60,7 +61,7 @@ def unlike_qualification (request, qualification_name, inst_name):
 def get_recommended_qualifications (user):
   qual_score_all = []
   for qual in Qualification.objects.all():
-    qual_score_all.append([qual.id, ""]) # qualifications referenced by their id as neither their name or their institution are unique
+    qual_score_all.append([qual.id, 0]) # qualifications referenced by their id as neither their name or their institution are unique
 
   ''' Qualification liked -> +2
   '''
@@ -72,7 +73,7 @@ def get_recommended_qualifications (user):
 
   for pair in qual_score_all:
     if pair[0] in qual_liked_ids:
-      pair[1] = pair[1] + "+2[liked qual]"
+      pair[1] = pair[1] + 2
 
 
   ''' for each shared subject between the qualification and the current user's profile -> +1
@@ -91,7 +92,7 @@ def get_recommended_qualifications (user):
       qual_subjects_names.append(subject.name)
     for subject_name in qual_subjects_names:
       if subject_name in subjects_selected_names:
-        pair[1] = pair[1] + "+1[share subject]"
+        pair[1] = pair[1] + 1
 
 
   ''' if another user shares 5 subjects with the current user, then each qualification that the other user likes will get +1
@@ -126,13 +127,17 @@ def get_recommended_qualifications (user):
 
   for pair in qual_score_all:
     if qual_id_score.has_key(pair[0]):
-      if qual_id_score[pair[0]] > 4:
-        pair[1] = pair[1] + "+4[other users]"
+      if qual_id_score[pair[0]] > 4: # a qualification can get a max score of +4 from other others
+        pair[1] = pair[1] + 4
       else:
-        pair[1] = pair[1] + "+" + str(qual_id_score[pair[0]]) + "[other users:"+ Qualification.objects.get(id=pair[0]).name+"]"
+        pair[1] = pair[1] + qual_id_score[pair[0]]
+        #pair[1] = pair[1] + "+" + str(qual_id_score[pair[0]]) + "[other users:"+ Qualification.objects.get(id=pair[0]).name+"]"
 
 
   qual_score_all = sorted(qual_score_all, key=lambda x:x[1], reverse=True) # sorts the 2D list on the second element of each list-element 
+
+  for pair in qual_score_all:
+    pair[0]=Qualification.objects.get(id=pair[0])
 
   return qual_score_all
 
@@ -144,7 +149,7 @@ def get_recommended_careers (user):
   '''
   career_score_all = []
   for career in Career.objects.all():
-    career_score_all.append([career, ""])
+    career_score_all.append([career, 0])
 
 
   '''
@@ -158,7 +163,7 @@ def get_recommended_careers (user):
 
   for pair in career_score_all:
     if pair[0].name in careers_liked_names:
-      pair[1] = pair[1] + "4[user like]+"
+      pair[1] = pair[1] + 4
 
 
   '''
@@ -187,7 +192,7 @@ def get_recommended_careers (user):
     # for all qualifications for the current career, if the qualification is one that links to a career liked by the user -> add 2 to current career score
     for qualification_name in qualifications_names_no_duplicates:
       if qualification_name in qualifications_names_for_liked_careers_no_duplicates:
-        pair[1] = pair[1] + "2[qual]+"
+        pair[1] = pair[1] + 2
 
 
   '''
@@ -202,7 +207,7 @@ def get_recommended_careers (user):
   for pair in career_score_all:
     for subject in pair[0].subjects.all():
       if subject.name in subjects_selected_names:
-        pair[1] = pair[1] + "2[shared subject]+"
+        pair[1] = pair[1] + 2
 
 
   '''
@@ -217,7 +222,7 @@ def get_recommended_careers (user):
   for pair in career_score_all:
     for category in pair[0].categories.all():
       if category.name in interests_selected_names:
-        pair[1] = pair[1] + "3[shared category]+"
+        pair[1] = pair[1] + 3
 
 
   '''
@@ -288,11 +293,11 @@ def get_recommended_careers (user):
     if count_amount >= 2:
       for pair in career_score_all:
         if pair[0].name == career:
-          pair[1] = pair[1] + "2[other user:"+career+"]+"
+          pair[1] = pair[1] + 2
     else:
       for pair in career_score_all:
         if pair[0].name == career:
-          pair[1] = pair[1] + "1[other user:"+career+"]+"
+          pair[1] = pair[1] + 1
 
 
 
@@ -301,30 +306,17 @@ def get_recommended_careers (user):
 
   return career_score_all
 
-def recommend_careers (request):
+def recommend_careers_and_qualifications (request):
   user = UserProfile(name=request.user.username)
-  #return HttpResponse("hello")
 
   careers_recommended_all = get_recommended_careers(user)
-
   qual_recommended_all = get_recommended_qualifications(user)
 
-  #return HttpResponse (qual_recommended_all)
+  careers_recommended_top = careers_recommended_all[0:min(10,len(careers_recommended_all))]
+  qual_recommended_top = qual_recommended_all[0:min(10,len(qual_recommended_all))]
 
-  #qual_score_all_objects = []
-  for pair in qual_recommended_all:
-    pair[0]=Qualification.objects.get(id=pair[0])
-
-  #return HttpResponse(qual_score_all_objects)
-
-  careers_recommended_top = careers_recommended_all[0:min(5,len(careers_recommended_all))]
-  qual_recommended_top = qual_recommended_all[0:min(5,len(qual_recommended_all))]
-
-  #return HttpResponse(qual_recommended_top)
-
-  context = {"career_score_all": careers_recommended_all, "career_score_top": careers_recommended_top, "qual_score_all": qual_recommended_all, "qual_score_top": qual_recommended_top, "user":user}
-  #return HttpResponse(careers_recommended_all)
-  return render (request, "advisor/display_user_info.html", context)
+  context = {"career_score_top": careers_recommended_top, "qual_score_top": qual_recommended_top}
+  return render (request, "advisor/recommend.html", context)
 
 def login(request):
   
@@ -695,28 +687,37 @@ def qualification_index(request):
 def home(request):
   user = UserProfile(name=request.user.username)
 
-  categories = Category.objects.all()
-  list_of_careers=[]
-  list_of_suggested_careers=[]
-  for career in Career.objects.all():
-    list_of_careers.append(career)
-    
-  for suggested_careers in list_of_careers:
-    list_of_suggested_careers.append(suggested_careers)
-  
-  
-  #for suggested_careers in list_of_careers:
-  #  list_of_suggested_careers.append(suggested_careers)
-  
+  '''get random categories'''
+  categories_all = Category.objects.all()
+  categories_names = []
+  for i in xrange(min(20,len(categories_all))): # show min(10, len(categories_all)) random categories on home page
+    category_random = random.choice(categories_all)
+    while category_random.name in categories_names:
+      category_random = random.choice(categories_all)
+    categories_names.append(category_random.name)
+
+  categories = []
+  for category_name in categories_names:
+    categories.append(Category.objects.get(name=category_name))
+
+  '''get random careers'''
+  careers_all = Career.objects.all()
+  careers_names = []
+  for i in xrange(min(10,len(careers_all))): # show min(10, len(career_all)) random careers on home page (will be used if user is admin or not logged in)
+    career_random = random.choice(careers_all)
+    while career_random.name in careers_names:
+      career_random = random.choice(careers_all)
+    careers_names.append(career_random.name)
+
+  careers = []
+  for career_name in careers_names:
+    careers.append(Career.objects.get(name=career_name))
+
+  '''get top scoring careers'''
   careers_recommended_all = get_recommended_careers(user)
+  careers_recommended_top = careers_recommended_all[0:min(10,len(careers_recommended_all))]
 
-  #return HttpResponse(careers_recommended_all)
-
-  #return HttpResponse(careers_recommended_all)
-
-  careers_recommended_top = careers_recommended_all[0:min(5,len(careers_recommended_all))]
-
-  context = {"categories": categories, "list_of_suggested_careers": careers_recommended_top}
+  context = {"categories": categories, "careers": careers, "list_of_suggested_careers": careers_recommended_top}
   return render (request, "advisor/home.html", context)
 
 def category(request, category_name):
@@ -823,8 +824,6 @@ def qualification(request, qualification_name, inst_name):
         return HttpResponse("success")
       else:
         raise Http404
-
-
 
 
     user_liked_qual_names = []
