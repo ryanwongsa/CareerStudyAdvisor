@@ -11,13 +11,19 @@
 
 <h2>{{ career.name }}<small>
     {% if user.is_authenticated %}
+        {% if user.is_superuser %}
+    <!--Dont show like button-->
+        {% else %}
+    
 	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button">
 			{% if career_liked %}
 					Unlike
 			{% else %}
 					Like
 			{% endif %}
+        
 	</a>
+        {% endif %}
 {% endif %}
 
 </small></h2>
