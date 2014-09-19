@@ -78,12 +78,14 @@
         {
             background-color: #1abc9c;
         }
-
+      
     </style>
 {% endblock %}
 
 <!---Adds the section title to the top of the admin home page -->
 {% block content_title %}
+    <br>
+    <br>
     <font color="#000000" family="Lato,Helvetica,Arial,sans-serif" size="6px" ; style="text-align: right"; position = "30px"> Select to Add, Edit or Remove: </font>
 {% endblock %}
 
@@ -103,24 +105,24 @@
 <div id="content-main">
 
     <!---Sub-heading on admin page-->
-        <font color="#000000"; style="font-weight:normal; font-size:22px; margin-left: 38px;margin-top: 0;position:absolute; top: 160px;"> Website Management: </font> 
+        <font color="#000000"; style="font-weight:normal; font-size:22px; margin-left: 38px;margin-top: 0;position:absolute; top: 190px;"> Website Management: </font> 
 
     <!---Buttons under Website Management on admin page-->
-        <a style = "left: 110px; top: 210px;" href="/adminadvisor/category/" class="btn btn-primary btn-lg custom active" role="button">Category</a>
-        <a style = "left: 270px; top: 210px;" href="/adminadvisor/career/" class="btn btn-primary btn-lg custom active" role="button">Career</a>
-        <a style = "left: 430px; top: 210px;" href="/adminadvisor/institution/" class="btn btn-primary btn-lg custom active" role="button">Institution</a>
-        <a style = "left: 110px; top: 270px;" href="/adminadvisor/qualification/" class="btn btn-primary btn-lg custom active" role="button">Qualification</a>
-        <a style = "left: 270px; top: 270px;" href="/adminadvisor/subject/" class="btn btn-primary btn-lg custom active" role="button">Subject</a>
-        <a style = "left: 430px; top: 270px;" href="/adminadvisor/websitelink/" class="btn btn-primary btn-lg custom active" role="button">Website Link</a>
+        <a style = "left: 110px; top: 240px;" href="/adminadvisor/category/" class="btn btn-primary btn-lg custom active" role="button">Category</a>
+        <a style = "left: 270px; top: 240px;" href="/adminadvisor/career/" class="btn btn-primary btn-lg custom active" role="button">Career</a>
+        <a style = "left: 430px; top: 240px;" href="/adminadvisor/institution/" class="btn btn-primary btn-lg custom active" role="button">Institution</a>
+        <a style = "left: 110px; top: 300px;" href="/adminadvisor/qualification/" class="btn btn-primary btn-lg custom active" role="button">Qualification</a>
+        <a style = "left: 270px; top: 300px;" href="/adminadvisor/subject/" class="btn btn-primary btn-lg custom active" role="button">Subject</a>
+        <a style = "left: 430px; top: 300px;" href="/adminadvisor/websitelink/" class="btn btn-primary btn-lg custom active" role="button">Website Link</a>
 
     <!---Second sub-heading on admin page-->
-        <h1><font color="#000000"; style="font-weight:normal; font-size:22px;margin-left: 38px; position:absolute;  top: 360px;"> User Profile Management:</font></h1>
+        <h1><font color="#000000"; style="font-weight:normal; font-size:22px;margin-left: 38px; position:absolute;  top: 390px;"> User Profile Management:</font></h1>
         <br>
         <br>
 
     <!---Buttons under User Profile Management on admin page-->
-        <a style = "left: 110px; top: 405px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
-        <a style = "left: 270px; top: 405px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
+        <a style = "left: 110px; top: 435px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
+        <a style = "left: 270px; top: 435px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
 </div>
 {% endblock %}
 
@@ -163,8 +165,6 @@
 
 {% endblock %}
 
-{% block footer %}
-    <div id="footer">
-        <a style = "top:605px; position:absolute;" href="/">Back to Home Page</a>
-    </div>
+{% block scripts %}
+    <a style = "position:absolute; left:15px;" href="/">Back to Home Page</a>
 {% endblock %}
