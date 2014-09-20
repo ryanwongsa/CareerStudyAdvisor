@@ -11,19 +11,21 @@
 
 <div class="panel csa-header">
 <h3>{{ qualification.name }}<small>
-    {% if user.is_authenticated %}
+{% if user.is_authenticated %}
     {% if user.is_superuser %}
-    <!--Dont show like button-->
+        Only non-admin users can like qualifications
     {% else %}
-    <a onclick="toggleLike(this)" class="btn-csa-like btn {% if qual_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button">
+        <a onclick="toggleLike(this)" class="btn-csa-like btn {% if qual_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button">
             {% if qual_liked %}
-                    Liked
+                Liked
             {% else %}
-                    <!--<span class="glyphicon glyphicon-thumbs-up"></span> -->Like
+                Like
             {% endif %}
-    </a>
+        </a>
+    {% endif %}
+{% else %}
+    Login to like qualifications
 {% endif %}
-    {% endif %}<!--super user-->
 
 
 </small></h3>

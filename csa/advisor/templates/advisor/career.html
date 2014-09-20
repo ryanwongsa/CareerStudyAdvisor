@@ -11,19 +11,21 @@
     <div class="panel csa-header">
         
 <h2>{{ career.name }}<small>
-    {% if user.is_authenticated %}
+{% if user.is_authenticated %}
     {% if user.is_superuser %}
-    <!--Dont show like button-->
+        Only non-admin users can like careers
     {% else %}
-	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button" >        
+    	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button" >        
 			{% if career_liked %}
-					Liked
+				Liked
 			{% else %}
-					Like
+				Like
 			{% endif %}
-        
-	</a>
-        {% endif %}
+            
+    	</a>
+    {% endif %}
+{% else %}
+    Login to like careers
 {% endif %}
 
 </small></h2>
@@ -54,8 +56,8 @@
 		{% endfor %}
 		<br>
 		<h3>Similar Careers </h3>
-		{% for currCareer in similarCareers %}
-		<p><a href="/career/{{ currCareer.name }}">{{ currCareer }}</a></p>
+		{% for career in similar_careers %}
+		<p><a href="/career/{{ career }}">{{ career }}</a></p>
 		{% endfor %}
 		</ul>
 

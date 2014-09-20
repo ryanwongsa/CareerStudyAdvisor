@@ -14,6 +14,10 @@ import random
 
 from advisor.models import Career, Qualification, Institution, Category, Subject, UserProfile
 
+##########################################################################################
+# Ajax-related views - all to do with like buttons on career and qualification pages
+##########################################################################################
+
 def like_career (request, career_name):
   user = UserProfile.objects.get(name=request.user.username)
   career = Career.objects.get(name__iexact=career_name)
@@ -57,7 +61,27 @@ def unlike_qualification (request, qualification_name, inst_name):
     user.likes_qualifications.remove(qualification)
 
   return redirect ("advisor.views.qualification", qualification_name=q.name, inst_name=q.institution)
+##########################################################################################
 
+
+
+##########################################################################################
+# Helper-functions: don't render a template, but are used by other views
+##########################################################################################
+'''
+  Given a list of objects, filter_list() return an alphabetised list of these objects based on their name field
+'''
+def filter_list(temp_list):
+  filtered_list = []
+  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
+    letter_list = filter(lambda x: x.name.upper().startswith(letter), temp_list)
+    if len(letter_list) > 0:
+      letter_list.sort(key=lambda x: x.name)
+      filtered_list.append(letter_list)
+  return filtered_list
+
+'''
+'''
 def get_recommended_qualifications (user):
   qual_score_all = []
   for qual in Qualification.objects.all():
@@ -141,7 +165,8 @@ def get_recommended_qualifications (user):
 
   return qual_score_all
 
-
+'''
+'''
 def get_recommended_careers (user):
   '''
     All careers are stored in a 2D list of the form [[Career, score] ...], with score initially set to 0 for each career.
@@ -167,36 +192,38 @@ def get_recommended_careers (user):
 
 
   '''
-    All careers that share qualifications with the careers the user has liked will have their scores increased by 2 for each shared qualification. 
+    All careers that share qualifications with the careers the user has liked will have their 
+    scores increased by 2 for each shared qualification. 
   '''
   qualifications_for_liked_careers = [] 
   for career in careers_liked:
     for qualification in career.qualifications.all():
-      qualifications_for_liked_careers.append(qualification.name)
+      qualifications_for_liked_careers.append(qualification.id)
 
   # all qualifications for all careers liked by the user
-  qualifications_names_for_liked_careers_no_duplicates = list(set(qualifications_for_liked_careers))
+  qualifications_ids_for_liked_careers_no_duplicates = list(set(qualifications_for_liked_careers))
 
   for pair in career_score_all:
     # skip the career if it is liked by the user. If this is not done, all liked careers will defaultly get 6 score for being liked instead of 4
     if pair[0].name in careers_liked_names:
       continue
     
-    qualifications_names = []
+    qualifications_ids = []
     for qualification in pair[0].qualifications.all():
-      qualifications_names.append(qualification.name)
+      qualifications_ids.append(qualification.id)
     
     # all qualifications for current career
-    qualifications_names_no_duplicates = list(set(qualifications_names))
+    qualifications_ids_no_duplicates = list(set(qualifications_ids))
     
     # for all qualifications for the current career, if the qualification is one that links to a career liked by the user -> add 2 to current career score
-    for qualification_name in qualifications_names_no_duplicates:
-      if qualification_name in qualifications_names_for_liked_careers_no_duplicates:
+    for qualification_id in qualifications_ids_no_duplicates:
+      if qualification_id in qualifications_ids_for_liked_careers_no_duplicates:
         pair[1] = pair[1] + 2
 
 
   '''
-    All careers that share linked subjects with the the user will have their scores increased by 2 for each shared subject.
+    All careers that share linked subjects with the the user will have their scores 
+    increased by 2 for each shared subject.
   '''
   subjects_selected = user.subjects.all()
   
@@ -211,7 +238,8 @@ def get_recommended_careers (user):
 
 
   '''
-    All careers that share categories with the user's selected interests will have their scores increased by 3 for each interest.
+    All careers that share categories with the user's selected interests will have their scores 
+    increased by 3 for each interest.
   '''
   interests_selected = user.interests.all(); #in the context of a user's profile: categories are presented to the user as interests
   
@@ -250,8 +278,6 @@ def get_recommended_careers (user):
       likes_names.append(career.name)
     users_interests_likes_names.append([interests_names, likes_names])
 
-
-  #return users_interests_likes_names
 
   careers_other_users_score = [] # [[career1_name, score_to_be_added], [...], ...]
   #careers_matched [] # [career1_name, ... ]
@@ -300,12 +326,19 @@ def get_recommended_careers (user):
           pair[1] = pair[1] + 1
 
 
-
-
   career_score_all = sorted(career_score_all, key=lambda x:x[1], reverse=True) # sorts the 2D list on the second element of each list-element 
 
   return career_score_all
+##########################################################################################
 
+
+
+##########################################################################################
+# The rest of the functions are function-based views
+##########################################################################################
+
+'''
+'''
 def recommend_careers_and_qualifications (request):
   user = UserProfile(name=request.user.username)
 
@@ -318,8 +351,9 @@ def recommend_careers_and_qualifications (request):
   context = {"career_score_top": careers_recommended_top, "qual_score_top": qual_recommended_top}
   return render (request, "advisor/recommend.html", context)
 
-def login(request):
-  
+'''
+'''
+def login(request):  
     if request.user.is_authenticated():
         user_name = UserProfile(name=request.user.username)
         #form = UserProfileForm(initial={'interest': '', 'likes': ''})
@@ -346,7 +380,8 @@ def login(request):
         context = {"c": c}
         return render(request, "login.html", context)
     
-
+'''
+'''
 def auth_view(request):
     username = request.POST.get('username','')
     password = request.POST.get('password','')
@@ -360,7 +395,8 @@ def auth_view(request):
         return render(request, 'login.html', context)
 #return HttpResponseRedirect('/accounts/login')# was /accounts/invalid!!!!
 
-
+'''
+'''
 @login_required     # to access this page the user needs to be loggedin
 def loggedin(request):
     user_name = UserProfile(name=request.user.username)
@@ -380,26 +416,10 @@ def loggedin(request):
     list_of_subjects = []
     list_of_likes = []
     list_of_likes_qualifications = []
-    
 
-    '''
-    for user in UserProfile.objects.all():
-        username = request.user.username
-        userFromP = user
-        #return HttpResponse(username == userFromP.pk);  #add pk if from models
-        if username == userFromP.pk:
-            return HttpResponse(UserProfile.objects.interests.all());
-            for interests in UserProfile.objects.interests():
-                return HttpResponse(username == userFromP.pk);
-            #for user in UserProfile.objects.all():
-        # if request.user.username == name
-        #     for interests in
-            #       list_of_categories.append(category)
-    '''
-    try: #if the user has updated their profile
+    try: # if the user has updated their profile
         up = UserProfile.objects.get(name__iexact=request.user.username) #.get()  not  .filter()
     
-
         for category in up.interests.all():
             list_of_categories.append(category)
 
@@ -409,12 +429,10 @@ def loggedin(request):
         for like in up.likes.all(): 
             list_of_likes.append(like)
 
-        #return HttpResponse(len(up.likes_qualifications.all()))
         for qlike in up.likes_qualifications.all():
           list_of_likes_qualifications.append(qlike)
 
         args['form'] = UserProfileForm(initial={"name":"ac","interests": list_of_categories,"subjects": list_of_subjects,"likes": list_of_likes,"likes_qual": list_of_likes_qualifications}) 
-    #Category.objects.all().values_list('id',flat=True)
         print args
         context = {"full_name": request.user.username, "args" :args,"likes":list_of_likes,"likes_qual": list_of_likes_qualifications}
         return render(request, "loggedin.html", context)
@@ -425,19 +443,24 @@ def loggedin(request):
         return render(request, "loggedin.html", context)
         pass
 
+'''
+'''
 def invalid_login(request):
     return render(request, "invalid_login.html")
 
-
+'''
+'''
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
 
+'''
+'''
 def register_user(request):
     if request.method == 'POST':
         form = MyRegistrationForm(request.POST)
         if form.is_valid():
-            #autologin after register here
+            # autologin after register here
             new_user = form.save()
             new_user = authenticate(username=request.POST['username'],
                                         password=request.POST['password1'])
@@ -461,233 +484,131 @@ def register_user(request):
    
     return render(request, "register.html", context)
 
+'''
+'''
 def register_success(request):
     return render(request, "register_success.html")
 
+'''
+'''
+def career_index(request):
+  list_of_careers = []
+  for career in Career.objects.all():
+    list_of_careers.append(career)
+  
+  careers = filter_list(list_of_careers)
 
-class Career_Index(View):
-  def get(self, request):
-    list_of_careers = []
-    for career in Career.objects.all():
-      list_of_careers.append(career)
-    
-    careers = []
-    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-      letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_careers)
-      if len(letter_list) > 0:
-        letter_list.sort(key=lambda x: x.name)
-        careers.append(letter_list)
+  context = {"careers": careers}
+  return render(request, "advisor/career_index.html", context)
 
-    context = {"careers": careers}
-    return render(request, "advisor/career_index.html", context)
-
+'''
+'''
 def career(request, career_name):
   c = Career.objects.get(name__iexact=career_name)
-  if request.user.is_superuser:#Removes like feature
-        
-        list_of_qualifications = []
-        list_of_categories = []
-        list_of_institutions = []
-        list_of_companies = []
-        
-        
-        for qualification in c.qualifications.all(): #need .all() otherwise not iterable
-            list_of_qualifications.append(qualification)
-        for qualification in list_of_qualifications:
-            if qualification.institution.name not in list_of_institutions:
-                list_of_institutions.append(qualification.institution.name)
-        for category in c.categories.all():
-            list_of_categories.append(category)
-        for company in c.companies.all(): #need .all() otherwise not iterable
-            list_of_companies.append(company)
-        
-        ### added
-        # for category in c.categories.all():
-        #list_of_similar_careers.append(category)
-        list_of_similar_careers = []
-        list_of_careers = []
-        for career in Career.objects.all():
-            if career.name != c.name:
-                list_of_careers.append(career)
-        # list_of_careers is all of the careers
-        # list_of_categories is only for the categories for this career
-        # list_of_temp_categories is the categories that the other careers have
-        
-        
-        for career in list_of_careers:
-            list_of_temp_categories=[]
-            for category in career.categories.all():
-                list_of_temp_categories.append(category)
-            
-            for temp_career_category in list_of_temp_categories:
-                if temp_career_category in list_of_categories:
-                    if career not in list_of_similar_careers:
-                        list_of_similar_careers.append(career)
-        ##
-        
-        #these are the names of the variables in the template
-        context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers}
-        return render (request, "advisor/career.html", context)
-  elif request.user.is_authenticated(): #includes like feature
 
-      user = UserProfile.objects.get(name=request.user.username)
+  list_of_qualifications = []
+  list_of_categories = []
+  list_of_institutions = []
+  list_of_companies = []
 
-      '''
-        Uses a POST request to update the database (with the user's like or unlike) without going to another URL
-      '''
-      if request.method == "POST":
-        if request.POST['action'] == "like":
-          if c not in user.likes.all():
-            user.likes.add(c)
-          return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
-        elif request.POST['action'] == "liked":
-          if c in user.likes.all():
-            user.likes.remove(c)
-          return HttpResponse("success")
-        else:
-          raise Http404
+  for qualification in c.qualifications.all():
+    list_of_qualifications.append(qualification)
+  for qualification in list_of_qualifications:
+    if qualification.institution.name not in list_of_institutions:
+      list_of_institutions.append(qualification.institution.name)
+  for category in c.categories.all():
+    list_of_categories.append(category)  
+  for company in c.companies.all(): 
+    list_of_companies.append(company)
 
-      
-      user_liked_careers_names = []
-      for career in user.likes.all():
-        user_liked_careers_names.append(career.name)
+  list_of_similar_careers = [] # other careers that share a qualification with the current career
+  list_of_careers = [] # all of the careers besides the current one
+  for career in Career.objects.all():
+    if career.name != c.name:
+      list_of_careers.append(career)
 
-      list_of_qualifications = []
-      list_of_categories = []
-      list_of_institutions = []
-      list_of_companies = []
-      
-      career_liked = False
-      if c.name in user_liked_careers_names:
-        career_liked = True
+  list_of_qualifications_ids = [] # unique ids of all qualifications linked to the current career
+  for qual in list_of_qualifications:
+    list_of_qualifications_ids.append(qual.id)
 
-      for qualification in c.qualifications.all(): #need .all() otherwise not iterable
-        list_of_qualifications.append(qualification)
-      for qualification in list_of_qualifications:
-        if qualification.institution.name not in list_of_institutions:
-          list_of_institutions.append(qualification.institution.name)
-      for category in c.categories.all():
-        list_of_categories.append(category)  
-      for company in c.companies.all(): #need .all() otherwise not iterable
-        list_of_companies.append(company)
+  for career in list_of_careers:
+    for qual in career.qualifications.all():
+      if qual.id in list_of_qualifications_ids:
+        list_of_similar_careers.append(career.name)
+        break # once a career has been flagged as similiar and has been added to the list, no need to add it again
 
-    ### added
-    # for category in c.categories.all():
-    #list_of_similar_careers.append(category)
-      list_of_similar_careers = []
-      list_of_careers = []
-      for career in Career.objects.all():
-        if career.name != c.name:
-          list_of_careers.append(career)
-    # list_of_careers is all of the careers
-    # list_of_categories is only for the categories for this career
-    # list_of_temp_categories is the categories that the other careers have
+  '''
+    Determine whether to show like button or not
+  '''
+  if request.user.is_superuser or (not request.user.is_authenticated()): # removes like feature - admins and non-logged in users can't like careers
+    context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similar_careers": list_of_similar_careers}
+    return render (request, "advisor/career.html", context)
+  else: # non-admin user is logged in -> include like feature
+    user = UserProfile.objects.get(name=request.user.username)
+
+    '''
+      Uses a POST request to update the database (with the user's like or unlike) without going to another URL
+    '''
+    if request.method == "POST":
+      if request.POST['action'] == "like":
+        if c not in user.likes.all():
+          user.likes.add(c)
+        return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
+      elif request.POST['action'] == "liked":
+        if c in user.likes.all():
+          user.likes.remove(c)
+        return HttpResponse("success")
+      else:
+        raise Http404
+
+    user_liked_careers_names = []
+    for career in user.likes.all():
+      user_liked_careers_names.append(career.name)
+
+    career_liked = False
+    if c.name in user_liked_careers_names:
+      career_liked = True
+
+    context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similar_careers": list_of_similar_careers, "career_liked": career_liked}
+    return render (request, "advisor/career.html", context)
+
+'''
+'''
+def search (request):
+  # request.GET is a dictionary where the query variable is the value in a key-value pair (i.e. it is the actual search text)
+  query = request.GET["query"]
+  list_of_careers = Career.objects.filter(name__icontains=query).all()
+  list_of_institutions = Institution.objects.filter(name__icontains=query).all()
+  list_of_qualifications = Qualification.objects.filter(name__icontains=query).all()
+  list_of_categories = Category.objects.filter(name__icontains=query).all()
+  
+  list_of_careers_filtered = filter_list(list_of_careers)
+  list_of_instituions_filtered = filter_list(list_of_institutions)
+  list_of_qualifications_filtered = filter_list(list_of_qualifications)
+  list_of_categories_filtered = filter_list(list_of_categories)
+
+  context = {"careers": list_of_careers_filtered, "institutions": list_of_instituions_filtered, "qualifications": list_of_qualifications_filtered, "categories": list_of_categories_filtered, "search_term": query}
+  return render (request, "advisor/search.html", context)
 
 
-      for career in list_of_careers:
-        list_of_temp_categories=[]
-        for category in career.categories.all():
-          list_of_temp_categories.append(category)
-        
-        for temp_career_category in list_of_temp_categories:
-          if temp_career_category in list_of_categories:
-            if career not in list_of_similar_careers:
-              list_of_similar_careers.append(career)
-    ##
-
-      #these are the names of the variables in the template
-      context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers, "career_liked": career_liked}
-      return render (request, "advisor/career.html", context)
-  else:
-      list_of_qualifications = []
-      list_of_categories = []
-      list_of_institutions = []
-      list_of_companies = []
-      
-      
-      for qualification in c.qualifications.all(): #need .all() otherwise not iterable
-          list_of_qualifications.append(qualification)
-      for qualification in list_of_qualifications:
-          if qualification.institution.name not in list_of_institutions:
-              list_of_institutions.append(qualification.institution.name)
-      for category in c.categories.all():
-          list_of_categories.append(category)
-      for company in c.companies.all(): #need .all() otherwise not iterable
-          list_of_companies.append(company)
-      
-      ### added
-      # for category in c.categories.all():
-      #list_of_similar_careers.append(category)
-      list_of_similar_careers = []
-      list_of_careers = []
-      for career in Career.objects.all():
-          if career.name != c.name:
-              list_of_careers.append(career)
-      # list_of_careers is all of the careers
-      # list_of_categories is only for the categories for this career
-      # list_of_temp_categories is the categories that the other careers have
-      
-      
-      for career in list_of_careers:
-          list_of_temp_categories=[]
-          for category in career.categories.all():
-              list_of_temp_categories.append(category)
-          
-          for temp_career_category in list_of_temp_categories:
-              if temp_career_category in list_of_categories:
-                  if career not in list_of_similar_careers:
-                      list_of_similar_careers.append(career)
-      ##
-      
-      #these are the names of the variables in the template
-      context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similarCareers": list_of_similar_careers}
-      return render (request, "advisor/career.html", context)
-
-class Search(View):
-  def get(self, request):
-    # request.GET is a dictionary where the query variable is the value in a key-value pair (i.e. it is the actual search text)
-    query = request.GET["query"]
-    list_of_careers = Career.objects.filter(name__icontains=query).all()
-    list_of_institutions = Institution.objects.filter(name__icontains=query).all()
-    list_of_qualifications = Qualification.objects.filter(name__icontains=query).all()
-    list_of_categories = Category.objects.filter(name__icontains=query).all()
-    #return HttpResponse(list_of_careers)
-    
-    list_of_careers_filtered = self.filter_list(list_of_careers)
-    list_of_instituions_filtered = self.filter_list(list_of_institutions)
-    list_of_qualifications_filtered = self.filter_list(list_of_qualifications)
-    list_of_categories_filtered = self.filter_list(list_of_categories)
-
-    context = {"careers": list_of_careers_filtered, "institutions": list_of_instituions_filtered, "qualifications": list_of_qualifications_filtered, "categories": list_of_categories_filtered, "search_term": query}
-    return render (request, "advisor/search.html", context)
-
-  def filter_list(self, temp_list):
-    filtered_list = []
-    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-      letter_list = filter(lambda x: x.name.upper().startswith(letter), temp_list)
-      if len(letter_list) > 0:
-        letter_list.sort(key=lambda x: x.name)
-        filtered_list.append(letter_list)
-    return filtered_list
-
+'''
+'''
 def qualification_index(request):
   list_of_qualifications = []
   for qualifications in Qualification.objects.all():
     list_of_qualifications.append(qualifications)
-  qualifications = []
-  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-    letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_qualifications)
-    if len(letter_list) > 0:
-      letter_list.sort(key=lambda x: x.name)
-      qualifications.append(letter_list)
+
+  qualifications = filter_list(list_of_qualifications)
     
   context = {"qualifications": qualifications}
   return render (request, "advisor/qualification_index.html", context)
 
+'''
+'''
 def home(request):
   user = UserProfile(name=request.user.username)
 
-  '''get random categories'''
+  '''Get random categories'''
   categories_all = Category.objects.all()
   categories_names = []
   for i in xrange(min(20,len(categories_all))): # show min(10, len(categories_all)) random categories on home page
@@ -700,7 +621,7 @@ def home(request):
   for category_name in categories_names:
     categories.append(Category.objects.get(name=category_name))
 
-  '''get random careers'''
+  '''Get random careers'''
   careers_all = Career.objects.all()
   careers_names = []
   for i in xrange(min(10,len(careers_all))): # show min(10, len(career_all)) random careers on home page (will be used if user is admin or not logged in)
@@ -713,42 +634,40 @@ def home(request):
   for career_name in careers_names:
     careers.append(Career.objects.get(name=career_name))
 
-  '''get top scoring careers'''
+  '''Get top scoring careers'''
   careers_recommended_all = get_recommended_careers(user)
   careers_recommended_top = careers_recommended_all[0:min(10,len(careers_recommended_all))]
 
   context = {"categories": categories, "careers": careers, "list_of_suggested_careers": careers_recommended_top}
   return render (request, "advisor/home.html", context)
 
+'''
+'''
 def category(request, category_name):
   list_of_careers = []
   for career in Career.objects.all():
     if career.categories.filter(name__iexact=category_name).count() > 0:
       list_of_careers.append(career)
 
-  careers = []
-  for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-        letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_careers)
-        if len(letter_list) > 0:
-            letter_list.sort()
-            careers.append(letter_list)
+  careers = filter_list(list_of_careers)
+
   context = {"careers": careers, "category": category_name}
   return render (request, "advisor/category.html", context)
 
+'''
+'''
 def category_index(request):
     list_of_categories = []
     for category in Category.objects.all():
         list_of_categories.append(category)
-    categories = []
-    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-        letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_categories)
-        if len(letter_list) > 0:
-            letter_list.sort(key=lambda x: x.name)
-            categories.append(letter_list)
-    
+
+    categories = filter_list(list_of_categories)
+
     context = {"categories": categories}
     return render (request, "advisor/category_index.html", context)
 
+'''
+'''
 def institution_career(request, career_name, inst_name):
   list_of_qualifications = []
   list_of_qualifications_at_inst = []
@@ -765,49 +684,42 @@ def institution_career(request, career_name, inst_name):
   context = {"institution": inst_name, "career": career_name, "qualifications": list_of_qualifications_at_inst}
   return render (request, "advisor/institution_career.html", context)
 
+'''
+'''
 def qualification(request, qualification_name, inst_name):
   list_of_qualifications_with_name = Qualification.objects.filter(name__iexact=qualification_name).all()
   for qual in list_of_qualifications_with_name:
     if qual.institution.name == inst_name:
       q = qual # should only be one qualification that meets this criteria
 
-  if request.user.is_superuser:
-    careers = Career.objects.all()
-    list_of_careers_from_qualification = []
-    list_of_websites = []
-    list_of_subjects = []
-    
-    for career in careers:
-        if q in career.qualifications.all():
-            list_of_careers_from_qualification.append(career)
-    #for qualification in career.qualifications.all():
-    # if qualification.name == q.name and qualification.institution == q.institution:
-    #  list_of_careers_from_qualification.append(career)
-    
-    for web in q.qualifications_websites.all():
-        list_of_websites.append(web)
-    
-    '''
-        All subjects belonging to a particular qualification will be added to a list_of_subjects list.
-        This list subjects is then passed to qualification.html and used to display the subjects for
-        a particular qualification on the qualifcations page.
-        '''
-    for sub in q.subjects.all():
-        list_of_subjects.append(sub)
-    
-    '''
-        The code below produces two lists to compare the subjects that a user has taken to a list of
-        subjects required to obtain the qualification. The system then displays a list of subject
-        requirements that have been met and a list of subjects that the user hasn't taken
-        (and that are required).
-        '''
-    
-    
+  careers = Career.objects.all()
+  list_of_careers_from_qualification = []
+  list_of_websites = []
+  list_of_subjects = []
+  
+  for career in careers:
+      if q in career.qualifications.all():
+          list_of_careers_from_qualification.append(career)
+  
+  for web in q.qualifications_websites.all():
+      list_of_websites.append(web)
+  
+  '''
+      All subjects belonging to a particular qualification will be added to a list_of_subjects list.
+      This list subjects is then passed to qualification.html and used to display the subjects for
+      a particular qualification on the qualifcations page.
+  '''
+  for sub in q.subjects.all():
+      list_of_subjects.append(sub)
+
+
+  '''
+    Determine whether to show like button or not
+  '''
+  if request.user.is_superuser or (not request.user.is_authenticated()): # removes like feature - admins and non-logged in users can't like careers
     context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects}
     return render (request, "advisor/qualification.html", context)
-
-  elif request.user.is_authenticated(): #includes like feature
-
+  else: # non-admin user is logged in -> include like feature
     user = UserProfile.objects.get(name=request.user.username)
 
     '''
@@ -817,7 +729,7 @@ def qualification(request, qualification_name, inst_name):
       if request.POST['action'] == "like":
         if q not in user.likes_qualifications.all():
           user.likes_qualifications.add(q)
-        return HttpResponse("success") #actual text doesn't matter as the ajax call is not requesting information
+        return HttpResponse("success") # actual text doesn't matter as the ajax call is not requesting information
       elif request.POST['action'] == "liked":
         if q in user.likes_qualifications.all():
           user.likes_qualifications.remove(q)
@@ -834,29 +746,6 @@ def qualification(request, qualification_name, inst_name):
     if q.name in user_liked_qual_names:
       qual_liked = True
 
-
-    careers = Career.objects.all()
-    list_of_careers_from_qualification = []
-    list_of_websites = []
-    list_of_subjects = []
-
-    for career in careers:
-      if q in career.qualifications.all():
-        list_of_careers_from_qualification.append(career)
-      #for qualification in career.qualifications.all():
-       # if qualification.name == q.name and qualification.institution == q.institution:
-        #  list_of_careers_from_qualification.append(career)
-
-    for web in q.qualifications_websites.all():
-        list_of_websites.append(web)
-
-    '''
-    All subjects belonging to a particular qualification will be added to a list_of_subjects list.
-    This list subjects is then passed to qualification.html and used to display the subjects for 
-    a particular qualification on the qualifcations page.
-    '''    
-    for sub in q.subjects.all():
-        list_of_subjects.append(sub)
 
     '''
      The code below produces two lists to compare the subjects that a user has taken to a list of
@@ -885,58 +774,20 @@ def qualification(request, qualification_name, inst_name):
     context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects,"matched_subjects": matched_user_subjects, "extra_subjects_needed": extra_subjects_needed, "qual_liked": qual_liked}
     return render (request, "advisor/qualification.html", context)
 
-  else:
-    careers = Career.objects.all()
-    list_of_careers_from_qualification = []
-    list_of_websites = []
-    list_of_subjects = []
-
-    for career in careers:
-      if q in career.qualifications.all():
-        list_of_careers_from_qualification.append(career)
-      #for qualification in career.qualifications.all():
-       # if qualification.name == q.name and qualification.institution == q.institution:
-        #  list_of_careers_from_qualification.append(career)
-
-    for web in q.qualifications_websites.all():
-        list_of_websites.append(web)
-
-    '''
-    All subjects belonging to a particular qualification will be added to a list_of_subjects list.
-    This list subjects is then passed to qualification.html and used to display the subjects for 
-    a particular qualification on the qualifcations page.
-    '''    
-    for sub in q.subjects.all():
-        list_of_subjects.append(sub)
-
-    '''
-     The code below produces two lists to compare the subjects that a user has taken to a list of
-     subjects required to obtain the qualification. The system then displays a list of subject
-     requirements that have been met and a list of subjects that the user hasn't taken
-     (and that are required).
-    '''
-   
-
-    context = {"qualification": q, "careers": list_of_careers_from_qualification, "websites": list_of_websites, "subjects": list_of_subjects}
-    return render (request, "advisor/qualification.html", context)
-
-
+'''
+'''
 def institution_index(request):
     list_of_institutions = []
     for institution in Institution.objects.all():
         list_of_institutions.append(institution)
     
-    institution = []
-    for letter in "ABCDEFGHIJKLMNOPQRSTUVWXYZ":
-        letter_list = filter(lambda x: x.name.upper().startswith(letter), list_of_institutions)
-        if len(letter_list) > 0:
-            letter_list.sort(key=lambda x: x.name)
-            institution.append(letter_list)
+    institution = filter_list(list_of_institutions)
     
     context = {"institution": institution}
     return render(request, "advisor/institution_index.html", context)
 
-#exact institution
+'''
+'''
 def institution(request, institution_name):
     i = Institution.objects.get(name__iexact=institution_name) #.get()  not  .filter()
     
@@ -948,7 +799,6 @@ def institution(request, institution_name):
     list_of_contacts = []    
     
     for qualification in Qualification.objects.all():
-        #   return HttpResponse(qualification.institution.name == institution_name)
         if qualification.institution.name == institution_name:
             list_of_qualifications.append(qualification.name)
 
@@ -964,10 +814,7 @@ def institution(request, institution_name):
     for web in i.websites.all():
       list_of_websites.append(web)
 
-    logo= "/static/"+institution_name.replace(" ", "").lower()+".gif"
-    #these are the names of the variables in the template
-    context = {"logo": logo,"institution": i, "qualifications": list_of_qualifications,"handbooks": list_of_handbooks,"websites": list_of_websites,"contactWebsites": list_of_contacts,"facultyWebsites": list_of_faculties}
+    context = {"institution": i, "qualifications": list_of_qualifications,"handbooks": list_of_handbooks,"websites": list_of_websites,"contactWebsites": list_of_contacts,"facultyWebsites": list_of_faculties}
     return render (request, "advisor/institution.html", context)
-
-
+##########################################################################################
 

@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, url
 
 from advisor import views
-from advisor.views import Career_Index, Search #, Recommend_Careers
 #Career, Search, Home, Category, Category_Index, Institution_Career, Qualification, Institution_Index, Institution
 
 # applies to the character immediately before (that's why you need to use brackets if more than one character)
@@ -9,14 +8,14 @@ from advisor.views import Career_Index, Search #, Recommend_Careers
 # * -> 0 or many
 # ? -> 0 or 1
 urlpatterns = patterns('',
-  url(r'^search/?$', Search.as_view(), name='search'),
+  url(r'^search/?$', views.search, name='search'),
 
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/liked/?$', views.unlike_career, name='unlike_career'),
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/like/?$', views.like_career, name='like_career'),
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/(?P<inst_name>\w[\w\s\(\)]*)/?$', views.institution_career, name='institution_career'),
   
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/?$', views.career, name='career'),
-  url(r'^career/?$', Career_Index.as_view(), name='career_index'),
+  url(r'^career/?$', views.career_index, name='career_index'),
 
   url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/liked/?$', views.unlike_qualification, name='unlike_qualification'),
   url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/like/?$', views.like_qualification, name='like_qualification'),
