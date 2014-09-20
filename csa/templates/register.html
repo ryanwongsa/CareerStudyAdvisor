@@ -1,21 +1,28 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <h1>Register</h1>
+
+    <div class="panel csa-header">
+    <h1>Sign Up</h1>
+    </div>
+    
+    {% if invalid %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Invalid input or user already exists</strong>: Please try typing in your details again.
+        </div>
+    {% endif %}
+
 {% endblock %}
 
 {% block body %}
     <div class ="index-link">
-        <h2>Register here</h2>
-        <br>
+        <br><br>
         <form  action="/accounts/register/" method="post">{% csrf_token %}
             <div class ="index-login-link">
                 <p>{{args.form.as_p}}</p>
-                <input type="submit" value = "Register"/>
+                <input class="btn btn-primary" type="submit" value = "Register"/>
            </div>
         </form>
-        {% if invalid %}
-        <p style="color:red;">* Invalid input or user already exists</p>
-        {% endif %}
     </div>
 {% endblock %}

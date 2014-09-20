@@ -1,27 +1,32 @@
 {% extends "base.html" %}
 
 {% block head %}
+
+    <div class="panel csa-header">
     <h1>Login </h1>
+    </div>
+
+    {% if invalid %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <strong>Invalid login</strong>: Please try typing in your details again.
+        </div>
+    {% endif %}
+    
 {% endblock %}
 
 {% block body %}
+
     <form class="form-signin span4" action="/accounts/auth/" method="post">{% csrf_token %}
         <div class ="index-link">
-            <h2 class="form-signin-heading">Login Required</h2>
-            <br>
+            <br><br>
             <div class ="index-login-link">
-                <p>Username: </p><input type="text" class="input-block-level" placeholder="Username" name="username" id="username" value="" size="60" />
-            </br>
-            <br>
-            <p>Password: </p><input type="password" class="input-block-level" placeholder="Password" name="password" id="password" value="" size="60" />
-            </br>
-            <br>
+                <p><strong>Username</strong></p><input type="text" class="input-block-level" placeholder="Username" name="username" id="username" value="" size="60" />
+            <br><br>
+            <p><strong>Password</strong></p><input type="password" class="input-block-level" placeholder="Password" name="password" id="password" value="" size="60" />
+            <br><br>
             <button class="btn btn-primary" value="login" type="submit">Login</button>
-            </br>
-            
-            {% if invalid %}
-                <p style="color:red;">* Invalid Login</p>
-            {% endif %}
         </div>
     </form>
+
 {% endblock %}
