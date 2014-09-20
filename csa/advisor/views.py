@@ -345,8 +345,8 @@ def recommend_careers_and_qualifications (request):
   careers_recommended_all = get_recommended_careers(user)
   qual_recommended_all = get_recommended_qualifications(user)
 
-  careers_recommended_top = careers_recommended_all[0:min(10,len(careers_recommended_all))]
-  qual_recommended_top = qual_recommended_all[0:min(10,len(qual_recommended_all))]
+  careers_recommended_top = careers_recommended_all[0:min(5,len(careers_recommended_all))]
+  qual_recommended_top = qual_recommended_all[0:min(5,len(qual_recommended_all))]
 
   context = {"career_score_top": careers_recommended_top, "qual_score_top": qual_recommended_top}
   return render (request, "advisor/recommend.html", context)
