@@ -17,10 +17,10 @@ urlpatterns = patterns('',
   url(r'^career/(?P<career_name>\w+(\s+\w+)*)/?$', views.career, name='career'),
   url(r'^career/?$', views.career_index, name='career_index'),
 
-  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/liked/?$', views.unlike_qualification, name='unlike_qualification'),
-  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/like/?$', views.like_qualification, name='like_qualification'),
+  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\),&]*)/liked/?$', views.unlike_qualification, name='unlike_qualification'),
+  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\),&]*)/like/?$', views.like_qualification, name='like_qualification'),
 
-  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\)]*)/?$', views.qualification, name='qualification'),
+  url(r'^institution/(?P<inst_name>\w[\w\s\(\)]*)/(?P<qualification_name>\w[\w\s\(\),&]*)/?$', views.qualification, name='qualification'),
   url(r'^institution/(?P<institution_name>\w[\w\s\(\)]*)/?$', views.institution, name='institution'),
   url(r'^institution/?$', views.institution_index, name='institution_index'),
   url(r'^category/(?P<category_name>\w+(\s+\w+)*)/?$', views.category, name='category'),

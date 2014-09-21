@@ -19,7 +19,7 @@
         <br>
         <h3>{{ letter.0.name.0|upper }}</h3>
         {% for qualification in letter %}
-            <p><a href="/institution/{{ qualification.institution }}/{{ qualification.name }}">{{ qualification.name }}</a></p>
+            <p><a href="/institution/{{ qualification.institution }}/{{ qualification.name }}">{{ qualification }}</a></p>
         {% endfor %}
     {% endfor %}
 </div>
