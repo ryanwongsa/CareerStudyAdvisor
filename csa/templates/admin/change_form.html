@@ -1,13 +1,23 @@
+<!--
+    #################################################################################
+    # Capstone Project - Career Study Advisor 
+    # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+    # 21/07/2014 - 22/09/2014
+    #################################################################################
+-->
 {% extends "admin/base_site.html" %}
 {% load i18n admin_urls admin_static admin_modify %}
 
-{% block extrahead %}{{ block.super }}
-<script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
-{{ media }}
+{% block extrahead %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ media }}
 {% endblock %}
 
-{% block extrastyle %}{{ block.super }}
-<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+{% block extrastyle %}
+    {{ block.super }}
+    <!--Makes a css style available for use in the forms-->
+    <link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
 
 <!--module h2,module caption,inline-group h2: Changes the selected box on the admin add pages-->
 <!--selector .selector-available h2 : Changes the available box on the admin add pages-->
@@ -49,6 +59,8 @@ line-height: 20px;
             color: red;
 
         }
+
+        
 </style>
 {% endblock %}
 

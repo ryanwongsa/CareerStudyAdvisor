@@ -24,8 +24,8 @@
             font-size: 16px;
             font-weight: normal;
             color: #666;
-            height: 35px;
-            line-height: 25px;
+            height: 45px;
+            line-height: 35px;
             border-bottom: 5px solid #666;
         }
 
@@ -34,13 +34,14 @@
         {
             border: 5px solid #666;
             float: right;
-            width: 22em;
+            width: 24em;
             position: relative;
-            margin-right: -35em;
-            font-family: Lato,Helvetica,Arial,sans-serif;
+            margin-right: -40em;
+            margin-top: -3em;
+            font-family: Lato,Helvetica,Arial,sans-serif;          
         }
 
-        /*Changes inner the box around Auth, Advisor and Recent Actions */
+        /*Changes inner the box around Authentication, Advisor and Recent Actions */
         .module 
         {
             border: 0px solid #ccc;
@@ -49,7 +50,7 @@
             min-height: 400px;
         }
 
-        /* Changes border around Auth and Advisor*/
+        /* Changes border around Authentication and Advisor*/
         #content-main
         {
             border: 0px solid #ccc;
@@ -62,7 +63,6 @@
             width: 150px !important;
             font-weight:bold;
             position:absolute;
-
         }
 
         /* Changing the text position and font size of the text in the top bar of the admin pages*/
@@ -78,8 +78,16 @@
         .btn-primary.active
         {
             background-color: #1abc9c;
+            color:white;
+            border-color: #1abc9c;
         }
-      
+        
+        /*Changes the height of the well on the admin pages*/
+        .well
+        {
+            min-height: 600px;
+        }
+
     </style>
 {% endblock %}
 
@@ -106,24 +114,25 @@
 <div id="content-main">
 
     <!---Sub-heading on admin page-->
-        <font color="#000000"; style="font-weight:normal; font-size:22px; margin-left: 38px;margin-top: 0;position:absolute; top: 190px;"> Website Management: </font> 
+        <font color="#000000"; style="font-weight:normal; font-size:22px; margin-left: 38px;margin-top: 0;position:absolute; top: 210px;"> Website Management: </font> 
 
     <!---Buttons under Website Management on admin page-->
-        <a style = "left: 110px; top: 240px;" href="/adminadvisor/category/" class="btn btn-primary btn-lg custom active" role="button">Category</a>
-        <a style = "left: 270px; top: 240px;" href="/adminadvisor/career/" class="btn btn-primary btn-lg custom active" role="button">Career</a>
-        <a style = "left: 430px; top: 240px;" href="/adminadvisor/institution/" class="btn btn-primary btn-lg custom active" role="button">Institution</a>
-        <a style = "left: 110px; top: 300px;" href="/adminadvisor/qualification/" class="btn btn-primary btn-lg custom active" role="button">Qualification</a>
-        <a style = "left: 270px; top: 300px;" href="/adminadvisor/subject/" class="btn btn-primary btn-lg custom active" role="button">Subject</a>
-        <a style = "left: 430px; top: 300px;" href="/adminadvisor/websitelink/" class="btn btn-primary btn-lg custom active" role="button">Website Link</a>
+        <a style = "left: 110px; top: 260px;" href="/adminadvisor/category/" class="btn btn-primary btn-lg custom active" role="button">Category</a>
+        <a style = "left: 270px; top: 260px;" href="/adminadvisor/career/" class="btn btn-primary btn-lg custom active" role="button">Career</a>
+        <a style = "left: 430px; top: 260px;" href="/adminadvisor/institution/" class="btn btn-primary btn-lg custom active" role="button">Institution</a>
+        <a style = "left: 110px; top: 320px;" href="/adminadvisor/qualification/" class="btn btn-primary btn-lg custom active" role="button">Qualification</a>
+        <a style = "left: 270px; top: 320px;" href="/adminadvisor/subject/" class="btn btn-primary btn-lg custom active" role="button">Subject</a>
+        <a style = "left: 430px; top: 320px;" href="/adminadvisor/websitelink/" class="btn btn-primary btn-lg custom active" role="button">Website Link</a>
 
     <!---Second sub-heading on admin page-->
-        <h1><font color="#000000"; style="font-weight:normal; font-size:22px;margin-left: 38px; position:absolute;  top: 390px;"> User Profile Management:</font></h1>
+        <h1><font color="#000000"; style="font-weight:normal; font-size:22px;margin-left: 22px; position:absolute;  top: 410px;">User Profile Management:</font></h1>
         <br>
         <br>
 
     <!---Buttons under User Profile Management on admin page-->
-        <a style = "left: 110px; top: 435px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
-        <a style = "left: 270px; top: 435px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
+        <a style = "left: 110px; top: 455px;" href="/admin/auth/user/" class="btn btn-primary btn-lg custom active" role="button">Users</a>
+        <a style = "left: 270px; top: 455px;" href="/adminadvisor/userprofile/" class="btn btn-primary btn-lg custom active" role="button">User Profiles</a>
+
 </div>
 {% endblock %}
 
@@ -138,6 +147,7 @@
          <!---Modifications heading-->
         <h3 style="text-align: center;font-weight:bold; font-size:14px;">{% trans 'My Modifications:' %}</h3>
             
+            <!---Content of Recent Actions Box-->
             {% load log %}
             {% get_admin_log 10 as admin_log for_user user %}
             {% if not admin_log %}
@@ -166,6 +176,7 @@
 
 {% endblock %}
 
+<!---Adds the link back to the CSA Website home page, on the admin home page-->
 {% block scripts %}
     <a style = "position:absolute; left:15px;" href="/">Back to Home Page</a>
 {% endblock %}
