@@ -12,9 +12,9 @@
 {% block head %}
 
     <div class="panel csa-header">
-    <h1>Login </h1>
+        <h1>Login </h1>
     </div>
-
+    <!---Aleart of invalid login -->
     {% if invalid %}
         <div class="alert alert-danger alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
@@ -25,7 +25,7 @@
 {% endblock %}
 
 {% block body %}
-
+<!---Displays the form for the user to enter their login details -->
     <form class="form-signin span4" action="/accounts/auth/" method="post">{% csrf_token %}
         <div class ="index-link">
             <br><br>

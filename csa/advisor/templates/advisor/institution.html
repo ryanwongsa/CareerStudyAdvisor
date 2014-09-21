@@ -1,38 +1,51 @@
+<!--
+ #################################################################################
+ # Capstone Project - Career Study Advisor
+ # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+ # 21/07/2014 - 22/09/2014
+ # This document enables visualisation of the Institution page
+ #################################################################################
+ -->
+
 {% extends "base_split.html" %}
 {% load static %} 
 
 {% block head %}
+<!---Allows for visualisation of the Breadcrumbs Bar -->
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="/institution">Institutions</a></li>
   <li class="active">{{institution.name}}</li>
 </ol>
-
 </head>
+
 <div class="panel csa-header">
-<!-- <h2><img src={{logo}} alt="logo" width="60" height="60"/>{{ institution.name }}</h2> -->
-<h2>{{ institution.name }}</h2>
+    <h2>{{ institution.name }}</h2>
 </div>
 {% endblock %}
 
 
 {% block body_main %}
+<!---Displays the description of the institution -->
 	<h3>Description</h3>
 	<p>  {{ institution.description }}</p>
 
+<!---Displays the list of the qualifications offered -->
 	<br>
 	<h3>Qualifications Offered</h3>
 	{% for qual in qualifications %}
 		<p><a href="/institution/{{ institution.name }}/{{ qual }}">{{ qual }}</a></p>
 	{% endfor %}
-
 	<br>
+
+<!---Displays the links to the handbooks-->
 	<h3>Handbooks</h3>
 	{% for handbook in handbooks %}
 		<p><a href={{handbook.site_url}}>{{ handbook.name }}</a></p>
 	{% endfor %}
-
 	<br>
+
+<!---Displays the links to the Faculties-->
 	<h3>Faculties</h3>
 	{% for w in facultyWebsites %}
 		<p><a href={{w.site_url}}>{{ w.name }}</a></p>
@@ -40,12 +53,14 @@
 {% endblock %}
 
 {% block body_side %}
+<!---Displays the links to the contact details-->
 	<h3>Contact</h3>
 	{% for w in contactWebsites %}
 		<p><a href={{w.site_url}}>{{ w.name }}</a></p>
 	{% endfor %}
-
 	<br>
+
+<!---Displays the links to other information-->
 	<h3>Other Information</h3>
 	{% for w in websites %}
 		<p><a href={{w.site_url}}>{{ w.name }}</a></p>
