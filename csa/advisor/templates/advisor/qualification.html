@@ -87,7 +87,9 @@
                     <li>{{sub}}</li>
                 </ul>
                 {% endfor %}
-            <a style="font-weight:normal;  font-size:16px; color:#F7464A">None of your subjects match the subjects needed for this qualification.</a>
+                <div class="alert alert-danger" role="alert">
+                    None of your subjects match the subjects needed for this qualification.
+                </div>
             
     		
 		{% endif %}
@@ -105,7 +107,7 @@
     
     {% endif %}
 
-    <br><br>
+    <br>
     <h4>Careers That This Qualification Leads To</h4>
     <ul>
       {% for career in careers %}

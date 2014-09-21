@@ -15,9 +15,14 @@ import random
 from advisor.models import Career, Qualification, Institution, Category, Subject, UserProfile
 
 ##########################################################################################
-# Ajax-related views - all to do with like buttons on career and qualification pages
+# Ajax-related views - all to do with the like buttons on career and qualification pages
 ##########################################################################################
 
+'''
+  This view will be executed when the user has clicked the like button on a career page. Clicking the like button
+  will, in the background (using AJAX techniques), send the user to a certain URL which calls this view. This view
+  will then update the user's likes to include the liked career.
+'''
 def like_career (request, career_name):
   user = UserProfile.objects.get(name=request.user.username)
   career = Career.objects.get(name__iexact=career_name)
@@ -27,6 +32,11 @@ def like_career (request, career_name):
 
   return redirect ("advisor.views.career", career_name=career.name)
 
+'''
+  This view will be executed when the user has clicked the like button on a career page (when the career has already 
+  been liked by the user). Clicking the like button will, in the background (using AJAX techniques), send the user to 
+  a certain URL which calls this view. This view will then update the user's likes to remove the (previously) liked career.
+'''
 def unlike_career (request, career_name):
   user = UserProfile.objects.get(name=request.user.username)
   career = Career.objects.get(name__iexact=career_name)
@@ -36,6 +46,11 @@ def unlike_career (request, career_name):
 
   return redirect ("advisor.views.career", career_name=career.name)
 
+'''
+  This view will be executed when the user has clicked the like button on a qualification page. Clicking the like button
+  will, in the background (using AJAX techniques), send the user to a certain URL which calls this view. This view
+  will then update the user's likes_qualifications to include the liked qualification.
+'''
 def like_qualification (request, qualification_name, inst_name):
   list_of_qualifications_with_name = Qualification.objects.filter(name__iexact=qualification_name).all()
   for qual in list_of_qualifications_with_name:
@@ -49,6 +64,12 @@ def like_qualification (request, qualification_name, inst_name):
 
   return redirect ("advisor.views.qualification", qualification_name=q.name, inst_name=q.institution)
 
+'''
+  This view will be executed when the user has clicked the like button on a qualifcation page (when the qualifcation has already 
+  been liked by the user). Clicking the like button will, in the background (using AJAX techniques), send the user to 
+  a certain URL which calls this view. This view will then update the user's likes_qualifications to remove the 
+  (previously) liked qualification.
+'''
 def unlike_qualification (request, qualification_name, inst_name):
   list_of_qualifications_with_name = Qualification.objects.filter(name__iexact=qualification_name).all()
   for qual in list_of_qualifications_with_name:
@@ -68,8 +89,9 @@ def unlike_qualification (request, qualification_name, inst_name):
 ##########################################################################################
 # Helper-functions: don't render a template, but are used by other views
 ##########################################################################################
+
 '''
-  Given a list of objects, filter_list() return an alphabetised list of these objects based on their name field
+  Given a list of objects, filter_list() returns an alphabetised list of these objects (ordering is based on their name field).
 '''
 def filter_list(temp_list):
   filtered_list = []
@@ -81,14 +103,20 @@ def filter_list(temp_list):
   return filtered_list
 
 '''
+  Given a user, this function will return a list of all qualifications and their corresponding total scores (which are based 
+  on the given user's profile information). This list is sorted from biggest to smallest based on the scores.
 '''
 def get_recommended_qualifications (user):
+  '''
+    All qualifications are stored in a 2D list of the form [[qualification_id, score], ...], with score initially set to 0 for each qualification.
+    This list contains the final list of scores for each qualification. This will be used to recommend qualifications to the user.
+  '''
   qual_score_all = []
   for qual in Qualification.objects.all():
-    qual_score_all.append([qual.id, 0]) # qualifications referenced by their id as neither their name or their institution are unique
+    qual_score_all.append([qual.id, 0]) # qualifications referenced by their id as neither their name nor their institution are unique
 
   ''' 
-    Qualification liked -> +2
+    All qualifications that the user likes have their score increased by 2
   '''
   qual_liked = user.likes_qualifications.all()
 
@@ -102,7 +130,7 @@ def get_recommended_qualifications (user):
 
 
   ''' 
-    For each shared subject between the qualification and the current user's profile -> +1
+    For each shared subject between the qualification and the current user's profile, the qualifcation's score is increased by 1
   '''
   subjects_selected = user.subjects.all() #subjects selected by user (for their profile)  
 
@@ -122,7 +150,8 @@ def get_recommended_qualifications (user):
 
 
   ''' 
-    If another user shares 5 subjects with the current user, then each qualification that the other user likes will get +1
+    If another user shares 5 subjects with the current user, then each qualification that the other user likes will get their score increased by 1
+    The maximum score a qualification can get through this process is 4
   '''
   users_all = UserProfile.objects.all()
   
@@ -158,7 +187,6 @@ def get_recommended_qualifications (user):
         pair[1] = pair[1] + 4
       else:
         pair[1] = pair[1] + qual_id_score[pair[0]]
-        #pair[1] = pair[1] + "+" + str(qual_id_score[pair[0]]) + "[other users:"+ Qualification.objects.get(id=pair[0]).name+"]"
 
 
   qual_score_all = sorted(qual_score_all, key=lambda x:x[1], reverse=True) # sorts the 2D list on the second element of each list-element 
@@ -169,10 +197,12 @@ def get_recommended_qualifications (user):
   return qual_score_all
 
 '''
+  Given a user, this function will return a list of all careers and their corresponding total scores (which are based 
+  on the given user's profile information). This list is sorted from biggest to smallest based on the scores.
 '''
 def get_recommended_careers (user):
   '''
-    All careers are stored in a 2D list of the form [[Career, score] ...], with score initially set to 0 for each career.
+    All careers are stored in a 2D list of the form [[Career, score], ...], with score initially set to 0 for each career.
     This list contains the final list of scores for each career which will be used to recommend careers to the user.
   '''
   career_score_all = []
@@ -258,8 +288,8 @@ def get_recommended_careers (user):
 
   '''
     All careers which are liked by users who share 4 or more interests with the current user will have their scores:
-      1. increased by 2 if the career is in any of the overlapping interests (categories)
-      2. increased by 1 (for all other careers that have been liked)
+      - increased by 2 if the career is in any of the overlapping interests (categories)
+      - increased by 1 (for all other careers that have been liked)
     A career can get a maximum of 2 additional score during this process
   '''
   
@@ -283,7 +313,6 @@ def get_recommended_careers (user):
 
 
   careers_other_users_score = [] # [[career1_name, score_to_be_added], [...], ...]
-  #careers_matched [] # [career1_name, ... ]
 
   # for each interests-liked_careers pair for other users
   for pair in users_interests_likes_names: # pair: [[interest1_name, interest2_name, ...],[career1_name, career2_name,...]]
@@ -341,6 +370,9 @@ def get_recommended_careers (user):
 ##########################################################################################
 
 '''
+  This view is executed when the user clicks the Get Recommendations button on the home page.
+  The view will get the recommended careers and qualifications (by calling the corresponding functions) and 
+  then select the top 5 of each (i.e. the careers and qualifications with the highest scores).
 '''
 def recommend_careers_and_qualifications (request):
   user = UserProfile(name=request.user.username)
@@ -355,7 +387,7 @@ def recommend_careers_and_qualifications (request):
   return render (request, "advisor/recommend.html", context)
 
 '''
-  Method that displays a form for the user to login
+  View that displays a form for the user to login
 '''
 def login(request):  
     if request.user.is_authenticated(): # if there is a user logged in already
@@ -385,7 +417,7 @@ def login(request):
         return render(request, "login.html", context)
     
 '''
-  Method to authenitcate if the username and password is valid or invalid.
+  View to authenitcate if the username and password is valid or invalid.
 '''
 def auth_view(request):
     username = request.POST.get('username','')
@@ -400,7 +432,7 @@ def auth_view(request):
         return render(request, 'login.html', context)
 
 '''
-  Method to allow the user to fill in a form update their user profile
+  View to allow the user to fill in a form update their user profile
 '''
 @login_required     # to access this page the user needs to be loggedin else redirect to login page
 def loggedin(request):
@@ -449,14 +481,14 @@ def loggedin(request):
         pass
 
 '''
-  Method to redirect the user to the home page when they logout
+  View to redirect the user to the home page when they logout
 '''
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
 
 '''
-  Method to create an account for the user when the sign up
+  View to create an account for the user when the sign up
 '''
 def register_user(request):
     if request.method == 'POST':
@@ -606,7 +638,9 @@ def qualification_index(request):
 def home(request):
   user = UserProfile(name=request.user.username)
 
-  '''Get random categories'''
+  '''
+    Get 20 random categories to display on home page.
+  '''
   categories_all = Category.objects.all()
   categories_names = []
   for i in xrange(min(20,len(categories_all))): # show min(10, len(categories_all)) random categories on home page
@@ -619,7 +653,9 @@ def home(request):
   for category_name in categories_names:
     categories.append(Category.objects.get(name=category_name))
 
-  '''Get random careers'''
+  '''
+    Get 10 random careers to display on home page (will be used if user is not logged in or is a super user)
+  '''
   careers_all = Career.objects.all()
   careers_names = []
   for i in xrange(min(10,len(careers_all))): # show min(10, len(career_all)) random careers on home page (will be used if user is admin or not logged in)
@@ -632,7 +668,9 @@ def home(request):
   for career_name in careers_names:
     careers.append(Career.objects.get(name=career_name))
 
-  '''Get top scoring careers'''
+  '''
+    Get top-scoring careers (will be used if the user is logged in and is not a super user)
+  '''
   careers_recommended_all = get_recommended_careers(user)
   careers_recommended_top = careers_recommended_all[0:min(10,len(careers_recommended_all))]
 
