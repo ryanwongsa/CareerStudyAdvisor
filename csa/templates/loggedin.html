@@ -50,7 +50,7 @@
 			<hr class="csa-hr">
             {% if likes|length > 0 %}
     			{% for l in likes %}
-                    <a href="/career/{{l}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
+                    <a href="/career/{{l}}">{{l}}</a>{% if not forloop.last %} | {% endif %}
     			{% endfor %}
             {% else %}
                 You have not liked any <a href="/career/">careers</a> yet.
@@ -63,7 +63,7 @@
             <hr class="csa-hr">
             {% if likes_qual|length > 0 %}
                 {% for l in likes_qual %}
-                    <a href="/institution/{{l.institution}}/{{l.name}}">{{l}}{% if not forloop.last %}, {% endif %}</a>
+                    <a href="/institution/{{l.institution}}/{{l.name}}">{{l}}</a>{% if not forloop.last %} | {% endif %}
                 {% endfor %}
             {% else %}
                 You have not liked any <a href="/qualification/">qualifications</a> yet.

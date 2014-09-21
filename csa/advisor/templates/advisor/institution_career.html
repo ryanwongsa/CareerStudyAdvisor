@@ -18,15 +18,16 @@
 </ol>
 
 <div class="panel csa-header">
-    <h3>{{ career }}: {{ institution }}</h3>
+    <h3>{{ institution }}<small>   {{ career }}</small></h3>
 </div>
 {% endblock %}
 
 
 {% block body %}
 <!---Displays the list of the qualification leading to a certain career-->
-<div class ="index-link">
+<div class ="index-link"><br>
     <h4>Qualifications Offered that Lead to Becoming a {{ career }}</h4>
+    <hr class="csa-hr">
     {% for qualification in qualifications %}
         <br>
         <h5><a href="/institution/{{ institution }}/{{ qualification.name }}">{{ qualification.name }}</a></h5>
