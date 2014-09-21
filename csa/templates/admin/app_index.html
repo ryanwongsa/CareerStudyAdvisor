@@ -1,18 +1,30 @@
+<!--
+    #################################################################################
+    # Capstone Project - Career Study Advisor 
+    # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+    # 21/07/2014 - 22/09/2014
+    #################################################################################
+-->
+
 {% extends "admin/index.html" %}
 {% load i18n %}
 
+<!--Django-->
 {% if not is_popup %}
-{% block breadcrumbs %}
-<div class="breadcrumbs">
-<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
-&rsaquo;
-{% for app in app_list %}
-{% blocktrans with app.name as name %}{{ name }}{% endblocktrans %}
-{% endfor %}
-</div>
-{% endblock %}
+	{% block breadcrumbs %}
+		<div class="breadcrumbs">
+			<a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+			&rsaquo;
+			{% for app in app_list %}
+				{% blocktrans with app.name as name %}
+					{{ name }}
+				{% endblocktrans %}
+			{% endfor %}
+			</div>
+	{% endblock %}
 {% endif %}
 
 <!--Adding recent action sidebar to admin app page-->
 {% block sidebar %}
-{{ block.super }}{% endblock %}
+	{{ block.super }}
+{% endblock %}

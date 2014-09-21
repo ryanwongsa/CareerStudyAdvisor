@@ -1,6 +1,16 @@
+<!--
+ #################################################################################
+ # Capstone Project - Career Study Advisor
+ # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+ # 21/07/2014 - 22/09/2014
+ # This document enables visualisation of the loggedin page
+ #################################################################################
+ -->
+
 {% extends "base.html" %}
 
 {% block head %}
+<!---Allows for visualisation of the Breadcrumbs Bar -->
     <ol class="breadcrumb">
         <li><a href="/">Home</a></li>
         <li><a href="/accounts/loggedin">{{full_name}}</a></li>
@@ -14,6 +24,7 @@
 
 
 {% block body %}
+<!---Displays form for the user to update their profile -->
     <div class ="index-link">
         <form action="/accounts/loggedin" method="post">{% csrf_token %}
             {{ args.form.non_field_errors }}

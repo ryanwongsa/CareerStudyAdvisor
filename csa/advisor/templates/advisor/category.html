@@ -1,6 +1,15 @@
+<!--
+ #################################################################################
+ # Capstone Project - Career Study Advisor
+ # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+ # 21/07/2014 - 22/09/2014
+ # This document enables visualisation of the Categories page
+ #################################################################################
+ -->
 {% extends "base.html" %}
 
 {% block head %}
+<!---Allows for visualisation of the Breadcrumbs Bar -->
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="/category">Categories</a></li>
@@ -8,12 +17,13 @@
 </ol>
 
 <div class="panel csa-header">
-<h2>{{ category|title }}</h2>
+    <h2>{{ category|title }}</h2>
 </div>
 {% endblock %}
 
 
 {% block body %}
+<!---Displays the list of careers in the category -->
 <div class ="index-link">
     {% if careers|length = 0 %}
       <p><br>

@@ -1,45 +1,52 @@
+<!--
+ #################################################################################
+ # Capstone Project - Career Study Advisor
+ # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+ # 21/07/2014 - 22/09/2014
+ # This document enables visualisation of a Career page
+ #################################################################################
+ -->
 {% extends "base_split.html" %}
 
 {% block head %}
+<!---Allows for visualisation of the Breadcrumbs Bar -->
 <ol class="breadcrumb">
     <li><a href="/">Home</a></li>
     <li><a href="/career">Careers</a></li>
     <li class="active">{{career.name}}</li>
 </ol>
 
+<!---Displays and implements the like button -->
 <span>
     <div class="panel csa-header">
-        
-<h2>{{ career.name }}<small>
-{% if user.is_authenticated %}
-    {% if user.is_superuser %}
-        Only non-admin users can like careers
-    {% else %}
-    	<a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button" >        
-			{% if career_liked %}
-				Liked
-			{% else %}
-				Like
-			{% endif %}
-            
-    	</a>
-    {% endif %}
-{% else %}
-    Login to like careers
-{% endif %}
+        <h2>{{ career.name }}<small>
+        {% if user.is_authenticated %}
+            {% if user.is_superuser %}
+                Only non-admin users can like careers
+            {% else %}
+                <a onclick="toggleLike(this)" class="btn-csa-like btn {% if career_liked %} btn-danger {% else %} btn-warning {% endif %} btn-xs" role="button" >
+                {% if career_liked %}
+                    Liked
+                {% else %}
+                    Like
+                {% endif %}
+                </a>
+            {% endif %}
+        {% else %}
+            Login to like careers
+        {% endif %}
+        </small></h2>
+    </span>
 
-</small></h2>
-
-</span>
-
-<div class="tag">
-{% for category in categories %}
-<a class="btn btn-primary btn-sm" role="button" href="/category/{{ category.name }}">{{ category }}</a>
-{% endfor %}
-</div>
+    <!---Displays the categories that the career falls under as a tag -->
+    <div class="tag">
+        {% for category in categories %}
+            <a class="btn btn-primary btn-sm" role="button" href="/category/{{ category.name }}">{{ category }}</a>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}
-
+<!---Displays the details of the career-->
 {% block body_main %}
 		<h3>Description</h3>
 		<p>{{ career.description }}</p>

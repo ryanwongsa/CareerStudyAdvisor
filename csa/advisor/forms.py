@@ -1,3 +1,10 @@
+#################################################################################
+# Capstone Project - Career Study Advisor 
+# By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+# 21/07/2014 - 22/09/2014
+# This document is for navigation throught the website 
+#################################################################################
+
 from django import forms
 from models import UserProfile, Category
 from django.contrib.auth.models import User

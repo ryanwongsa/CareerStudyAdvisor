@@ -1,24 +1,34 @@
+<!--
+ #################################################################################
+ # Capstone Project - Career Study Advisor
+ # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+ # 21/07/2014 - 22/09/2014
+ # This document enables visualisation of the Institution Index page
+ #################################################################################
+ -->
 {% extends "base.html" %}
 
 {% block head %}
+<!---Allows for visualisation of the Breadcrumbs Bar -->
 <ol class="breadcrumb">
     <li><a href="/">Home</a></li>
     <li class="active">Institutions</li>
 </ol>
 
 <div class="panel csa-header">
-<h2>Institutions</h2>
+    <h2>Institutions</h2>
 </div>
 {% endblock %}
 
 {% block body %}
+<!---Displays the list of institutions -->
 <div class ="index-link">
-{% for letter in institution %}
-<br>
-<h3>{{ letter.0.name.0|upper }}</h3>
-{% for institution in letter %}
-<p><a href="/institution/{{ institution.name }}">{{ institution.name }}</a></p>
-{% endfor %}
-{% endfor %}
+    {% for letter in institution %}
+        <br>
+        <h3>{{ letter.0.name.0|upper }}</h3>
+        {% for institution in letter %}
+            <p><a href="/institution/{{ institution.name }}">{{ institution.name }}</a></p>
+        {% endfor %}
+    {% endfor %}
 </div>
 {% endblock %}

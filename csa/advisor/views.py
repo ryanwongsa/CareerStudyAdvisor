@@ -1,3 +1,9 @@
+#################################################################################
+# Capstone Project - Career Study Advisor 
+# By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+# 21/07/2014 - 22/09/2014
+#################################################################################
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
@@ -387,7 +393,8 @@ def recommend_careers_and_qualifications (request):
   return render (request, "advisor/recommend.html", context)
 
 '''
-  View that displays a form for the user to login
+  This view is executed when the user clicks the login button.
+  The view will display a form for the users to enter their username and password
 '''
 def login(request):  
     if request.user.is_authenticated(): # if there is a user logged in already
@@ -417,7 +424,7 @@ def login(request):
         return render(request, "login.html", context)
     
 '''
-  View to authenitcate if the username and password is valid or invalid.
+  This View is used to authenitcate if the username and password is valid or invalid when the user logins.
 '''
 def auth_view(request):
     username = request.POST.get('username','')
@@ -432,7 +439,9 @@ def auth_view(request):
         return render(request, 'login.html', context)
 
 '''
-  View to allow the user to fill in a form update their user profile
+  This view is executed when the user clicks the on their username on the navigation bar.
+  The view will display a form for fill the user to fill in and
+  then will update their data in their user profile
 '''
 @login_required     # to access this page the user needs to be loggedin else redirect to login page
 def loggedin(request):
@@ -481,14 +490,17 @@ def loggedin(request):
         pass
 
 '''
-  View to redirect the user to the home page when they logout
+  This view is executed when the user clicks the Log Out button on the nagivation bar.
+  The view will logout the user and redirect them to the home page.
 '''
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
 
 '''
-  View to create an account for the user when the sign up
+  This view is executed when the user clicks the Sign Up button on the navigation bar.
+  The view will display a form for fill the user to fill in about their username, email and password and
+  then will add the user to the database
 '''
 def register_user(request):
     if request.method == 'POST':
@@ -520,6 +532,8 @@ def register_user(request):
 
 
 '''
+  This view is executed when the user clicks the Career button on the navigation bar. 
+  The view will display a list of all the careers in the database.
 '''
 def career_index(request):
   list_of_careers = []
@@ -531,7 +545,11 @@ def career_index(request):
   context = {"careers": careers}
   return render(request, "advisor/career_index.html", context)
 
+
 '''
+  This view is executed when the user selects a career.
+  The view will display a details about the career such as
+  categories it falls under, institutions that offer the qualification for the career, and links to companies for the career.
 '''
 def career(request, career_name):
   c = Career.objects.get(name__iexact=career_name)
@@ -602,7 +620,11 @@ def career(request, career_name):
     context = {"career": c, "institutions": list_of_institutions, "categories": list_of_categories, "companies": list_of_companies,"similar_careers": list_of_similar_careers, "career_liked": career_liked}
     return render (request, "advisor/career.html", context)
 
+
 '''
+  This view is executed after the user types in the search bar.
+  The view will display a list of careers, institutions, qualifications and categories
+  that match the search field.
 '''
 def search (request):
   # request.GET is a dictionary where the query variable is the value in a key-value pair (i.e. it is the actual search text)
@@ -620,8 +642,9 @@ def search (request):
   context = {"careers": list_of_careers_filtered, "institutions": list_of_instituions_filtered, "qualifications": list_of_qualifications_filtered, "categories": list_of_categories_filtered, "search_term": query}
   return render (request, "advisor/search.html", context)
 
-
 '''
+  This view is executed when the user clicks the Qualification button on the navigation bar.
+  The view will display a list of all the qualifications in the database.
 '''
 def qualification_index(request):
   list_of_qualifications = []
@@ -633,7 +656,10 @@ def qualification_index(request):
   context = {"qualifications": qualifications}
   return render (request, "advisor/qualification_index.html", context)
 
+
 '''
+  This view is executed on the home page.
+  The view will display a the search bar, get recommendation button, categories and suggested careers.
 '''
 def home(request):
   user = UserProfile(name=request.user.username)
@@ -677,7 +703,11 @@ def home(request):
   context = {"categories": categories, "careers": careers, "list_of_suggested_careers": careers_recommended_top}
   return render (request, "advisor/home.html", context)
 
+
 '''
+  This view is executed when the user selects a category.
+  The view will display a details about the institution such as
+  the qualifications the instittion offers, handbook, contact, faculty, website links.
 '''
 def category(request, category_name):
   list_of_careers = []
@@ -691,6 +721,8 @@ def category(request, category_name):
   return render (request, "advisor/category.html", context)
 
 '''
+  This view is executed when the user clicks the Categories button on the navigation bar.
+  The view will display a list of all the categories in the database.
 '''
 def category_index(request):
     list_of_categories = []
@@ -703,6 +735,8 @@ def category_index(request):
     return render (request, "advisor/category_index.html", context)
 
 '''
+  This view is executed when the user wants to get a list of qualifications an institution has for a certain career.
+  The view will display a list of qualifications details.
 '''
 def institution_career(request, career_name, inst_name):
   list_of_qualifications = []
@@ -710,6 +744,10 @@ def institution_career(request, career_name, inst_name):
   
   c = Career.objects.get(name__iexact=career_name) 
 
+  '''
+      All qualifications are retrieved and stored in list_of_qualifications. This list of qualifications
+      is then used to create a list of qualifications that a particular institution offers
+  ''' 
   for qualification in c.qualifications.all(): 
     list_of_qualifications.append(qualification)
   for qualification in list_of_qualifications:
@@ -721,6 +759,9 @@ def institution_career(request, career_name, inst_name):
   return render (request, "advisor/institution_career.html", context)
 
 '''
+  This view is executed when the user selects a qualification.
+  The view will display a details about the qualification such as
+  the careers the qualification leads to, subject requirements, website links.
 '''
 def qualification(request, qualification_name, inst_name):
   list_of_qualifications_with_name = Qualification.objects.filter(name__iexact=qualification_name).all()
@@ -733,10 +774,19 @@ def qualification(request, qualification_name, inst_name):
   list_of_websites = []
   list_of_subjects = []
   
+  '''
+      All careers making use of a qualification will be added to list_of_careers_from_qualification.
+      This list of careers is then passed to qualification.html and used to display the careers that users
+      can go into when they have that particular qualification, on the qualifcations page.
+  '''  
   for career in careers:
       if q in career.qualifications.all():
           list_of_careers_from_qualification.append(career)
-  
+  '''
+      All websites belonging to a particular qualification will be added to a list_of_websites list.
+      This list of websites is then passed to qualification.html and used to display the websites for
+      a particular qualification on the qualifcations page.
+  '''  
   for web in q.qualifications_websites.all():
       list_of_websites.append(web)
   
@@ -811,6 +861,8 @@ def qualification(request, qualification_name, inst_name):
     return render (request, "advisor/qualification.html", context)
 
 '''
+  This view is executed when the user clicks the Institution button on the navigation bar.
+  The view will display a list of all the institutions in the database.
 '''
 def institution_index(request):
     list_of_institutions = []
@@ -823,11 +875,13 @@ def institution_index(request):
     return render(request, "advisor/institution_index.html", context)
 
 '''
+  This view is executed when the user selects an institution.
+  The view will display details about the institution such as 
+  the qualifications the institution offers, handbook, contact, faculty, website links.
 '''
 def institution(request, institution_name):
     i = Institution.objects.get(name__iexact=institution_name) #.get()  not  .filter()
-    
-    
+        
     list_of_qualifications=[]
     list_of_handbooks= []
     list_of_websites= []

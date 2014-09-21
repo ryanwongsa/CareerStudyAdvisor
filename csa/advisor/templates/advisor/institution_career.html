@@ -1,6 +1,15 @@
+<!--
+ #################################################################################
+ # Capstone Project - Career Study Advisor
+ # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+ # 21/07/2014 - 22/09/2014
+ # This document enables visualisation of the institutions career page
+ #################################################################################
+ -->
 {% extends "base.html" %}
 
 {% block head %}
+<!---Allows for visualisation of the Breadcrumbs Bar -->
 <ol class="breadcrumb">
     <li><a href="/">Home</a></li>
     <li><a href="/career">Careers</a></li>
@@ -9,30 +18,22 @@
 </ol>
 
 <div class="panel csa-header">
-<h3>{{ career }}: {{ institution }}</h3>
+    <h3>{{ career }}: {{ institution }}</h3>
 </div>
 {% endblock %}
 
 
 {% block body %}
-
+<!---Displays the list of the qualification leading to a certain career-->
 <div class ="index-link">
-
-<center><h4>Qualifications Offered that Lead to Becoming a {{ career }}</h4></center>
-
-{% for qualification in qualifications %}
-
-
-<br>
-<h5><a href="/institution/{{ institution }}/{{ qualification.name }}">{{ qualification.name }}</a></h5>
-<p>{{ qualification.short_description}}</p>
-{% endfor %}
-<br>
-<!--
-<p><a href="/career/{{career}}">back to {{career}}</a></p>
-<p><a href="/institution/{{institution}}">more about {{institution}}</a></p>
-</div>-->
-
+    <h4>Qualifications Offered that Lead to Becoming a {{ career }}</h4>
+    {% for qualification in qualifications %}
+        <br>
+        <h5><a href="/institution/{{ institution }}/{{ qualification.name }}">{{ qualification.name }}</a></h5>
+        <p>{{ qualification.short_description}}</p>
+    {% endfor %}
+    <br>
+</div>
 {% endblock %}
 
 

@@ -1,109 +1,117 @@
+<!--
+ #################################################################################
+ # Capstone Project - Career Study Advisor
+ # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+ # 21/07/2014 - 22/09/2014
+ # This document enables visualisation of the home page
+ #################################################################################
+ -->
+
 {% extends "base_split_home.html" %}
 
 {% block banner %}
 <div class="jumbotron" style="background-color: #6ACBBA">
-<center><h1><font color="#FFFFFF">Career Study Advisor</font></h1></center>
-<br>
- <center>
- <h5 style="color: #FFFFFF">Career Study Advisor provides students with in-depth information<br>on careers and study options for tertiary education.</h5><br>
- </center>
+    <center><h1><font color="#FFFFFF">Career Study Advisor</font></h1></center>
+    <br>
+    <center>
+        <h5 style="color: #FFFFFF">Career Study Advisor provides students with in-depth information<br>on careers and study options for tertiary education.</h5><br>
+    </center>
  
-
-
- <br>
- <br>
- <center>
-<div class="input-group-lg-5">
-        <form action="/search" method="get">
+    <br>
+    <br>
+    <center>
+        <div class="input-group-lg-5">
+            <form action="/search" method="get">
             
-            <div class="input-group col-lg-6">
+                <div class="input-group col-lg-6">
                
-                <input type="text" class="form-control" style="border-top-color: #6ACBBA;border-bottom-color: #6ACBBA;border-left-color: #6ACBBA;border-right-color: #6ACBBA;color:black" placeholder="search for career, category, institution, or qualification" name="query">
+                    <input type="text" class="form-control" style="border-top-color: #6ACBBA;border-bottom-color: #6ACBBA;border-left-color: #6ACBBA;border-right-color: #6ACBBA;color:black" placeholder="search for career, category, institution, or qualification" name="query">
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-primary" style="border-top-color: #6ACBBA;border-bottom-color: #6ACBBA;border-left-color: #6ACBBA;border-right-color: #6ACBBA"><span class="glyphicon glyphicon-search"></span> Search </button>
                     </span>
-                     
-                    </div><!-- /input-group -->
-          
-        </form>
-       
-    </div>
-    </div>
-</center>
- <br>
- <center>
-{% if user.is_authenticated %}
-    <a href="/recommend" class="btn btn-primary btn-lg" style="background-color: #32D99E" role="button"><strong>Get Recommendations</strong></a><p> Click to get career and qualification suggestions.</p>
-{% else %}
-    <a href="/recommend" class="btn btn-default btn-lg" disabled="disabled" role="button"><strong>Get Recommendations</strong></a> <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get career and qualification suggestions.</p>
-{% endif %}
-</center>
- <br><br>
-{% endblock %}
+                        
+                </div><!-- /input-group -->
+            </form>
+        </div>
+    </center>
+</div>
 
+<br>
+<center>
+    {% if user.is_authenticated %}
+        <a href="/recommend" class="btn btn-primary btn-lg" style="background-color: #32D99E" role="button"><strong>Get Recommendations</strong></a><p> Click to get career and qualification suggestions.</p>
+    {% else %}
+        <a href="/recommend" class="btn btn-default btn-lg" disabled="disabled" role="button"><strong>Get Recommendations</strong></a> <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get career and qualification suggestions.</p>
+    {% endif %}
+</center>
+<br><br>
+
+
+{% endblock %}
+<!---Displays tags of the categories -->
 {% block categories %}
 <h3><center>Categories</center></h3>
 <hr class="csa-hr">
-<div class="btn-toolbar" role="toolbar">
-    <center>
-        <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-            {% for category in categories %}
-            <a href="/category/{{ category.name }}" class="btn btn-primary" role="button">
-                <strong>{{category.name}}</strong><br>
-                
-            </a>
-            {% endfor %}
-        </div>
+    <div class="btn-toolbar" role="toolbar">
+        <center>
+            <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+                {% for category in categories %}
+                    <a href="/category/{{ category.name }}" class="btn btn-primary" role="button">
+                    <strong>{{category.name}}</strong><br>
+                    </a>
+                {% endfor %}
+            </div>
     </center>
 </div>
 {% endblock %}
 
 {% block careers %}
-{% if user.is_authenticated %}
-    {% if user.is_superuser %}
-        <h3><center>Careers</center></h3>
+<!---Checks if the user is a super user or normal user or not loggedin and changes display accordingly-->
+    {% if user.is_authenticated %}
+        {% if user.is_superuser %}
+            <h3><center>Careers</center></h3>
+        {% else %}
+            <h3><center>Suggested Careers</center></h3>
+        {% endif %}
     {% else %}
-        <h3><center>Suggested Careers</center></h3>
+        <h3><center>Careers</center></h3>
     {% endif %}
-{% else %}
-    <h3><center>Careers</center></h3>
-{% endif %}
 
 <hr class="csa-hr">
 <div class="btn-toolbar" role="toolbar">
-<center>
-{% if user.is_authenticated %}
-    {% if user.is_superuser %}
-         <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-        {% for career in careers %}
-            <a href="/career/{{ career.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ career.short_description }}" data-placement="top">
-                    <strong>{{career.name}}</strong>
-                    <br>
-            </a>
-        {% endfor %}
-    </div>
+    <center>
+    {% if user.is_authenticated %}
+        {% if user.is_superuser %}
+            <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+                {% for career in careers %}
+                    <a href="/career/{{ career.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ career.short_description }}" data-placement="top">
+                        <strong>{{career.name}}</strong>
+                        <br>
+                    </a>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
+                {% for pair in list_of_suggested_careers %}
+                    <a href="/career/{{ pair.0.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ pair.0.short_description }}" data-placement="top">
+                        <strong>{{pair.0.name}}</strong>
+                        <br>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endif %}
     {% else %}
         <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-            {% for pair in list_of_suggested_careers %}
-                <a href="/career/{{ pair.0.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ pair.0.short_description }}" data-placement="top">
-                    <strong>{{pair.0.name}}</strong>
+            {% for career in careers %}
+                <a href="/career/{{ career.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ career.short_description }}" data-placement="top">
+                    <strong>{{career.name}}</strong>
                     <br>
                 </a>
             {% endfor %}
         </div>
+        <br>
+        <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get suggested careers.</p>
     {% endif %}
-{% else %}
-    <div class ="tag" class="btn-group btn-group-lg btn-group-justified btn-group-fill-height">
-        {% for career in careers %}
-            <a href="/career/{{ career.name }}" class="btn btn-success career-tooltip" role="button" data-toggle="tooltip" data-trigger="hover" title="{{ career.short_description }}" data-placement="top">
-                    <strong>{{career.name}}</strong>
-                    <br>
-            </a>
-        {% endfor %}
-    </div>
-    <br>
-    <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get suggested careers.</p>
-{% endif %}
         
     </center>
 
