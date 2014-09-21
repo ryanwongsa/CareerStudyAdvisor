@@ -355,11 +355,12 @@ def recommend_careers_and_qualifications (request):
   return render (request, "advisor/recommend.html", context)
 
 '''
+  Method that displays a form for the user to login
 '''
 def login(request):  
-    if request.user.is_authenticated():
+    if request.user.is_authenticated(): # if there is a user logged in already
         user_name = UserProfile(name=request.user.username)
-        #form = UserProfileForm(initial={'interest': '', 'likes': ''})
+        
         if request.POST:
             form = UserProfileForm(request.POST, instance=user_name)
             if form.is_valid():
@@ -374,7 +375,7 @@ def login(request):
         args['form'] = UserProfileForm()
         print args
         context = {"full_name": request.user.username, "args" :args}
-        return HttpResponseRedirect("", context) #was /accounts/loggedin
+        return HttpResponseRedirect("", context) 
     else:
         c={}
         
@@ -384,6 +385,7 @@ def login(request):
         return render(request, "login.html", context)
     
 '''
+  Method to authenitcate if the username and password is valid or invalid.
 '''
 def auth_view(request):
     username = request.POST.get('username','')
@@ -392,15 +394,15 @@ def auth_view(request):
     
     if user is not None:
         auth.login(request, user)
-        return HttpResponseRedirect('/')# was /accounts/loggedin
+        return HttpResponseRedirect('/')
     else:
         context = {"invalid": True}
         return render(request, 'login.html', context)
-#return HttpResponseRedirect('/accounts/login')# was /accounts/invalid!!!!
 
 '''
+  Method to allow the user to fill in a form update their user profile
 '''
-@login_required     # to access this page the user needs to be loggedin
+@login_required     # to access this page the user needs to be loggedin else redirect to login page
 def loggedin(request):
     user_name = UserProfile(name=request.user.username)
     #
@@ -447,17 +449,14 @@ def loggedin(request):
         pass
 
 '''
-'''
-def invalid_login(request):
-    return render(request, "invalid_login.html")
-
-'''
+  Method to redirect the user to the home page when they logout
 '''
 def logout(request):
     auth.logout(request)
     return HttpResponseRedirect('/')
 
 '''
+  Method to create an account for the user when the sign up
 '''
 def register_user(request):
     if request.method == 'POST':
@@ -487,10 +486,6 @@ def register_user(request):
    
     return render(request, "register.html", context)
 
-'''
-'''
-def register_success(request):
-    return render(request, "register_success.html")
 
 '''
 '''

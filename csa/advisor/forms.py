@@ -3,6 +3,9 @@ from models import UserProfile, Category
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
+'''
+    Registration form, to create an account for the user
+'''
 class MyRegistrationForm(UserCreationForm):
     
     email = forms.EmailField(required=True)
@@ -21,20 +24,10 @@ class MyRegistrationForm(UserCreationForm):
         
         return user
 
-
+'''
+    Form that allows the user to update their profile
+'''
 class UserProfileForm(forms.ModelForm):
-    
-    '''
-    name = forms.CharField(
-                                widget=forms.TextInput(attrs={'readonly':'readonly'})
-                                )
-    
-    likes = forms.MultipleChoiceField(
-                               widget=forms.Select(attrs={'readonly':'readonly'})
-                               )
-    interests = forms.ModelMultipleChoiceField(queryset=Category.objects.all())
-
-    '''
     class Meta:
         model = UserProfile
         fields={'interests','subjects'};
