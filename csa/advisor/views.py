@@ -87,7 +87,8 @@ def get_recommended_qualifications (user):
   for qual in Qualification.objects.all():
     qual_score_all.append([qual.id, 0]) # qualifications referenced by their id as neither their name or their institution are unique
 
-  ''' Qualification liked -> +2
+  ''' 
+    Qualification liked -> +2
   '''
   qual_liked = user.likes_qualifications.all()
 
@@ -100,7 +101,8 @@ def get_recommended_qualifications (user):
       pair[1] = pair[1] + 2
 
 
-  ''' for each shared subject between the qualification and the current user's profile -> +1
+  ''' 
+    For each shared subject between the qualification and the current user's profile -> +1
   '''
   subjects_selected = user.subjects.all() #subjects selected by user (for their profile)  
 
@@ -119,7 +121,8 @@ def get_recommended_qualifications (user):
         pair[1] = pair[1] + 1
 
 
-  ''' if another user shares 5 subjects with the current user, then each qualification that the other user likes will get +1
+  ''' 
+    If another user shares 5 subjects with the current user, then each qualification that the other user likes will get +1
   '''
   users_all = UserProfile.objects.all()
   
@@ -313,7 +316,7 @@ def get_recommended_careers (user):
           careers_other_users_score.append(career_name)
 
   careers_to_get_score = list(set(careers_other_users_score)) # no duplicates
-  #return careers_other_users_score
+  
   for career in careers_to_get_score:
     count_amount = careers_other_users_score.count(career)
     if count_amount >= 2:

@@ -1,26 +1,26 @@
 {% extends "base_split_home.html" %}
 
 {% block banner %}
-<div>
-<center><h1><font color="#000000">Career Study Advisor</font></h1></center>
-<hr class="csa-hr">
+<div class="jumbotron" style="background-color: #7DE9D5">
+<center><h1><font color="#FFFFFF">Career Study Advisor</font></h1></center>
 <br>
  <center>
- <h5>Career Study Advisor provides students with in-depth information<br>on careers and study options for tertiary education.</h5><br>
+ <h5 style="color: #FFFFFF">Career Study Advisor provides students with in-depth information<br>on careers and study options for tertiary education.</h5><br>
  </center>
- </div>
+ 
 
 
+ <br>
  <br>
  <center>
 <div class="input-group-lg-5">
         <form action="/search" method="get">
             
-            <div class="input-group col-lg-8">
+            <div class="input-group col-lg-6">
                
-                <input type="text" class="form-control" style="border-top-color: #32D99E;border-bottom-color: #32D99E;border-left-color: #32D99E;border-right-color: #32D99E" placeholder="search for career, category, institution, or qualification" name="query">
+                <input type="text" class="form-control" style="border-top-color: #7DE9D5;border-bottom-color: #7DE9D5;border-left-color: #7DE9D5;border-right-color: #7DE9D5;color:black" placeholder="search for career, category, institution, or qualification" name="query">
                     <span class="input-group-btn">
-                        <button type="submit" class="btn btn-primary" style="border-top-color: #32D99E;border-bottom-color: #32D99E;border-left-color: #32D99E;border-right-color: #32D99E"><span class="glyphicon glyphicon-search"></span> Search </button>
+                        <button type="submit" class="btn btn-primary" style="border-top-color: #7DE9D5;border-bottom-color: #7DE9D5;border-left-color: #7DE9D5;border-right-color: #7DE9D5"><span class="glyphicon glyphicon-search"></span> Search </button>
                     </span>
                      
                     </div><!-- /input-group -->
@@ -28,17 +28,17 @@
         </form>
        
     </div>
+    </div>
 </center>
  <br>
  <center>
- <br>
 {% if user.is_authenticated %}
     <a href="/recommend" class="btn btn-primary btn-lg" style="background-color: #32D99E" role="button"><strong>Get Recommendations</strong></a><p> Click to get career and qualification suggestions.</p>
 {% else %}
     <a href="/recommend" class="btn btn-default btn-lg" disabled="disabled" role="button"><strong>Get Recommendations</strong></a> <p><a href="/accounts/register/">Sign up</a> or <a href="/accounts/login/">login</a> to get career and qualification suggestions.</p>
 {% endif %}
 </center>
- <br><br><br>
+ <br><br>
 {% endblock %}
 
 {% block categories %}
