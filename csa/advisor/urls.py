@@ -1,12 +1,22 @@
+#################################################################################
+# Capstone Project - Career Study Advisor 
+# By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+# 21/07/2014 - 22/09/2014
+# This document is for navigation throught the website 
+#################################################################################
 from django.conf.urls import patterns, url
 
+#Imports Career, Search, Home, Category, Category_Index, Institution_Career, Qualification, 
+#Institution_Index, Institution
 from advisor import views
-#Career, Search, Home, Category, Category_Index, Institution_Career, Qualification, Institution_Index, Institution
 
-# applies to the character immediately before (that's why you need to use brackets if more than one character)
+#Regex used to describe url patterns 
 # + -> 1 or many
 # * -> 0 or many
 # ? -> 0 or 1
+# These symbols apply to the character immediately before which is why you need to use brackets 
+# for application to more than one character
+
 urlpatterns = patterns('',
   url(r'^search/?$', views.search, name='search'),
 

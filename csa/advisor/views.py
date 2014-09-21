@@ -1,3 +1,9 @@
+#################################################################################
+# Capstone Project - Career Study Advisor 
+# By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+# 21/07/2014 - 22/09/2014
+#################################################################################
+
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, Http404
@@ -738,6 +744,10 @@ def institution_career(request, career_name, inst_name):
   
   c = Career.objects.get(name__iexact=career_name) 
 
+  '''
+      All qualifications are retrieved and stored in list_of_qualifications. This list of qualifications
+      is then used to create a list of qualifications that a particular institution offers
+  ''' 
   for qualification in c.qualifications.all(): 
     list_of_qualifications.append(qualification)
   for qualification in list_of_qualifications:
@@ -749,7 +759,7 @@ def institution_career(request, career_name, inst_name):
   return render (request, "advisor/institution_career.html", context)
 
 '''
-  This view is executed when the user selects an qualification.
+  This view is executed when the user selects a qualification.
   The view will display a details about the qualification such as
   the careers the qualification leads to, subject requirements, website links.
 '''
@@ -764,10 +774,19 @@ def qualification(request, qualification_name, inst_name):
   list_of_websites = []
   list_of_subjects = []
   
+  '''
+      All careers making use of a qualification will be added to list_of_careers_from_qualification.
+      This list of careers is then passed to qualification.html and used to display the careers that users
+      can go into when they have that particular qualification, on the qualifcations page.
+  '''  
   for career in careers:
       if q in career.qualifications.all():
           list_of_careers_from_qualification.append(career)
-  
+  '''
+      All websites belonging to a particular qualification will be added to a list_of_websites list.
+      This list of websites is then passed to qualification.html and used to display the websites for
+      a particular qualification on the qualifcations page.
+  '''  
   for web in q.qualifications_websites.all():
       list_of_websites.append(web)
   
@@ -857,13 +876,12 @@ def institution_index(request):
 
 '''
   This view is executed when the user selects an institution.
-  The view will display a details about the institution such as 
-  the qualifications the instittion offers, handbook, contact, faculty, website links.
+  The view will display details about the institution such as 
+  the qualifications the institution offers, handbook, contact, faculty, website links.
 '''
 def institution(request, institution_name):
     i = Institution.objects.get(name__iexact=institution_name) #.get()  not  .filter()
-    
-    
+        
     list_of_qualifications=[]
     list_of_handbooks= []
     list_of_websites= []
