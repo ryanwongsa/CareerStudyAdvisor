@@ -1,11 +1,21 @@
+<!--
+    #################################################################################
+    # Capstone Project - Career Study Advisor 
+    # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+    # 21/07/2014 - 22/09/2014
+    # This document enables visualisation of the Recommendations page
+    #################################################################################
+-->
 {% extends "base.html" %}
 
+<!---Allows for visualisation of the Breadcrumbs Bar -->
 {% block head %}
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="/recommend">Recommendations</a></li> 
 </ol>
 
+<!---Displays a description of the page -->
 <div class="panel csa-header">
 <h2>Recommendations<small>    Careers and Qualifications</small></h2>
 </div>
@@ -22,7 +32,7 @@
 
 <div class ="index-link">
 
-
+<!---Displays a dlist of recommended careers -->
 <h3><b>Careers</b></h3><br>
 <div class ="indent-30px">
   {% for pair in career_score_top %}
@@ -33,6 +43,7 @@
 </div>
 <hr>
 
+<!---Displays a list of reccommended Qualifications -->
 <h3><b>Qualifications</b></h3><br>
 <div class ="indent-30px">
   {% for pair in qual_score_top %}

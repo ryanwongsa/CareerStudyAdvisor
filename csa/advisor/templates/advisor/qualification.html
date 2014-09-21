@@ -1,7 +1,16 @@
+<!--
+    #################################################################################
+    # Capstone Project - Career Study Advisor 
+    # By: Kevin Elliott (ellkev004), Ryan Wong (wngrya001) and Zena Kelz (klzzen001)
+    # 21/07/2014 - 22/09/2014
+    # This document enables visualisation of the Recommendations page
+    #################################################################################
+-->
 {% extends "base_split.html" %}
 
 {% block head %}
 
+<!---Allows for visualisation of the Breadcrumbs Bar -->
 <ol class="breadcrumb">
   <li><a href="/">Home</a></li>
   <li><a href="/institution">Institutions</a></li>
@@ -9,6 +18,7 @@
   <li class="active">{{qualification.name}}</li>
 </ol>
 
+<!---Displays and implements the like button -->
 <div class="panel csa-header">
 <h3>{{ qualification.name }}<small>
 {% if user.is_authenticated %}
@@ -32,9 +42,11 @@
 </div>
 {% endblock %}
 
+<!---Displays the name of the qualification -->
 {% block body_main %}
 	<h3>{{ qualification.institution }}</h3>
 
+    <!---Displays the description of the qualification -->
 	<br>
 	<h4>Details</h4>
 	<p>{{ qualification.long_description }}</p>
@@ -49,17 +61,16 @@
     {% if user.is_authenticated %}
         {% if user.is_superuser %}
             {% for sub in subjects %}
-<ul>
-<li>{{sub}}</li>
-</ul>
-
+                <ul>
+                <li>{{sub}}</li>
+                </ul>
             {% endfor %}
         {% else %}<!--superuser else-->
 
     	{% if matched_subjects|length != 0 %}
-             <div>
-        The required subjects for this qualification that your subjects <span style="color:#46BFBD">match</span> or <span style="color:#F7464A">do not</span> match.
-    </div>
+            <div>
+                The required subjects for this qualification that your subjects <span style="color:#46BFBD">match</span> or <span style="color:#F7464A">do not</span> match.
+            </div>
             <table>
                 <tr>
                     <td>
@@ -107,6 +118,7 @@
     
     {% endif %}
 
+    <!-- Displays a list of careers that the chosen qualification leads to -->
     <br>
     <h4>Careers That This Qualification Leads To</h4>
     <ul>
@@ -115,14 +127,10 @@
       {% endfor %}
     </ul>
     <br>
-
     
-    <!-- <div id="requirementsChartLegend" width="400" height="400"></div> -->
-
-
-
 {% endblock %}
 
+<!-- Displays a sidebar containing more info on the chosen qualification -->
 {% block body_side %}
 	<h4>More Information</h4>
   	{% for website in websites %}
@@ -131,6 +139,7 @@
    
 {% endblock %}
 
+<!-- Displays a pie chart showing the proportion of requirements that have been met and the proportion of requirements that have not been met -->
 {% block scripts %}
 <script>
     $(document).ready(function() {
